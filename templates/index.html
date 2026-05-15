@@ -1,0 +1,272 @@
+{% extends "base.html" %}
+{% load i18n %}{% load l10n %}{% load static %}
+
+{% block content %}
+{% get_current_language as LANGUAGE_CODE %}
+<style>
+    /* --- 1. HERO SECTION --- */
+    .hero-section { 
+        background-image: url('{% static "images/bnner.png" %}');
+        background-size: cover; 
+        background-position: center; 
+        background-repeat: no-repeat;
+        min-height: 500px; 
+        display: flex;
+        align-items: center;
+        position: relative;
+    }
+    .hero-content { position: relative; z-index: 2; padding-left: 20px; }
+    .hero-title { font-size: 3.8rem; font-weight: 800; color: #2d5a27; line-height: 1; margin-bottom: 20px; }
+    .hero-title span { color: #ff9900; }
+
+    /* --- 2. SLIDER LOGIC --- */
+    .slider-container-go {
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        gap: 12px;
+        padding: 15px 0; 
+        scrollbar-width: none; 
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+    }
+    .slider-container-go::-webkit-scrollbar { display: none; }
+
+    .item-5-fixed {
+        flex: 0 0 calc(20% - 10px); 
+        min-width: calc(20% - 10px);
+        scroll-snap-align: start;
+        display: flex;
+    }
+    
+
+    /* --- 3. CATEGORY CARDS --- */
+    .category-card-go {
+        background: #fff; border: 1px solid #eaeaea; border-radius: 8px;
+        padding: 20px 10px; text-align: center; width: 100%; transition: 0.3s;
+    }
+    .cat-circle-container { width: 110px; height: 110px; margin: 0 auto 12px auto; border-radius: 50%; overflow: hidden; border: 1px solid #eee; }
+    .cat-circle-container img { width: 100%; height: 100%; object-fit: cover; }
+
+    /* --- 4. PRODUCT CARDS --- */
+    .go-mini-card {
+        background: #fff; border: 1px solid #f0f0f0; border-radius: 8px; padding: 15px; text-align: center; 
+        display: flex; flex-direction: column; width: 100%; min-height: 360px;
+    }
+    .img-wrap-go { height: 165px; width: 100%; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; overflow: hidden; }
+    .img-wrap-go img { max-height: 100%; max-width: 100%; object-fit: contain; }
+    .product-name-go { font-size: 1.05rem; font-weight: 700; height: 48px; line-height: 1.2; overflow: hidden; margin-bottom: 8px; color: #333; }
+    .product-price-go { font-size: 1.15rem; color: #28a745; font-weight: 800; margin-bottom: 5px; }
+    .btn-add-go { font-size: 0.95rem; font-weight: 700; padding: 8px 0; }
+
+    /* --- 5. SECTION CONTROLS --- */
+    .category-banner-item, .dynamic-selection-section { display: none; } 
+    .active-item { display: block !important; animation: fadeIn 0.6s ease-in-out; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .section-header-go { display: flex; justify-content: space-between; align-items: center; margin-top: 40px; margin-bottom: 20px; border-bottom: 1px solid #eee; }
+
+    /* --- RESPONSIVENESS UPDATES --- */
+    @media (max-width: 992px) {
+        .hero-section { min-height: 400px; }
+        .hero-title { font-size: 2.8rem; }
+        .item-5-fixed {
+            flex: 0 0 calc(33.33% - 10px); 
+            min-width: calc(33.33% - 10px);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .hero-section { 
+            background-image: url('{% static "images/neww.jpg" %}');
+            min-height: 280px; /* Matching your current mobile height */
+            background-size: contain; 
+            background-position: top center;
+        }
+        .hero-title { font-size: 1.2rem; margin-bottom: 5px; }
+        
+        /* Adjusted padding so buttons/text don't conflict with banner graphics */
+        .hero-content { padding-left: 10px; padding-top: 50px; } 
+
+        .item-5-fixed {
+            flex: 0 0 calc(50% - 10px); 
+            min-width: calc(50% - 10px);
+        }
+        /* MOBILE: Force one line and hide the rest */
+        .category-card-go p {
+            display: block;
+            width: 100%;
+            white-space: nowrap;      /* Prevents text from wrapping to a second line */
+            overflow: hidden;         /* Hides the extra text */
+            text-overflow: ellipsis;  /* Adds "..." at the end of the line */
+            font-size: 0.85rem;
+        }
+
+        .go-mini-card { min-height: 320px; padding: 10px; }
+        .img-wrap-go { height: 130px; }
+        .product-name-go { font-size: 0.9rem; height: 40px; }
+        .category-banner-item { margin-bottom: 15px; } 
+    }
+</style>
+
+<section class="hero-section" {% if LANGUAGE_CODE == 'ar' %}style="background-position: center left; text-align: right;"{% endif %}>
+    <div class="container-fluid px-lg-5">
+        <div class="row">
+            <div class="col-md-7 hero-content">
+                <h1 class="hero-title"><span></span></h1>
+                <a href="{% url 'products_by_category' 'todays-deal' %}" class="btn btn-warning px-3 py-2 text-white font-weight-bold shadow-sm" style="border-radius: 5px; font-size: 0.85rem;">
+                    {% trans "SHOP NOW" %}
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container-fluid mt-4 px-lg-5">
+    <h3 class="text-center font-weight-bold mb-4" style="color: #333; font-size: 1.75rem;">{% trans "Our Top Category" %}</h3>
+    <div class="slider-container-go">
+        {% for category in links %}
+            {% if not category.parent %}
+            <div class="item-5-fixed">
+                <a href="{{ category.get_url }}" style="text-decoration: none; width: 100%;">
+                    <div class="category-card-go">
+                        <div class="cat-circle-container">
+                            {% if category.image %}<img src="{{ category.image.url }}">{% endif %}
+                        </div>
+                        <p class="font-weight-bold mb-0" style="color: #333; font-size: 1rem;">{{ category.category_name }}</p>
+                    </div>
+                </a>
+            </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    <div class="section-header-go">
+        <h4 class="font-weight-bold" style="font-size: 1.35rem;">{% trans "Top Trending Products" %}</h4>
+        <a href="{% url 'store' %}" class="btn btn-sm btn-outline-success px-3">{% trans "View All" %}</a>
+    </div>
+    <div class="slider-container-go">
+        {% for product in products|slice:":15" %}
+        <div class="item-5-fixed">
+            <div class="go-mini-card">
+                <div class="img-wrap-go"><a href="{{ product.get_url }}"><img src="{{ product.images.url }}"></a></div>
+                <h6 class="product-name-go">{{ product.product_name }}</h6>
+                <div class="mt-auto">
+                    <p class="product-price-go">{{ product.price|unlocalize }} {% trans "QAR" %}</p>
+                    <div class="rating-star mb-2" style="font-size: 0.85rem;">
+                        <span>
+                            <i class="fa fa-star{% if product.averageReview < 0.5 %}-o{% elif product.averageReview >= 0.5 and product.averageReview < 1 %}-half-o {% endif %}" aria-hidden="true"></i>
+                            <i class="fa fa-star{% if product.averageReview < 1.5 %}-o{% elif product.averageReview >= 1.5 and product.averageReview < 2 %}-half-o {% endif %}" aria-hidden="true"></i>
+                            <i class="fa fa-star{% if product.averageReview < 2.5 %}-o{% elif product.averageReview >= 2.5 and product.averageReview < 3 %}-half-o {% endif %}" aria-hidden="true"></i>
+                            <i class="fa fa-star{% if product.averageReview < 3.5 %}-o{% elif product.averageReview >= 3.5 and product.averageReview < 4 %}-half-o {% endif %}" aria-hidden="true"></i>
+                            <i class="fa fa-star{% if product.averageReview < 4.5 %}-o{% elif product.averageReview >= 4.5 and product.averageReview < 5 %}-half-o {% endif %}" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="{% url 'add_cart' product.id %}" class="btn btn-block btn-success btn-add-go">{% trans "ADD TO CART" %}</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="row my-4">
+        {% for category in links %}
+            {% if not category.parent %}
+            <div class="col-lg-4 col-md-6 col-12 category-banner-item">
+                <div class="card border-0 rounded-lg p-3 d-flex flex-row align-items-center justify-content-between" 
+                     style="height: 160px; background-color: {% cycle '#fff3cd' '#d4edda' '#fce4ec' %};">
+                    <div style="flex: 1;">
+                        <span class="badge badge-danger mb-2" style="font-size: 0.8rem;">{% trans "Top Offer" %}</span>
+                        <h4 class="font-weight-bold" style="font-size: 1.15rem;">{{ category.category_name }}</h4>
+                        <a href="{{ category.get_url }}" class="btn btn-link p-0 font-weight-bold text-dark">{% trans "Shop Now" %} →</a>
+                    </div>
+                    <div style="width: 90px;">{% if category.image %}<img src="{{ category.image.url }}" class="img-fluid" style="object-fit: contain;">{% endif %}</div>
+                </div>
+            </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    <div id="selection-wrapper">
+        {% for parent_cat in links %}
+            {% if not parent_cat.parent %}
+            <div class="dynamic-selection-section">
+                <div class="section-header-go">
+                    <h4 class="font-weight-bold" style="font-size: 1.35rem;">{% trans "Selection of" %} {{ parent_cat.category_name }}</h4>
+                    <a href="{{ parent_cat.get_url }}" class="btn btn-sm btn-outline-success px-3">{% trans "View All" %}</a>
+                </div>
+                <div class="slider-container-go">
+                    {% for product in products %}
+                        {% if product.category == parent_cat or product.category.parent == parent_cat %}
+                            <div class="item-5-fixed">
+                                <div class="go-mini-card">
+                                    <div class="img-wrap-go"><a href="{{ product.get_url }}"><img src="{{ product.images.url }}"></a></div>
+                                    <h6 class="product-name-go">{{ product.product_name }}</h6>
+                                    <div class="mt-auto">
+                                        <p class="product-price-go">{{ product.price|unlocalize }} {% trans "QAR" %}</p>
+                                        <a href="{% url 'add_cart' product.id %}" class="btn btn-block btn-success btn-add-go">{% trans "ADD TO CART" %}</a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        function setupRotation(className, displayCount, intervalTime) {
+            const items = document.querySelectorAll('.' + className);
+            if (items.length === 0) return;
+
+            let startIndex = 0;
+            function update() {
+                items.forEach(item => item.classList.remove('active-item'));
+                let count = window.innerWidth < 768 ? 1 : displayCount; 
+                for (let i = 0; i < count; i++) {
+                    let index = (startIndex + i) % items.length;
+                    items[index].classList.add('active-item');
+                }
+                startIndex = (startIndex + 1) % items.length;
+            }
+            update(); 
+            setInterval(update, intervalTime);
+        }
+
+        setupRotation('category-banner-item', 3, 6000); 
+
+        const productSections = document.querySelectorAll('.dynamic-selection-section');
+        if (window.innerWidth < 768) {
+            productSections.forEach(section => section.classList.add('active-item'));
+        } else {
+            setupRotation('dynamic-selection-section', 3, 8000);
+        }
+
+        const sliders = document.querySelectorAll('.slider-container-go');
+        sliders.forEach(slider => {
+            let isPaused = false;
+            slider.addEventListener('mouseenter', () => isPaused = true);
+            slider.addEventListener('mouseleave', () => isPaused = false);
+            setInterval(() => {
+                if (!isPaused) {
+                    const isRTL = document.dir === 'rtl' || document.documentElement.dir === 'rtl';
+                    const maxScroll = slider.scrollWidth - slider.clientWidth;
+                    const scrollAmount = window.innerWidth < 768 ? 200 : 250;
+                    if (isRTL) {
+                        if (Math.abs(slider.scrollLeft) >= maxScroll - 1) {
+                            slider.scrollTo({ left: 0, behavior: 'smooth' });
+                        } else { slider.scrollBy({ left: -scrollAmount, behavior: 'smooth' }); }
+                    } else {
+                        if (slider.scrollLeft >= maxScroll - 1) {
+                            slider.scrollTo({ left: 0, behavior: 'smooth' });
+                        } else { slider.scrollBy({ left: scrollAmount, behavior: 'smooth' }); }
+                    }
+                }
+            }, 3500);
+        });
+    });
+</script>
+{% endblock %}

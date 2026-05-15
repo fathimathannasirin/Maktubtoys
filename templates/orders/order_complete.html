@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load i18n %}{% load static %}
+
+{% block content %}
+<section class="section-content padding-y bg" {% if request.LANGUAGE_CODE == 'ar' %}dir="rtl" style="text-align: right;"{% endif %}>
+    <div class="container">
+        <div class="card mx-auto" style="max-width: 600px; margin-top: 40px;">
+            <div class="card-body text-center">
+                <i class="fa fa-check-circle text-success mb-3" style="font-size: 72px;"></i>
+                <h2 class="card-title">{% trans "Thank you for your order!" %}</h2>
+                <p class="card-text">{% trans "Your order has been placed successfully." %}</p>
+                
+                <div class="alert alert-secondary mt-4">
+                    <h5 class="mb-1">{% trans "Order Number" %}: <strong>{{ order_number }}</strong></h5>
+                    <p class="mb-0 text-muted">{% trans "Payment Method" %}:<strong>{% trans "Cash on Delivery" %}</strong></p>
+                </div>
+
+                <p class="mt-4">{% blocktrans %}Please keep <strong>{{ order.order_total }} QAR</strong> ready for the delivery agent.{% endblocktrans %}</p>
+                
+                <hr>
+                <div class="d-grid gap-2">
+                    <a href="{% url 'store' %}" class="btn btn-primary">{% trans "Continue Shopping" %}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

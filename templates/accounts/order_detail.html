@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+{% load i18n %}{% load static %}
+
+{% block content %}
+{% if not is_admin_view %}
+    {% include 'includes/navbar.html' %} 
+{% endif %}
+<section class="section-content padding-y bg-white" {% if request.LANGUAGE_CODE == 'ar' %}dir="rtl" style="text-align: right;"{% endif %}>
+    <div class="container">
+        <div class="invoice-wrapper mx-auto" style="max-width: 850px; border: 1px solid #eee; padding: 40px; color: #333;">
+            
+            <div class="row mb-5">
+                <div class="col-sm-6">
+                    <img src="{% static 'images/logo.png' %}" alt="Logo" style="max-height: 80px; width: auto;">
+                    <p class="text-muted small" style="padding: 10px 10px;">Doha, Qatar<br>www.Thenzelmaha.qa</p>
+                </div>
+                <div class="col-sm-6 text-sm-right">
+                    <h1 class="h3 text-uppercase font-weight-light mb-1">{% trans "Invoice" %}</h1>
+                    <p class="mb-0"><strong>{% trans "Order #" %}:</strong> {{ order.order_number }}</p>
+                    <p class="mb-0"><strong>{% trans "Date" %}:</strong> {{ order.created_at|date:"d M Y" }}</p>
+                </div>
+            </div>
+
+            <div class="row mb-5">
+                <div class="col-sm-6">
+                    <h6 class="text-uppercase font-weight-bold small border-bottom pb-2 mb-3">{% trans "Ship To:" %}</h6>
+                    <p class="mb-1"><strong>{{ order.full_name }}</strong></p>
+                    <p class="mb-1">{{ order.address_line_1 }}</p>
+                    <p class="mb-1">{% trans "Bldg:" %} {{ order.building_number }}, {% trans "St:" %} {{ order.street_number }}, {% trans "Zone:" %} {{ order.zone_number }}</p>
+                    <p class="mb-1">{% trans "Phone:" %} {{ order.phone }}</p>
+                </div>
+                <div class="col-sm-6 text-sm-right">
+                    <h6 class="text-uppercase font-weight-bold small border-bottom pb-2 mb-3">{% trans "Order Info:" %}</h6>
+                    <p class="mb-1"><strong>{% trans "Status:" %}</strong> {{ order.status }}</p>
+                    <p class="mb-1"><strong>{% trans "Payment:" %}</strong> {{ order.payment_method }}</p>
+                </div>
+            </div>
+
+            <table class="table table-bordered mb-4">
+                <thead style="background-color: #f9f9f9;">
+                    <tr>
+                        <th class="py-2">{% trans "Product Details" %}</th>
+                        <th class="text-center py-2">{% trans "Unit Price" %}</th>
+                        <th class="text-center py-2">{% trans "Quantity" %}</th>
+                        <th class="text-right py-2">{% trans "Total" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in order_detail %}
+                    <tr>
+                        <td class="py-3">
+                            <span class="font-weight-bold">{{ item.product.product_name }}</span>
+                            {% if item.variations.all %}
+                            <div class="small text-muted">
+                                {% for v in item.variations.all %}
+                                {{ v.variation_category|capfirst }}: {{ v.variation_value|capfirst }} {% if not forloop.last %}| {% endif %}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </td>
+                        <td class="text-center py-3">{{ item.product_price }} QAR</td>
+                        <td class="text-center py-3">{{ item.quantity }}</td>
+                        <td class="text-right py-3 font-weight-bold">
+                            {{ item.product_price }} QAR
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center">{% trans "No items found." %}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <div class="row justify-content-end">
+                <div class="col-md-5">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>{% trans "Subtotal:" %}</span>
+                        <span>{{ order.order_total }} QAR</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>{% trans "Tax:" %}</span>
+                        <span>{{ order.tax }} QAR</span>
+                    </div>
+                    <div class="d-flex justify-content-between font-weight-bold border-top pt-2" style="font-size: 1.2rem;">
+                        <span>{% trans "Grand Total:" %}</span>
+                        <span>{{ order.order_total }} QAR</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-5 no-print">
+                <button onclick="window.print()" class="btn btn-dark px-5">{% trans "Print Invoice" %}</button>
+                {% if not is_admin_view %}
+                    <a href="{% url 'my_orders' %}" class="btn btn-light border px-5">{% trans "Back" %}</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% if not is_admin_view %}
+    <a href="{% url 'my_orders' %}" class="btn btn-light border px-5">{% trans "Back" %}</a>
+    {% include 'includes/footer.html' %}
+{% endif %}
+
+<style>
+    /* Professional Print Settings */
+    @media print {
+        /* Completely hide website elements on paper */
+        header, footer, .no-print, .dashboard_sidebar, .section-header, nav, .navbar { 
+            display: none !important; 
+        }
+        
+        /* Expand the invoice to fill the page */
+        .invoice-wrapper { 
+            border: none !important; 
+            padding: 0 !important; 
+            width: 100% !important; 
+            max-width: 100% !important; 
+            box-shadow: none !important;
+        }
+        
+        .table thead { 
+            background-color: #f9f9f9 !important; 
+            -webkit-print-color-adjust: exact; 
+        }
+        
+        body { 
+            background: white !important; 
+        }
+    }
+    
+    .table-bordered th, .table-bordered td { 
+        border: 1px solid #dee2e6 !important; 
+    }
+</style>
+{% endblock %}

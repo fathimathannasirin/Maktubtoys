@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+{% load i18n %}{% load static %}
+
+{% block content %}
+<style>
+    /* Consistent with register-wrapper */
+    .login-wrapper {
+        background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), 
+                    url("{% static 'images/sign.jpg' %}");
+        background-size: cover;
+        background-position: center;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding-top: 100px; /* Space for transparent navbar */
+    }
+
+    .login-card {
+        max-width: 900px;
+        width: 90%;
+        background: #fff;
+        border-radius: 20px;
+        overflow: hidden;
+        display: flex;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+    }
+
+    /* Left Side - Matching your light yellow theme */
+    .image-side {
+        background: #fff9e6; 
+        width: 45%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px;
+    }
+    
+    /* Right Side - Form */
+    .form-side {
+        width: 55%;
+        padding: 50px;
+    }
+
+    .btn-login {
+        background-color: #3167eb; /* Matching your blue search key */
+        color: #fff;
+        border: none;
+        padding: 12px;
+        border-radius: 8px;
+        width: 100%;
+        font-weight: bold;
+        transition: background 0.3s;
+    }
+
+    .btn-login:hover {
+        background-color: #2451bd;
+    }
+
+    .form-control {
+        border-radius: 8px;
+        padding: 25px 15px;
+    }
+
+    @media (max-width: 768px) {
+        .image-side { display: none; }
+        .form-side { width: 100%; padding: 30px; }
+    }
+    .form-control-custom {
+        height: 30px;
+        background: rgba(255, 255, 255, 0.1) !important;
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        color: #ffffff !important;
+        border-radius: 6px 0 0 6px;
+    }
+    .btn-search-custom {
+        height: 51px;
+        background-color: #3167eb !important; /* Your requested Blue Search Key */
+        color: white;
+        border: none;
+        padding: 0 20px;
+        border-radius: 0 5px 5px 0;
+    }
+    .search-group {
+        display: flex;
+        flex: 1;
+        max-width: 700px;
+        margin: 0 20px; /* Space between logo and options */
+        margin-left: 0px !important;
+        margin-right: 0px;
+        
+    }
+    
+</style>
+
+
+<div class="login-wrapper" {% if request.LANGUAGE_CODE == 'ar' %}dir="rtl" style="text-align: right;"{% endif %}>
+    <div class="container d-flex flex-column align-items-center">
+        {% if request.GET.command == 'verification' %}
+        <div class="alert alert-info shadow-sm mb-4 text-center" role="alert" style="max-width: 900px; width: 90%; border-radius: 12px; border-left: 5px solid #3167eb;">
+            <i class="fa fa-envelope mr-2"></i>
+            {% trans "Thank you for registering with us. We have sent you a verification email to" %} <strong>{{ request.GET.email }}</strong>
+            <br>
+            {% trans "Already verified?" %} <a href="{% url 'login' %}" class="alert-link ml-1">{% trans "Login here" %}</a>
+        </div>
+        {% else %}
+            <div class="login-card">
+                
+                <div class="image-side">
+                    <img src="{% static 'images/tinylog.png' %}" style="max-width: 100%; height: auto;" alt="Login Visual">
+                </div>
+
+                <div class="form-side">
+                    {% include "includes/alerts.html" %}
+
+                    <div class="mb-4">
+                        <h3 class="fw-bold" style="color: #004a99;">{% trans "Login" %}</h3>
+                        <p class="text-muted">{% trans "Don't have an account?" %} <a href="{% url 'register' %}" class="text-warning">{% trans "Register" %}</a></p>
+                    </div>
+                    
+                    <form action="{% url 'login' %}{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}" method="POST">
+                        {% csrf_token %}
+                        
+                        <div class="form-group mb-3">
+                            <label>{% trans "Email Address" %}</label>
+                            <input type="email" name="email" class="form-control" placeholder="Enter Email" required>
+                        </div>
+                        
+                        <div class="form-group mb-4">
+                            <label>{% trans "Password" %}</label>
+                            <input type="password" name="password" class="form-control" placeholder="Enter Password" required>
+                            <div class="text-right mt-2">
+                                <a href="{% url 'forgotPassword' %}" class="small text-muted">{% trans "Forgot password?" %}</a>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-login">{% trans "Login" %}</button>
+                    </form>
+
+                    <p class="text-center mt-4 small text-muted">
+                        {% trans "Secure login provided by" %} <b>General Products</b>
+                    </p>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

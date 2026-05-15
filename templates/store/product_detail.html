@@ -1,0 +1,280 @@
+{% extends "base.html" %}
+{% load i18n %}{% load l10n %}{% load static %}
+
+{% block content %}
+
+<style>
+    /* Centers the small thumbnails and removes default list padding */
+    .thumb {
+        display: flex;
+        justify-content: center;
+        padding: 0;
+        margin-top: 10px;
+        list-style: none;
+    }
+    .thumb li {
+        margin: 0 5px;
+    }
+    .thumb img {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        cursor: pointer;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+    .thumb img:hover {
+        border-color: #3167eb;
+    }
+</style>
+
+<section class="section-content padding-y bg" {% if request.LANGUAGE_CODE == 'ar' %}dir="rtl" style="text-align: right;"{% endif %}>
+<div class="container">
+
+<div class="card">
+    <div class="row no-gutters">
+        <aside class="col-md-6 border-right-0">
+            <article class="gallery-wrap"> 
+                <div class="img-big-wrap mainImage">
+                    <img src="{{ single_product.images.url }}" id="mainImage">
+                </div> 
+            </article> 
+            <!-- Updated Thumbnail list with centering -->
+            <ul class="thumb">
+                <li>
+                    <img src="{{ single_product.images.url }}" alt="{% trans 'Product Image' %}" onclick="document.getElementById('mainImage').src='{{ single_product.images.url }}'">
+                </li>
+                {% for i in product_gallery %}
+                <li>
+                    <img src="{{ i.image.url }}" alt="{% trans 'Product Image' %}" onclick="document.getElementById('mainImage').src='{{ i.image.url }}'">
+                </li>
+                {% endfor %}
+            </ul>
+        </aside>
+    <main class="col-md-6"> 
+        <form id="add-to-cart-form" action="{% url 'add_cart' single_product.id %}" method="POST" >
+        {% csrf_token %}
+        <article class="content-body p-4"> 
+            <span class="text-uppercase font-weight-bold text-muted small" style="letter-spacing: 1px; color: #888;"> 
+                {% trans "General Products" %} 
+            </span>
+            
+            <h2 class="title mt-1 mb-3" style="font-weight: 700; color: #212529;">{{ single_product.product_name }}</h2>
+             <div class="rating-star">
+                <span>
+                    <i class="fa fa-star{% if single_product.averageReview < 0.5 %}-o{% elif single_product.averageReview >= 0.5 and single_product.averageReview < 1 %}-half-o {% endif %}" aria-hidden="true"></i>
+                    <i class="fa fa-star{% if single_product.averageReview < 1.5 %}-o{% elif single_product.averageReview >= 1.5 and single_product.averageReview < 2 %}-half-o {% endif %}" aria-hidden="true"></i>
+                    <i class="fa fa-star{% if single_product.averageReview < 2.5 %}-o{% elif single_product.averageReview >= 2.5 and single_product.averageReview < 3 %}-half-o {% endif %}" aria-hidden="true"></i>
+                    <i class="fa fa-star{% if single_product.averageReview < 3.5 %}-o{% elif single_product.averageReview >= 3.5 and single_product.averageReview < 4 %}-half-o {% endif %}" aria-hidden="true"></i>
+                    <i class="fa fa-star{% if single_product.averageReview < 4.5 %}-o{% elif single_product.averageReview >= 4.5 and single_product.averageReview < 5 %}-half-o {% endif %}" aria-hidden="true"></i>
+                    <span>{{ single_product.countReview }} {% trans "reviews" %}</span>
+                </span>
+            </div>
+            
+            <div class="mb-4"> 
+                <var class="price h3" style="color: #3167eb; font-weight: 700;">{{ single_product.price|unlocalize }} <span style="font-size: 1rem;">{% trans "QAR" %}</span></var>
+                <span class="text-success ml-2 small"><i class="fa fa-check-circle"></i> {% trans "In Stock" %}</span>
+            </div> 
+
+            <div class="product-description text-secondary" style="line-height: 1.6; font-size: 0.95rem;">
+                {{ single_product.description|linebreaks }}
+            </div>
+            
+            <hr class="my-4">
+
+            {% if single_product.variation_set.all %}
+                {% regroup single_product.variation_set.all by variation_category as variation_list %} 
+
+                {% for category in variation_list %} 
+                <div class="row mb-3">
+                    <div class="item-option-select col-md-12">
+                        <h6 class="label-muted mb-2" style="font-weight: 600; font-size: 0.85rem; text-transform: uppercase;">
+                            {% trans "Select" %} {{ category.grouper }}
+                        </h6>
+                        
+                        <div class="dropdown">
+                            <button class="btn btn-light border dropdown-toggle w-100 text-left d-flex justify-content-between align-items-center" 
+                                    type="button" data-toggle="dropdown" style="background: #fff; padding: 10px 15px;">
+                                <span>{% trans "Choose up to" %} {{ category.list.0.selection_limit }}</span>
+                            </button>
+
+                            <div class="dropdown-menu p-3 shadow-lg w-100" style="border: none; border-radius: 8px;">
+                                {% for item in category.list %}
+                                <div class="custom-control custom-checkbox mb-2 p-2 rounded hover-bg-light">
+                                    <input type="checkbox" 
+                                        name="{{ category.grouper | lower }}" 
+                                        value="{{ item.variation_value | lower }}" 
+                                        class="custom-control-input variation-checkbox" 
+                                        id="check-{{ item.id }}"
+                                        data-limit="{{ category.list.0.selection_limit }}">
+                                    <label class="custom-control-label d-block cursor-pointer" for="check-{{ item.id }}">
+                                        {{ item.variation_value | capfirst }}
+                                    </label>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-2">
+                            <small class="text-muted">{% trans "Selections made:" %}</small>
+                            <small class="badge badge-pill badge-primary"><span id="count-{{ category.grouper | lower }}">0</span> / {{ category.list.0.selection_limit }}</small>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% endif %}
+
+            <div class="mt-4">
+                {% if single_product.stock <= 0 %}
+                    <button class="btn btn-light btn-lg btn-block disabled" style="border: 2px dashed #ccc;">
+                        <i class="fa fa-bell"></i> {% trans "Notify Me When Available" %}
+                    </button>
+                {% else %}
+                    <button type="submit" class="btn btn-primary btn-lg btn-block shadow" style="border-radius: 8px; font-weight: 600; padding: 12px;">
+                        <i class="fas fa-shopping-cart mr-2"></i> {% trans "ADD TO CART" %}
+                    </button>
+                {% endif %}
+            </div>
+
+            <div class="mt-4 pt-3 border-top">
+                <p class="small text-muted mb-0">
+                    <i class="fa fa-truck mr-2"></i> {% trans "Fast Delivery in Qatar" %} 
+                    <span class="mx-2">|</span> 
+                    <i class="fa fa-undo mr-2"></i> {% trans "7 Days Easy Return" %}
+                </p>
+            </div>
+
+        </article> 
+        </form>
+    </main> 
+    </div> 
+</div> 
+<br>
+
+<div class="row">
+    <div class="col-md-9">
+        <br>
+        <form action="{% url 'submit_review' single_product.id %}" method="POST">
+            {% csrf_token %}
+            <h5>{% trans "Write Your Review" %}</h5>
+            <div>
+                <label>{% trans "How do you rate this product?" %}</label>
+                <br>
+                <div class="rate">
+                    <input type="radio" name="rating" id="rating10" value="5" required /><label for="rating10" title="5"></label>
+                    <input type="radio" name="rating" id="rating9" value="4.5" required /><label for="rating9" title="4.5" class="half"></label>
+                    <input type="radio" name="rating" id="rating8" value="4" required /><label for="rating8" title="4"></label>
+                    <input type="radio" name="rating" id="rating7" value="3.5" required /><label for="rating7" title="3.5" class="half"></label>
+                    <input type="radio" name="rating" id="rating6" value="3" required /><label for="rating6" title="3"></label>
+                    <input type="radio" name="rating" id="rating5" value="2.5" required /><label for="rating5" title="2.5" class="half"></label>
+                    <input type="radio" name="rating" id="rating4" value="2" required /><label for="rating4" title="2"></label>
+                    <input type="radio" name="rating" id="rating3" value="1.5" required /><label for="rating3" title="1.5" class="half"></label>
+                    <input type="radio" name="rating" id="rating2" value="1" required /><label for="rating2" title="1"></label>
+                    <input type="radio" name="rating" id="rating1" value="0.5" required /><label for="rating1" title="0.5" class="half"></label>
+                </div>
+                <br>
+                {% trans "Review Title:" %}
+                <input type="text" class="form-control" name="subject" required>
+                <br>
+                {% trans "Review:" %}
+                <textarea name="review" rows="4" class="form-control" required></textarea>
+                <br>
+                {% if user.is_authenticated %}
+                    {% if orderproduct %}
+                        <input type="submit" value="{% trans 'Submit Review' %}" class="btn btn-primary">
+                    {% else %}
+                        <p>{% trans "You must purchase this to post a review." %}</p>
+                    {% endif %}
+                {% else %}
+                <p>{% trans "You must be logged in to post a review." %} <span><a href="{% url 'login' %}">{% trans "Login now" %}</a></span></p>
+                {% endif %}
+            </div>
+            {% include 'includes/alerts.html' %}
+        </form>
+        <br>
+
+        <header class="section-heading">
+            <h3>{% trans "Customer Reviews" %} </h3>
+            <div class="rating-star">
+                <span>
+                    <i class="fa fa-star{% if single_product.averageReview < 0.5 %}-o{% elif single_product.averageReview >= 0.5 and single_product.averageReview < 1 %}-half-o {% endif %}" aria-hidden="true"></i>
+                    <i class="fa fa-star{% if single_product.averageReview < 1.5 %}-o{% elif single_product.averageReview >= 1.5 and single_product.averageReview < 2 %}-half-o {% endif %}" aria-hidden="true"></i>
+                    <i class="fa fa-star{% if single_product.averageReview < 2.5 %}-o{% elif single_product.averageReview >= 2.5 and single_product.averageReview < 3 %}-half-o {% endif %}" aria-hidden="true"></i>
+                    <i class="fa fa-star{% if single_product.averageReview < 3.5 %}-o{% elif single_product.averageReview >= 3.5 and single_product.averageReview < 4 %}-half-o {% endif %}" aria-hidden="true"></i>
+                    <i class="fa fa-star{% if single_product.averageReview < 4.5 %}-o{% elif single_product.averageReview >= 4.5 and single_product.averageReview < 5 %}-half-o {% endif %}" aria-hidden="true"></i>
+                    <span>{{ single_product.countReview }} {% trans "reviews" %}</span>
+                </span>
+            </div>
+        </header>
+
+        {% for review in reviews %}
+        <article class="box mb-3">
+            <div class="icontext w-100">
+                <div class="text">
+                    <span class="date text-muted float-md-right">{{ review.updated_at }}</span>  
+                    <h6 class="mb-1">{{ review.user.full_name }}</h6>
+                    <div class="rating-star">
+                        <span>
+                            <i class="fa fa-star{% if review.rating == 0.5 %}-half-o{% elif review.rating < 1 %}-o {% endif %}" aria-hidden="true"></i>
+                            <i class="fa fa-star{% if review.rating == 1.5 %}-half-o{% elif review.rating < 2 %}-o {% endif %}" aria-hidden="true"></i>
+                            <i class="fa fa-star{% if review.rating == 2.5 %}-half-o{% elif review.rating < 3 %}-o {% endif %}" aria-hidden="true"></i>
+                            <i class="fa fa-star{% if review.rating == 3.5 %}-half-o{% elif review.rating < 4 %}-o {% endif %}" aria-hidden="true"></i>
+                            <i class="fa fa-star{% if review.rating == 4.5 %}-half-o{% elif review.rating < 5 %}-o {% endif %}" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-3">
+                <h6>{{ review.subject }}</h6>
+                <p>{{ review.review }}</p>    
+            </div>
+        </article>
+        {% endfor %}
+
+    </div> </div> </div> </section>
+
+<script>
+document.getElementById('add-to-cart-form').addEventListener('submit', function(e) {
+    const checkboxes = document.querySelectorAll('.variation-checkbox');
+    const categories = [...new Set([...checkboxes].map(c => c.name))];
+    
+    let allValid = true;
+    let errorMessages = [];
+
+    categories.forEach(name => {
+        const checkedOptions = document.querySelectorAll(`input[name="${name}"]:checked`);
+        const firstInCat = document.querySelector(`input[name="${name}"]`);
+        const limit = parseInt(firstInCat.getAttribute('data-limit'));
+
+        if (checkedOptions.length === 0) {
+            allValid = false;
+            errorMessages.push("{% trans 'Please select' %} " + limit + " {% trans 'option for' %} " + name.toUpperCase() + ".");
+        } else if (checkedOptions.length !== limit) {
+            allValid = false;
+            errorMessages.push("{% trans 'You must select exactly' %} " + limit + " {% trans 'options for' %} " + name.toUpperCase() + ".");
+        }
+    });
+
+    if (!allValid) {
+        e.preventDefault(); 
+        alert(errorMessages.join('\n'));
+    }
+});
+
+document.querySelectorAll('.variation-checkbox').forEach(checkbox => {
+    checkbox.addEventListener('change', function() {
+        const name = this.getAttribute('name');
+        const limit = parseInt(this.getAttribute('data-limit'));
+        const checkedCount = document.querySelectorAll(`input[name="${name}"]:checked`).length;
+
+        if (checkedCount > limit) {
+            alert("{% trans 'Limit reached! You can only select' %} " + limit + " {% trans 'items.' %}");
+            this.checked = false;
+        }
+        
+        const counter = document.getElementById(`count-${name}`);
+        if(counter) counter.innerText = document.querySelectorAll(`input[name="${name}"]:checked`).length;
+    });
+});
+</script>
+{% endblock %}

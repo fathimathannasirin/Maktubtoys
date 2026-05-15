@@ -1,0 +1,105 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Invoice - {{ order.order_number }}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <style>
+        body { background-color: #fff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; }
+        .invoice-box { max-width: 850px; margin: auto; padding: 30px; border: 1px solid #eee; }
+        
+        .header-table { width: 100%; margin-bottom: 20px; }
+        .logo img { max-height: 70px; }
+        .invoice-title { font-size: 28px; color: #666; text-transform: uppercase; font-weight: 300; }
+        
+        .info-header { font-size: 10px; font-weight: bold; text-transform: uppercase; color: #888; border-bottom: 1px solid #eee; margin-bottom: 10px; }
+        .detail-text { font-size: 14px; line-height: 1.6; }
+        
+        .table thead th { background-color: #fcfcfc; border-bottom: 1px solid #eee; font-size: 13px; color: #555; }
+        .total-section { font-size: 15px; }
+        .grand-total { font-size: 18px; font-weight: bold; border-top: 2px solid #333; padding-top: 10px; }
+
+        @media print {
+            .no-print { display: none !important; }
+            .invoice-box { border: none; padding: 0; }
+            body { padding: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="no-print text-center mb-4">
+    <button onclick="window.print()" class="btn btn-dark px-5">Print Invoice</button>
+</div>
+
+<div class="invoice-box">
+    <table class="header-table">
+        <tr>
+            <td>
+                <div class="logo"><img src="{% static 'images/logo.png' %}" alt="Logo"></div>
+                <div class="detail-text text-muted mt-2" style="font-size: 12px;">Doha, Qatar<br>www.Thezalmaha.qa</div>
+            </td>
+            <td class="text-right">
+                <div class="invoice-title">Invoice</div>
+                <div class="detail-text">
+                    <strong>Order #:</strong> {{ order.order_number }}<br>
+                    <strong>Date:</strong> {{ order.created_at|date:"d M Y" }}
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <div class="row mt-5">
+        <div class="col-6">
+            <div class="info-header">Ship To:</div>
+            <div class="detail-text">
+                <strong>{{ order.full_name }}</strong><br>
+                {{ order.address_line_1 }}<br>
+                Bldg: {{ order.building_number }}, St: {{ order.street_number }}, Zone: {{ order.zone_number }}<br>
+                Phone: {{ order.phone }}
+            </div>
+        </div>
+        <div class="col-6 text-right">
+            <div class="info-header">Order Info:</div>
+            <div class="detail-text">
+                <strong>Status:</strong> {{ order.status }}<br>
+                <strong>Payment:</strong> {{ order.payment.payment_method|default:"COD" }}
+            </div>
+        </div>
+    </div>
+
+    <table class="table mt-5">
+        <thead>
+            <tr>
+                <th>Product Details</th>
+                <th class="text-center">Unit Price</th>
+                <th class="text-center">Quantity</th>
+                <th class="text-right">Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in order_detail %}
+            <tr>
+                <td class="detail-text">{{ item.product.product_name }}</td>
+                <td class="text-center detail-text">{{ item.product_price }} QAR</td>
+                <td class="text-center detail-text">{{ item.quantity }}</td>
+                <td class="text-right detail-text"><strong>{{ item.product_price }} QAR</strong></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="row justify-content-end mt-4">
+        <div class="col-4 text-right total-section">
+            <p>Subtotal: <span class="ml-4">{{ order.order_total }} QAR</span></p>
+            <p>Tax: <span class="ml-4">{{ order.tax }} QAR</span></p>
+            <div class="grand-total">
+                Grand Total: <span class="ml-3">{{ order.order_total }} QAR</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

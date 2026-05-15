@@ -1,0 +1,190 @@
+{% extends "base.html" %}
+{% load i18n %}{% load l10n %}{% load static %}
+
+{% block content %}
+    <style>
+        /* Mobile & Tablet Optimizations */
+        @media (max-width: 768px) {
+            .table-shopping-cart thead { 
+                display: none; 
+            }
+
+            .table-shopping-cart tr {
+                display: block;
+                background: #ffffff;
+                border: 1px solid #e4e4e4;
+                border-radius: 12px;
+                margin-bottom: 20px;
+                padding: 15px;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            }
+
+            .table-shopping-cart td {
+                display: block;
+                width: 100% !important;
+                border: none !important;
+                padding: 8px 0 !important;
+                text-align: left !important;
+            }
+
+            /* The "Product" cell - Fixing the missing image issue */
+            .itemside {
+                display: flex !important;
+                flex-direction: row !important; /* Force side-by-side */
+                align-items: center !important;
+                width: 100%;
+            }
+
+            .itemside .aside {
+                flex: 0 0 80px !important; /* Lock width to prevent disappearance */
+                margin-right: 15px;
+                display: block !important;
+            }
+
+            .itemside .img-sm {
+                width: 80px !important;
+                height: 80px !important;
+                border-radius: 8px;
+                object-fit: cover;
+                display: block !important;
+            }
+
+            .itemside .info {
+                flex: 1;
+            }
+
+            /* Labels for Quantity and Price */
+            .table-shopping-cart td::before {
+                content: attr(data-label);
+                font-weight: bold;
+                text-transform: uppercase;
+                font-size: 11px;
+                color: #adb5bd;
+                display: block;
+                margin-bottom: 4px;
+            }
+
+            /* Hide the "Product" label because the image/title speak for themselves */
+            td[data-label="{% trans 'Product' %}"]::before {
+                display: none;
+            }
+
+            .price-wrap .price {
+                font-size: 1.2rem;
+                font-weight: bold;
+                color: #212529;
+            }
+
+            .input-spinner {
+                max-width: 140px;
+                margin-top: 5px;
+            }
+
+            /* Arabic RTL adjustments */
+            {% if request.LANGUAGE_CODE == 'ar' %}
+            .table-shopping-cart td { text-align: right !important; }
+            .itemside { flex-direction: row-reverse !important; }
+            .itemside .aside { margin-left: 15px; margin-right: 0; }
+            {% endif %}
+        }
+    </style>
+
+    <section class="section-content padding-y bg" {% if request.LANGUAGE_CODE == 'ar' %}dir="rtl" style="text-align: right;"{% endif %}>
+    <div class="container">
+
+    {% if not cart_items %}
+        <h2 class="text-center">{% trans "Your Shopping Cart is Empty" %}</h2>
+        <br>
+        <div class="text-center">
+            <a href="{% url 'store' %}" class="btn btn-primary">{% trans "Continue Shopping" %}</a>
+        </div>
+    {% else %}
+    <div class="row">
+        <aside class="col-md-8 col-lg-9">
+            <div class="card border-0 bg-transparent">
+                <table class="table table-borderless table-shopping-cart">
+                    <thead class="text-muted">
+                        <tr class="small text-uppercase">
+                            <th scope="col">{% trans "Product" %}</th>
+                            <th scope="col" width="120">{% trans "Quantity" %}</th>
+                            <th scope="col" width="120">{% trans "Price" %}</th>
+                            <th scope="col" class="text-right" width="200"> </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for cart_item in cart_items %}
+                    <tr>
+                        <td data-label="{% trans 'Product' %}">
+                            <figure class="itemside">
+                                <div class="aside">
+                                    <img src="{{ cart_item.product.images.url }}" class="img-sm">
+                                </div>
+                                <figcaption class="info">
+                                    <a href="{{ cart_item.product.get_url }}" class="title text-dark font-weight-bold">{{ cart_item.product.product_name }}</a>
+                                    <p class="text-muted small">
+                                        {% if cart_item.variations.all %}
+                                            {% for item in cart_item.variations.all %}
+                                                {{ item.variation_category | capfirst }} : {{ item.variation_value | capfirst }} <br>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </p>
+                                </figcaption>
+                            </figure>
+                        </td>
+                        <td data-label="{% trans 'Quantity' %}"> 
+                            <div class="input-group input-spinner">
+                                <div class="input-group-prepend">
+                                    <a href="{% url 'remove_cart' cart_item.product.id cart_item.id %}" class="btn btn-light" type="button"> <i class="fa fa-minus"></i> </a>
+                                </div>
+                                <input type="text" class="form-control" value="{{ cart_item.quantity }}" readonly>
+                                <div class="input-group-append">
+                                    <form action="{% url 'add_cart' cart_item.product.id %}" method="POST">
+                                        {% csrf_token %}
+                                        {% for item in cart_item.variations.all %}
+                                            <input type="hidden" name="{{ item.variation_category | lower }}" value="{{ item.variation_value }}">
+                                        {% endfor %}
+                                        <button class="btn btn-light" type="submit"> <i class="fa fa-plus"></i> </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </td>
+                        <td data-label="{% trans 'Price' %}"> 
+                            <div class="price-wrap"> 
+                                <var class="price">{{ cart_item.sub_total|unlocalize }} {% trans "QAR" %}</var> <br>
+                                <small class="text-muted"> {{ cart_item.product.price|unlocalize }} {% trans "QAR" %} / {% trans "each" %} </small> 
+                            </div>
+                        </td>
+                        <td class="text-right"> 
+                            <a href="{% url 'remove_cart_item' cart_item.product.id cart_item.id %}" onclick="return confirm('{% trans "Are you sure you want to remove this item?" %}')" class="btn btn-danger btn-sm"> <i class="fa fa-trash"></i> {% trans "Remove" %}</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </aside>
+        <aside class="col-md-4 col-lg-3 mt-3 mt-md-0">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <dl class="dlist-align">
+                        <dt class="text-muted"> {% trans "Sub Total" %} :</dt>
+                        <dd class="text-right">{{ total|unlocalize }} {% trans "QAR" %}</dd>
+                    </dl>
+                    <dl class="dlist-align">
+                        <dt class="font-weight-bold text-dark">{% trans "Total" %}:</dt>
+                        <dd class="text-right text-dark h5"><strong>{{ total|unlocalize }} {% trans "QAR" %} </strong></dd>
+                    </dl>
+                    <hr>
+                    <p class="text-center mb-3">
+                        <img src="{% static './images/misc/payments.png' %}" height="26">
+                    </p>
+                    <a href="{% url 'checkout' %}" class="btn btn-primary btn-block"> {% trans "Checkout" %} </a>
+                    <a href="{% url 'store' %}" class="btn btn-outline-primary btn-block">{% trans "Continue Shopping" %}</a>
+                </div>
+            </div>
+        </aside>
+    </div>
+    {% endif %}
+    </div>
+    </section>
+{% endblock %}

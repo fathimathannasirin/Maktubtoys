@@ -1,0 +1,780 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-17 11:18+0530\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: ar\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
+"&& n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+#: .\templates\accounts\Change_Password.html:21
+msgid "Change Your Password"
+msgstr "غيّر كلمة المرور الخاصة بك"
+
+#: .\templates\accounts\Change_Password.html:30
+#: .\templates\accounts\Change_Password.html:31
+msgid "Current Password"
+msgstr "كلمة المرور الحالية"
+
+#: .\templates\accounts\Change_Password.html:35
+#: .\templates\accounts\Change_Password.html:36
+msgid "Create New Password"
+msgstr "إنشاء كلمة مرور جديدة"
+
+#: .\templates\accounts\Change_Password.html:40
+#: .\templates\accounts\resetPassword.html:96
+msgid "Confirm Password"
+msgstr "تأكيد كلمة المرور"
+
+#: .\templates\accounts\Change_Password.html:41
+#: .\templates\accounts\resetPassword.html:95
+msgid "Confirm New Password"
+msgstr "تأكيد كلمة المرور الجديدة"
+
+#: .\templates\accounts\Change_Password.html:45
+#: .\templates\accounts\forgotPassword.html:101
+msgid "Submit"
+msgstr "إرسال"
+
+#: .\templates\accounts\account_verification_email.html:4
+#: .\templates\accounts\reset_password_email.html:4
+#: .\templates\orders\order_received_email.html:3
+msgid "Hi"
+msgstr "مرحبا"
+
+#: .\templates\accounts\account_verification_email.html:6
+msgid "Please click on the link below to confirm your registration."
+msgstr "يرجى النقر على الرابط أدناه لتأكيد تسجيلك"
+
+#: .\templates\accounts\account_verification_email.html:9
+msgid "If you think it's not you, please ignore this email."
+msgstr "إذا كنت تعتقد أن الأمر لا يخصك، يرجى تجاهل هذا البريد الإلكتروني"
+
+#: .\templates\accounts\dashboard.html:20
+msgid "Logged in as:"
+msgstr ":تم تسجيل الدخول باسم"
+
+
+#: .\templates\accounts\dashboard.html:28
+msgid "Total Orders"
+msgstr "إجمالي الطلبات"
+
+#: .\templates\accounts\dashboard.html:30
+msgid "View Orders"
+msgstr "عرض الطلبات"
+
+#: .\templates\accounts\edit_profile.html:19
+msgid "Edit Your Profile"
+msgstr "تعديل ملفك الشخصي"
+
+#: .\templates\accounts\edit_profile.html:30
+msgid "Profile Image"
+msgstr "صورة الملف الشخصي"
+
+#: .\templates\accounts\edit_profile.html:54 .\templates\store\checkout.html:18
+msgid "First Name"
+msgstr "الاسم الأول"
+
+#: .\templates\accounts\edit_profile.html:58 .\templates\store\checkout.html:22
+msgid "Last Name"
+msgstr "الاسم الأخير"
+
+#: .\templates\accounts\edit_profile.html:65 .\templates\store\checkout.html:32
+msgid "Phone Number"
+msgstr "رقم الهاتف"
+
+#: .\templates\accounts\edit_profile.html:69
+msgid "Profile Picture"
+msgstr "صورة الملف الشخصي"
+
+#: .\templates\accounts\edit_profile.html:74 .\templates\store\checkout.html:38
+msgid "Address Line 1"
+msgstr "العنوان 1"
+
+#: .\templates\accounts\edit_profile.html:79 .\templates\store\checkout.html:42
+msgid "Address Line 2"
+msgstr "السطر الثاني من العنوان"
+
+#: .\templates\accounts\edit_profile.html:85 .\templates\store\checkout.html:48
+msgid "Street No."
+msgstr "رقم الشارع"
+
+#: .\templates\accounts\edit_profile.html:89 .\templates\store\checkout.html:52
+msgid "Building No."
+msgstr "رقم المبنى"
+
+#: .\templates\accounts\edit_profile.html:93 .\templates\store\checkout.html:56
+msgid "Zone No."
+msgstr "رقم المنطقة"
+
+#: .\templates\accounts\edit_profile.html:97
+msgid "Save Changes"
+msgstr "حفظ التغييرات"
+
+#: .\templates\accounts\forgotPassword.html:83
+msgid "Forgot Password"
+msgstr "نسيت كلمة المرور"
+
+#: .\templates\accounts\forgotPassword.html:84
+#: .\templates\accounts\login.html:118
+#: .\templates\accounts\resetPassword.html:84
+msgid "Don't have an account?"
+msgstr "لا تملك حسابًا؟"
+
+#: .\templates\accounts\forgotPassword.html:84
+#: .\templates\accounts\login.html:118 .\templates\includes\navbar.html:212
+msgid "Register"
+msgstr "تسجيل جديد"
+
+#: .\templates\accounts\forgotPassword.html:91
+#: .\templates\accounts\login.html:125
+msgid "Email Address"
+msgstr "عنوان البريد الإلكتروني"
+
+#: .\templates\accounts\forgotPassword.html:97
+#: .\templates\accounts\resetPassword.html:102
+msgid "Got password?"
+msgstr "هل لديك كلمة المرور؟"
+
+#: .\templates\accounts\forgotPassword.html:97
+#: .\templates\accounts\login.html:117 .\templates\accounts\login.html:137
+#: .\templates\accounts\resetPassword.html:102
+msgid "Login"
+msgstr "تسجيل الدخول"
+
+#: .\templates\accounts\login.html:102
+msgid ""
+"Thank you for registering with us. We have sent you a verification email to"
+msgstr "شكرًا لتسجيلك معنا. لقد أرسلنا لك بريدًا إلكترونيًا للتحقق على"
+
+#: .\templates\accounts\login.html:104
+msgid "Already verified?"
+msgstr ""
+
+#: .\templates\accounts\login.html:104
+msgid "Login here"
+msgstr "تم التحقق بالفعل؟"
+
+#: .\templates\accounts\login.html:130
+msgid "Password"
+msgstr "كلمة المرور"
+
+
+#: .\templates\accounts\login.html:133
+msgid "Forgot password?"
+msgstr "نسيت كلمة المرور"
+
+
+#: .\templates\accounts\login.html:141
+msgid "Secure login provided by"
+msgstr "تسجيل دخول آمن مقدم من"
+
+#: .\templates\accounts\my_orders.html:20
+msgid "Your order history"
+msgstr "تاريخ طلباتك"
+
+#: .\templates\accounts\my_orders.html:28
+#: .\templates\accounts\order_detail.html:16
+msgid "Order #"
+msgstr "الطلب رقم"
+
+#: .\templates\accounts\my_orders.html:29
+msgid "Billing Name"
+msgstr "اسم الفاتورة"
+
+#: .\templates\accounts\my_orders.html:30
+#: .\templates\orders\track_order.html:37
+msgid "Phone"
+msgstr "هاتف"
+
+#: .\templates\accounts\my_orders.html:31
+msgid "Order Total"
+msgstr "إجمالي الطلب"
+
+#: .\templates\accounts\my_orders.html:32
+#: .\templates\accounts\order_detail.html:17
+msgid "Date"
+msgstr "تاريخ"
+
+#: .\templates\accounts\order_detail.html:15
+msgid "Invoice"
+msgstr "فاتورة"
+
+#: .\templates\accounts\order_detail.html:23
+msgid "Ship To:"
+msgstr ":اشحن إلى"
+
+#: .\templates\accounts\order_detail.html:26
+msgid "Bldg:"
+msgstr ":مبنى"
+
+#: .\templates\accounts\order_detail.html:26
+msgid "St:"
+msgstr ":رقم الشارع"
+
+#: .\templates\accounts\order_detail.html:26
+msgid "Zone:"
+msgstr ":المنطقة"
+
+#: .\templates\accounts\order_detail.html:27
+msgid "Phone:"
+msgstr ":الهاتف"
+
+#: .\templates\accounts\order_detail.html:30
+msgid "Order Info:"
+msgstr ":معلومات الطلب"
+
+#: .\templates\accounts\order_detail.html:31
+msgid "Status:"
+msgstr ":الحالة"
+
+#: .\templates\accounts\order_detail.html:32
+msgid "Payment:"
+msgstr ":الدفع"
+
+#: .\templates\accounts\order_detail.html:39
+msgid "Product Details"
+msgstr "تفاصيل المنتج"
+
+#: .\templates\accounts\order_detail.html:40
+msgid "Unit Price"
+msgstr "سعر الوحدة"
+
+#: .\templates\accounts\order_detail.html:41 .\templates\store\cart.html:22
+#: .\templates\store\checkout.html:77
+msgid "Quantity"
+msgstr "الكمية"
+
+#: .\templates\accounts\order_detail.html:42 .\templates\store\cart.html:87
+msgid "Total"
+msgstr "الإجمالي"
+
+#: .\templates\accounts\order_detail.html:66
+msgid "No items found."
+msgstr ".لم يتم العثور على عناصر"
+
+#: .\templates\accounts\order_detail.html:75
+msgid "Subtotal:"
+msgstr ":المجموع الفرعي"
+
+#: .\templates\accounts\order_detail.html:79
+msgid "Tax:"
+msgstr ":الضريبة"
+
+#: .\templates\accounts\order_detail.html:83
+msgid "Grand Total:"
+msgstr ":المجموع الكلي"
+
+#: .\templates\accounts\order_detail.html:90
+msgid "Print Invoice"
+msgstr "طباعة الفاتورة"
+
+#: .\templates\accounts\order_detail.html:91
+msgid "Back"
+msgstr "عودة"
+
+#: .\templates\accounts\register.html:93
+msgid "Already have an account?"
+msgstr "هل لديك حساب بالفعل؟"
+
+#: .\templates\accounts\register.html:93 .\templates\includes\navbar.html:210
+msgid "Sign in"
+msgstr "تسجيل الدخول"
+
+#: .\templates\accounts\register.html:125
+msgid "Create account"
+msgstr "إنشاء حساب"
+
+#: .\templates\accounts\register.html:133
+msgid "By signing up, I agree to"
+msgstr "من خلال الاشتراك، أوافق على"
+
+#: .\templates\accounts\register.html:133
+msgid "Terms of Use"
+msgstr "شروط الاستخدام"
+
+#: .\templates\accounts\register.html:133
+msgid "and"
+msgstr "و"
+
+#: .\templates\accounts\register.html:133
+msgid "Privacy Policy"
+msgstr "سياسة الخصوصية"
+
+#: .\templates\accounts\resetPassword.html:83
+#: .\templates\accounts\resetPassword.html:106
+msgid "Reset Password"
+msgstr "سياسة الخصوصية"
+
+#: .\templates\accounts\resetPassword.html:91
+msgid "New Password"
+msgstr "كلمة مرور جديدة"
+
+#: .\templates\accounts\resetPassword.html:92
+msgid "Enter Password"
+msgstr "أدخل كلمة المرور"
+
+#: .\templates\accounts\reset_password_email.html:6
+msgid "As requested, please click on the link below to reset your password."
+msgstr ".كما هو مطلوب، يرجى النقر على الرابط أدناه لإعادة تعيين كلمة المرور الخاصة بك"
+
+#: .\templates\accounts\reset_password_email.html:9
+msgid "if you think it's not you, please ignore thil email."
+msgstr ""
+
+#: .\templates\base.html:11
+msgid "General Products | One of the Best Online Shopping Platform"
+msgstr ".إذا كنت تعتقد أنه ليس لك، يرجى تجاهل هذا البريد الإلكتروني"
+
+#: .\templates\includes\alerts.html:8
+msgid "Important"
+msgstr "مهم"
+
+#: .\templates\includes\dashboard_sidebar.html:5
+#: .\templates\includes\navbar.html:219
+msgid "Dashboard"
+msgstr ""
+
+#: .\templates\includes\dashboard_sidebar.html:6
+msgid "My Orders"
+msgstr "طلباتي"
+
+#: .\templates\includes\dashboard_sidebar.html:7
+msgid "Edit Profile"
+msgstr "تعديل الملف الشخصي"
+
+#: .\templates\includes\dashboard_sidebar.html:8
+msgid "Change Password"
+msgstr "تغيير كلمة المرور"
+
+#: .\templates\includes\dashboard_sidebar.html:11
+msgid "Log out"
+msgstr "تسجيل الخروج"
+
+#: .\templates\includes\footer.html:7
+msgid "2026 General Products"
+msgstr "2026 منتجات عامة "
+
+#: .\templates\includes\footer.html:10
+msgid "info@pixsellz.io"
+msgstr ""
+
+#: .\templates\includes\footer.html:12
+msgid "Doha, Qatar"
+msgstr "الدوحة، قطر"
+
+#: .\templates\includes\hero_and_cats.html:6
+#: .\templates\store\product_detail.html:37
+msgid "General Products"
+msgstr "المنتجات العامة"
+
+#: .\templates\includes\hero_and_cats.html:6
+msgid "daily essential Products"
+msgstr "المنتجات الأساسية اليومية"
+
+#: .\templates\includes\hero_and_cats.html:7
+msgid "best Quality products delivered directly to your home."
+msgstr ".أفضل المنتجات ذات الجودة تصل مباشرةً إلى منزلك"
+
+#: .\templates\includes\hero_and_cats.html:8 .\templates\index.html:171
+msgid "Shop Now"
+msgstr "تسوق الآن"
+
+#: .\templates\includes\hero_and_cats.html:19
+msgid "Our Top Categories"
+msgstr "أهم الفئات لدينا"
+
+#: .\templates\includes\navbar.html:130
+msgid "Language"
+msgstr "اللغة"
+
+#: .\templates\includes\navbar.html:148
+msgid "Contact us"
+msgstr "اتصل بنا"
+
+#: .\templates\includes\navbar.html:149
+msgid "Customer Support"
+msgstr "دعم العملاء"
+
+#: .\templates\includes\navbar.html:169
+msgid "All category"
+msgstr "جميع الفئات"
+
+#: .\templates\includes\navbar.html:189 .\templates\store\store.html:30
+msgid "Our Products"
+msgstr "منتجاتنا"
+
+#: .\templates\includes\navbar.html:193
+msgid "Search products..."
+msgstr "البحث عن المنتجات..."
+
+#: .\templates\includes\navbar.html:208
+msgid "Welcome!"
+msgstr "مرحباً بك!"
+
+#: .\templates\includes\navbar.html:217
+msgid "Welcome"
+msgstr "مرحباً"
+
+#: .\templates\includes\navbar.html:221
+msgid "Logout"
+msgstr "تسجيل الخروج"
+
+#: .\templates\index.html:108
+msgid "SHOP NOW"
+msgstr "تسوق الآن"
+
+#: .\templates\index.html:116
+msgid "Our Top Category"
+msgstr "فئتنا الأولى"
+
+#: .\templates\index.html:135
+msgid "Top Trending Products"
+msgstr "أكثر المنتجات رواجًا"
+
+#: .\templates\index.html:136 .\templates\index.html:186
+msgid "View All"
+msgstr "عرض الكل"
+
+#: .\templates\index.html:145 .\templates\index.html:196
+#: .\templates\store\cart.html:66 .\templates\store\cart.html:67
+#: .\templates\store\cart.html:84 .\templates\store\cart.html:88
+#: .\templates\store\checkout.html:106 .\templates\store\product_detail.html:53
+#: .\templates\store\store.html:75
+msgid "QAR"
+msgstr "ريال"
+
+#: .\templates\index.html:155 .\templates\index.html:197
+#: .\templates\store\product_detail.html:112
+msgid "ADD TO CART"
+msgstr "أضف إلى السلة"
+
+#: .\templates\index.html:169
+msgid "Top Offer"
+msgstr "أفضل عرض"
+
+#: .\templates\index.html:185
+msgid "Selection of"
+msgstr "اختيار"
+
+#: .\templates\orders\order_complete.html:10
+msgid "Thank you for your order!"
+msgstr "شكراً لطلبك!"
+
+#: .\templates\orders\order_complete.html:11
+msgid "Your order has been placed successfully."
+msgstr "تم تقديم طلبك بنجاح."
+
+#: .\templates\orders\order_complete.html:14
+#: .\templates\orders\order_received_email.html:12
+msgid "Order Number"
+msgstr "رقم الطلب"
+
+#: .\templates\orders\order_complete.html:15
+#: .\templates\orders\order_received_email.html:14
+#: .\templates\orders\track_order.html:14 .\templates\store\checkout.html:118
+msgid "Payment Method"
+msgstr "طريقة الدفع"
+
+#: .\templates\orders\order_complete.html:15
+#: .\templates\orders\track_order.html:14
+msgid "Cash on Delivery"
+msgstr "الدفع عند الاستلام"
+
+#: .\templates\orders\order_complete.html:18
+#, python-format
+msgid ""
+"Please keep <strong>%(order.order_total)s QAR</strong> ready for the "
+"delivery agent."
+msgstr "يرجى تجهيز <strong>%(order.order_total)s ريال قطري</strong> لمندوب التوصيل."
+
+#: .\templates\orders\order_complete.html:22 .\templates\store\cart.html:12
+#: .\templates\store\cart.html:95 .\templates\store\checkout.html:127
+msgid "Continue Shopping"
+msgstr "مواصلة التسوق"
+
+#: .\templates\orders\order_received_email.html:5
+msgid "Thank you for your order! Your order #"
+msgstr "#شكراً لطلبك! رقم طلبك"
+
+#: .\templates\orders\order_received_email.html:7
+msgid "LIVE TRACKING"
+msgstr "التتبع المباشر"
+
+#: .\templates\orders\order_received_email.html:8
+msgid ""
+"You can follow the status of your delivery at any time by clicking the link "
+"below:"
+msgstr ":يمكنك متابعة حالة توصيلك في أي وقت من خلال النقر على الرابط أدناه"
+
+
+#: .\templates\orders\order_received_email.html:11
+msgid "ORDER SUMMARY"
+msgstr "ملخص الطلب"
+
+#: .\templates\orders\order_received_email.html:13
+#: .\templates\orders\track_order.html:43
+msgid "Total Amount"
+msgstr "المبلغ الإجمالي"
+
+#: .\templates\orders\order_received_email.html:14
+#: .\templates\store\checkout.html:121
+msgid "Cash on Delivery (COD)"
+msgstr "الدفع عند الاستلام"
+
+#: .\templates\orders\order_received_email.html:16
+msgid "We will contact you shortly to confirm the delivery time."
+msgstr "سنتواصل معك قريبًا لتأكيد موعد التسليم."
+
+#: .\templates\orders\order_received_email.html:18
+msgid "Thank you for shopping with us!"
+msgstr "!شكراً لتسوقك معنا"
+
+#: .\templates\orders\track_order.html:10
+msgid "Order Tracking ID"
+msgstr "رقم تتبع الطلب"
+
+#: .\templates\orders\track_order.html:13
+msgid "Estimated Status"
+msgstr "الحالة المقدرةب"
+
+#: .\templates\orders\track_order.html:18
+msgid "Received"
+msgstr "تم الاستلام"
+
+#: .\templates\orders\track_order.html:20
+msgid "Accepted"
+msgstr "مقبول"
+
+#: .\templates\orders\track_order.html:22
+msgid "Packed"
+msgstr "معبأ"
+
+#: .\templates\orders\track_order.html:24
+msgid "On the Way"
+msgstr "في الطريق"
+
+#: .\templates\orders\track_order.html:26
+msgid "Delivered"
+msgstr "تم التسليم"
+
+#: .\templates\orders\track_order.html:32
+msgid "Delivery Address"
+msgstr "عنوان التوصيل"
+
+#: .\templates\orders\track_order.html:36
+msgid "Bldg"
+msgstr ":مبنى"
+
+#: .\templates\orders\track_order.html:36
+msgid "Zone"
+msgstr ":المنطقة"
+
+#: .\templates\orders\track_order.html:41
+msgid "Order Summary"
+msgstr "ملخص الطلب"
+
+#: .\templates\orders\track_order.html:42
+msgid "Total Items"
+msgstr "إجمالي العناصر"
+
+#: .\templates\orders\track_order.html:48
+msgid "Return to Store"
+msgstr "العودة إلى المتجر"
+
+#: .\templates\store\cart.html:9
+msgid "Your Shopping Cart is Empty"
+msgstr "عربة التسوق الخاصة بك فارغة"
+
+#: .\templates\store\cart.html:21 .\templates\store\checkout.html:76
+msgid "Product"
+msgstr "منتج"
+
+#: .\templates\store\cart.html:23 .\templates\store\checkout.html:78
+msgid "Price"
+msgstr "السعر"
+
+#: .\templates\store\cart.html:71
+msgid "Are you sure you want to remove this item?"
+msgstr "هل أنت متأكد أنك تريد إزالة هذا العنصر؟"
+
+#: .\templates\store\cart.html:71
+msgid "Remove"
+msgstr "إزالة"
+
+#: .\templates\store\cart.html:83
+msgid "Sub Total"
+msgstr "المجموع الفرعي"
+
+#: .\templates\store\cart.html:94
+msgid "Checkout"
+msgstr "الدفع"
+
+#: .\templates\store\checkout.html:13
+msgid "Billing Address"
+msgstr "عنوان الفاتورة"
+
+#: .\templates\store\checkout.html:28
+msgid "Email"
+msgstr "البريد الإلكتروني"
+
+#: .\templates\store\checkout.html:61
+msgid "Order Note"
+msgstr "ملاحظة الطلب"
+
+#: .\templates\store\checkout.html:107
+msgid "QAR each"
+msgstr "ريال قطري لكل"
+
+#: .\templates\store\checkout.html:122
+msgid "Pay in cash upon receiving your order at your doorstep."
+msgstr "ادفع نقدًا عند استلام طلبك عند باب منزلك"
+
+#: .\templates\store\checkout.html:126
+msgid "Complete Order"
+msgstr "إكمال الطلب"
+
+#: .\templates\store\product_detail.html:20
+#: .\templates\store\product_detail.html:26
+msgid "Product Image"
+msgstr "صورة المنتج"
+
+#: .\templates\store\product_detail.html:48
+#: .\templates\store\product_detail.html:183
+msgid "reviews"
+msgstr "مراجعات"
+
+#: .\templates\store\product_detail.html:54
+msgid "In Stock"
+msgstr "متوفر في المخزن"
+
+#: .\templates\store\product_detail.html:70
+msgid "Select"
+msgstr "اختر"
+
+#: .\templates\store\product_detail.html:76
+msgid "Choose up to"
+msgstr "اختر حتى"
+
+#: .\templates\store\product_detail.html:97
+msgid "Selections made:"
+msgstr ":الاختيارات التي تم تحديدها"
+
+#: .\templates\store\product_detail.html:108
+msgid "Notify Me When Available"
+msgstr "أعلمني عند التوافر"
+
+#: .\templates\store\product_detail.html:119
+msgid "Fast Delivery in Qatar"
+msgstr "المنتجات العامة"
+
+#: .\templates\store\product_detail.html:121
+msgid "7 Days Easy Return"
+msgstr "إرجاع سهل خلال 7 أيام"
+
+#: .\templates\store\product_detail.html:137
+msgid "Write Your Review"
+msgstr "اكتب مراجعتك"
+
+#: .\templates\store\product_detail.html:139
+msgid "How do you rate this product?"
+msgstr "كيف تُقيّم هذا المنتج؟"
+
+#: .\templates\store\product_detail.html:154
+msgid "Review Title:"
+msgstr ":عنوان المراجعة"
+
+#: .\templates\store\product_detail.html:157
+msgid "Review:"
+msgstr "مراجعة"
+
+#: .\templates\store\product_detail.html:162
+msgid "Submit Review"
+msgstr "إرسال التقييم"
+
+#: .\templates\store\product_detail.html:164
+msgid "You must purchase this to post a review."
+msgstr "يجب عليك شراء هذا لتتمكن من كتابة تقييم."
+
+#: .\templates\store\product_detail.html:167
+msgid "You must be logged in to post a review."
+msgstr "يجب أن تقوم بتسجيل الدخول لنشر تقييم."
+
+#: .\templates\store\product_detail.html:167
+msgid "Login now"
+msgstr "تسجيل الدخول الآن"
+
+#: .\templates\store\product_detail.html:175
+msgid "Customer Reviews"
+msgstr "تقييمات العملاء"
+
+#: .\templates\store\product_detail.html:230
+msgid "Please select"
+msgstr "يرجى الاختيار"
+
+#: .\templates\store\product_detail.html:230
+msgid "option for"
+msgstr "خيار لـ"
+
+#: .\templates\store\product_detail.html:233
+msgid "You must select exactly"
+msgstr "يجب أن تختار بالضبط"
+
+#: .\templates\store\product_detail.html:233
+msgid "options for"
+msgstr "خيار لـ"
+
+#: .\templates\store\product_detail.html:250
+msgid "Limit reached! You can only select"
+msgstr "تم الوصول إلى الحد! يمكنك فقط الاختيار"
+
+#: .\templates\store\product_detail.html:250
+msgid "items."
+msgstr ".عناصر"
+
+#: .\templates\store\store.html:28
+msgid "Search Result"
+msgstr "نتائج البحث"
+
+#: .\templates\store\store.html:40
+msgid "Filter Categories"
+msgstr "تصفية الفئات"
+
+#: .\templates\store\store.html:61
+msgid "Items found"
+msgstr "عناصر تم العثور عليها"
+
+#: .\templates\store\store.html:79
+msgid "Out of Stock"
+msgstr "نفد من المخزون"
+
+#: .\templates\store\store.html:83
+msgid "Select Options"
+msgstr "اختر الخيارات"
+
+#: .\templates\store\store.html:87
+msgid "Add to Cart"
+msgstr "أضف إلى السلة"
+
+#: .\templates\store\store.html:98
+msgid "No results found"
+msgstr "لم يتم العثور على نتائج"
+
+#: .\templates\store\store.html:99
+msgid "Sorry, we couldn't find what you're looking for."
+msgstr ".عذراً، لم نتمكن من العثور على ما تبحث عنه"
+
+#: .\templates\store\store.html:101
+msgid "Back to Store"
+msgstr "العودة إلى المتجر"

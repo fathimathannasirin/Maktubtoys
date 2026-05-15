@@ -1,0 +1,252 @@
+{% load i18n %}{% load static %}
+
+<style>
+    /* 1. TOP BAR SECTION */
+    .navbar-top-bg {
+        background-color: #72a6dbff;
+        height: 40px;
+        position: fixed;
+        top: 0;
+        width: 100%;
+        z-index: 1001;
+        display: flex;
+        align-items: center;
+    }
+
+    /* 2. MAIN HEADER SECTION */
+    .header-main {
+        background: rgba(255, 255, 255, 0.05) !important;
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+        position: fixed;
+        width: 100%;
+        top: 40px;
+        z-index: 1000;
+        padding: 10px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .nav-elements-container { display: flex; gap: 15px; align-items: center; width: 100%; justify-content: flex-start; }
+
+    /* 3. CATEGORY DROPDOWN */
+    .dropdown-menu-custom {
+        min-width: 650px !important;
+        border-radius: 8px; border: none;
+        box-shadow: 0px 10px 30px rgba(0,0,0,0.15);
+        margin-top: 15px !important;
+    }
+    .category-nav-item { display: flex; align-items: center; padding: 10px; border-radius: 6px; transition: 0.2s; text-decoration: none !important; }
+    .category-nav-item:hover { background-color: #f8f9fa; }
+    .nav-cat-img { width: 35px; height: 35px; border-radius: 4px; object-fit: cover; margin-right: 12px; }
+    .cat-text { font-size: 0.95rem; font-weight: 600; color: #333; }
+
+    /* 4. SEARCH BAR */
+    .search-group { display: flex; flex: 1; max-width: 500px; }
+    .form-control-custom {
+        height: 40px; background: rgba(255, 255, 255, 0.1) !important;
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        color: #ffffff !important; border-radius: 6px 0 0 6px;
+    }
+    .btn-search-custom { height: 40px; background-color: #3167eb !important; color: white; border: none; padding: 0 15px; border-radius: 0 5px 5px 0; }
+
+    /* 5. USER OPTIONS */
+    .widgets-wrap { display: flex; align-items: center; gap: 20px; }
+    .header-main .nav-link, .header-main .widget-header .title, .header-main .icon-sm { color: #ffffff !important; }
+
+    /* MOBILE OPTIMIZATIONS */
+    @media (max-width: 991px) {
+        /* TOP BAR VISIBLE ON MOBILE */
+        .navbar-top-bg { 
+            display: flex !important; 
+            background-color: #5a8cc2 !important; 
+            height: auto;
+            padding: 5px 0;
+        }
+        .navbar-top-bg .container-fluid > div {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            align-items: center;
+        }
+        .navbar-top-bg .nav-link { color: #fff !important; font-size: 0.8rem; }
+        
+        .header-main { 
+            top: 40px; /* Stay below the top bar */
+            background: #72a6dbff !important; 
+            backdrop-filter: none; 
+        }
+        .logo { max-height: 50px !important; }
+        .widget-header .title { font-size: 0.7rem; color: #fff !important; }
+        .widget-header a { color: #fff !important; }
+        .border-left { border-left: 1px solid rgba(255,255,255,0.3) !important; }
+        
+        .dropdown-menu-custom {
+            min-width: 100% !important;
+            margin-top: 5px !important;
+            max-height: 400px; /* Prevents long lists from covering the whole screen */
+            overflow-y: auto;  /* Allows scrolling if you have many categories */
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+        
+        /* Ensure the dropdown items align correctly in Arabic */
+        .dropdown-item {
+            text-align: {% if LANGUAGE_CODE == 'ar' %}right{% else %}left{% endif %};
+        }
+        /* Styling for the separators and link grouping */
+    .user-links {
+        gap: 8px;
+        align-items: center;
+    }
+    .user-links .sep {
+        color: rgba(255, 255, 255, 0.4);
+        font-size: 0.8rem;
+    }
+
+    /* Mobile-specific tightening to prevent wrapping */
+    @media (max-width: 991px) {
+        .user-links {
+            gap: 5px;
+        }
+        .user-links a {
+            font-size: 0.75rem;
+            white-space: nowrap;
+        }
+    }
+</style>
+
+<header class="section-header">
+    <nav class="navbar p-md-0 navbar-light navbar-top-bg">
+        <div class="container-fluid px-lg-5">
+            <div class="d-flex justify-content-between w-100">
+                <ul class="navbar-nav d-flex flex-row">
+                    <li class="nav-item dropdown mr-3">
+                        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown"> <i class="fa fa-globe"></i> {% trans "Language" %} </a>
+                        <div class="dropdown-menu small">
+                            {% get_available_languages as LANGUAGES %}
+                            {% for lang in LANGUAGES %}
+                                <form action="{% url 'set_language' %}" method="post" id="lang-form-{{ lang.0 }}" style="display:none;">
+                                    {% csrf_token %}<input name="next" type="hidden" value="{{ request.get_full_path }}"><input name="language" type="hidden" value="{{ lang.0 }}">
+                                </form>
+                                <a class="dropdown-item" href="javascript:void(0)" onclick="document.getElementById('lang-form-{{ lang.0 }}').submit();">{{ lang.1 }}</a>
+                            {% endfor %}
+                        </div>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li><a href="{% url 'contact_us' %}" class="nav-link">{% trans "Contact us" %}</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <section class="header-main border-bottom">
+        <div class="container-fluid">
+            <div class="row align-items-center">
+                <div class="col-lg-2 col-md-3 col-5">
+                    <a href="{% url 'home' %}" class="brand-wrap">
+                        <img class="logo" src="{% static 'images/logo.png' %}" style="max-height: 70px; width: auto;">
+                    </a>
+                </div>
+
+                <div class="col-lg-7 col-md-6 d-none d-md-block">
+                    <div class="nav-elements-container">
+                        <div class="dropdown">
+                            <button type="button" class="btn btn-primary dropdown-toggle px-3" data-toggle="dropdown" style="height: 40px;">
+                                <i class="fa fa-bars mr-2"></i> {% trans "All category" %}
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-custom p-4">
+                                <div class="row">
+                                    {% for category in links %}
+                                        {% if not category.parent %}
+                                        <div class="col-md-4 mb-2">
+                                            <a href="{{ category.get_url }}" class="category-nav-item">
+                                                {% if category.image %}<img src="{{ category.image.url }}" class="nav-cat-img">{% endif %}
+                                                <span class="cat-text">{{ category.category_name }}</span>
+                                            </a>
+                                        </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        <a href="{% url 'store' %}" class="btn btn-outline-primary px-3" style="height: 40px; display: flex; align-items: center;">{% trans "Our Products" %}</a>
+                        <form action="{% url 'search' %}" class="search-group" method="GET">
+                            <div class="input-group w-100">
+                                <input type="text" class="form-control form-control-custom" placeholder="{% trans 'Search products...' %}" name="keyword">
+                                <div class="input-group-append"><button class="btn btn-search-custom" type="submit"><i class="fa fa-search"></i></button></div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-3 col-7">
+                    <div class="d-flex justify-content-end align-items-center">
+                        <div class="widget-header mr-2 mr-md-3 text-right">
+                            {% if user.id is None %}
+                                <small class="title d-block">{% trans "Welcome" %}</small>
+                                <div class="user-links d-flex justify-content-end">
+                                    <a href="{% url 'login' %}">{% trans "Sign in" %}</a>
+                                    <span class="sep">|</span>
+                                    <a href="{% url 'register' %}">{% trans "Register" %}</a>
+                                </div>
+                            {% else %}
+                                <small class="title d-block">Hi, {{user.first_name}}</small>
+                                <div class="user-links d-flex justify-content-end">
+                                    <a href="{% url 'dashboard' %}">{% trans "Profile" %}</a>
+                                    <span class="sep">|</span>
+                                    <a href="{% url 'logout' %}" class="text-warning">{% trans "Logout" %}</a>
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <a href="{% url 'cart' %}" class="widget-header pl-2 pl-md-3 border-left">
+                            <div class="icon icon-sm rounded-circle border bg-light text-primary d-flex align-items-center justify-content-center" style="position:relative;">
+                                <i class="fa fa-shopping-cart"></i>
+                                <span class="badge badge-pill badge-danger notify" style="position: absolute; top: -8px; right: -8px;">{{ cart_count }}</span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="col-12 d-md-none mt-2 d-flex">
+                    <div class="dropdown flex-grow-1 {% if LANGUAGE_CODE == 'ar' %}ml-2{% else %}mr-2{% endif %}">
+                        <button type="button" class="btn btn-primary dropdown-toggle w-100" data-toggle="dropdown" style="height: 40px; font-size: 0.85rem;">
+                            <i class="fa fa-bars"></i> {% trans "Categories" %}
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-custom p-3">
+                            {% for category in links %}
+                                {% if not category.parent %}
+                                    <a href="{{ category.get_url }}" class="dropdown-item py-2 d-flex align-items-center">
+                                        {% if category.image %}
+                                            <img src="{{ category.image.url }}" style="width: 25px; height: 25px; object-fit: cover; margin-{% if LANGUAGE_CODE == 'ar' %}left{% else %}right{% endif %}: 10px; border-radius: 4px;">
+                                        {% endif %}
+                                        <span>{{ category.category_name }}</span>
+                                    </a>
+                                {% endif %}
+                            {% endfor %}
+                            <div class="dropdown-divider"></div>
+                            <a href="{% url 'store' %}" class="dropdown-item text-primary font-weight-bold">{% trans "View All Products" %}</a>
+                        </div>
+                    </div>
+                    
+                    <a href="{% url 'store' %}" class="btn btn-outline-primary flex-grow-1" style="height: 40px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; color: white !important; border-color: white !important;">
+                        {% trans "Store" %}
+                    </a>
+                </div>
+
+                <div class="col-12 d-md-none mt-2">
+                    <form action="{% url 'search' %}" method="GET">
+                        <div class="input-group w-100">
+                            <input type="text" class="form-control form-control-custom" placeholder="{% trans 'Search...' %}" name="keyword" style="border-radius: 5px 0 0 5px !important;">
+                            <div class="input-group-append">
+                                <button class="btn btn-search-custom" type="submit" style="border-radius: 0 5px 5px 0 !important;">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div> 
+        </div> 
+    </section>
+</header>

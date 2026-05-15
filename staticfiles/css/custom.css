@@ -1,0 +1,106 @@
+/* Container for the main product image */
+.img-big-wrap {
+    width: 100%;
+    height: 450px; /* Forces a consistent height for all products */
+    display: flex;
+    justify-content: center; /* Centers image horizontally */
+    align-items: center;    /* Centers image vertically */
+    overflow: hidden;
+    background-color: #fff;
+    border: 1px solid #eee;
+    border-radius: 8px;
+}
+
+/* Ensures the main image doesn't stretch or squash */
+.img-big-wrap img {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain; /* Keeps original aspect ratio within the box */
+}
+
+/* Centered Thumbnail Gallery */
+ul.thumb {
+    margin: 20px auto;
+    padding: 0;
+    display: flex;
+    justify-content: center; /* Centers the list of thumbnails */
+    flex-wrap: wrap;
+    list-style: none;
+    float: none !important; /* Overrides previous float:left */
+}
+
+ul.thumb li {
+    margin: 8px;
+}
+
+/* Uniform size for every thumbnail image */
+ul.thumb li img {
+    width: 110px;  /* Fixed width for uniformity */
+    height: 110px; /* Fixed height for uniformity */
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    object-fit: cover; /* Crops image to fill the 110x110 square perfectly */
+    transition: 0.3s;
+}
+
+/* Hover effect for better UI */
+ul.thumb li img:hover {
+    border: 1px solid #3167eb;
+    transform: scale(1.05);
+}
+
+/* Push the whole page down so it starts below the fixed navbar */
+body {
+    /* 40px (top bar) + ~90px (main navbar height) = 130px */
+    padding-top: 130px !important; 
+}
+
+/* 1. Large Product Image Box */
+.card-product-grid .img-wrap {
+    height: 320px; /* Increased height for a more prominent image */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    background-color: #fff;
+}
+
+.card-product-grid .img-wrap img {
+    max-height: 100%;
+    max-width: 100%;
+    object-fit: contain;
+    padding: 15px; /* Adds nice spacing around the product */
+}
+
+/* 2. Product Title - Visible and clean */
+.card-product-grid .title {
+    display: block !important;
+    color: #212529 !important;
+    font-size: 0.95rem;
+    font-weight: 600;
+    line-height: 1.4;
+    min-height: 3em; /* Reserves space for 2 lines of text */
+    margin: 10px 0;
+    text-align: center;
+    overflow: visible !important;
+}
+
+/* 3. Bottom Section - Always shows Price and Button */
+.card-product-grid .info-wrap {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; 
+    min-height: 170px; /* Enough height for price and Add to Cart button */
+    height: auto !important; 
+    background-color: #fff;
+    border-top: 1px solid #eee;
+}
+
+/* Forces the button to the very bottom */
+.card-product-grid .mt-3 {
+    margin-top: auto !important;
+}

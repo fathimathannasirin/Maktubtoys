@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block content %}
+<section class="section-content padding-y bg-light" style="min-height: 80vh;">
+<div class="container" {% if request.LANGUAGE_CODE == 'ar' %}dir="rtl" style="text-align: right;"{% endif %}>
+
+    {% if not order or error %}
+    <div class="card shadow-sm mx-auto mb-4 border-0" style="max-width: 500px; margin-top: 50px;">
+        <div class="card-body p-4 text-center">
+            <h4 class="card-title mb-4">{% trans "Track Your Order" %}</h4>
+            <form action="{% url 'track_order' %}" method="GET">
+                <div class="input-group">
+                    <input type="text" name="order_number" class="form-control" placeholder="{% trans 'Order Number' %}" required>
+                    <div class="input-group-append">
+                        <button type="submit" class="btn btn-primary px-4">{% trans "Track" %}</button>
+                    </div>
+                </div>
+            </form>
+            {% if error %}<p class="text-danger mt-3 small">{{ error }}</p>{% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+    {% if order %}
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body">
+            <div class="steps d-flex flex-wrap flex-sm-nowrap justify-content-between padding-top-2x padding-bottom-1x">
+                <div class="step completed">
+                    <div class="step-icon-wrap"><div class="step-icon"><i class="fa fa-shopping-cart"></i></div></div>
+                    <h6 class="step-title">{% trans "Order Placed" %}</h6>
+                </div>
+                <div class="step {% if order.status != 'New' %}completed{% endif %}">
+                    <div class="step-icon-wrap"><div class="step-icon"><i class="fa fa-check"></i></div></div>
+                    <h6 class="step-title">{% trans "Confirmed" %}</h6>
+                </div>
+                <div class="step {% if order.status == 'Shipped' or order.status == 'Completed' %}completed{% endif %}">
+                    <div class="step-icon-wrap"><div class="step-icon"><i class="fa fa-truck"></i></div></div>
+                    <h6 class="step-title">{% trans "On the Way" %}</h6>
+                </div>
+                <div class="step {% if order.status == 'Completed' %}completed{% endif %}">
+                    <div class="step-icon-wrap"><div class="step-icon"><i class="fa fa-home"></i></div></div>
+                    <h6 class="step-title">{% trans "Delivered" %}</h6>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <header class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+            <b class="text-primary">{% trans "Tracking ID" %}: #{{ order.order_number }}</b>
+            <span class="badge badge-info px-3">{% trans order.status %}</span>
+        </header>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6 border-right mb-3">
+                    <h6 class="text-muted small text-uppercase">{% trans "Delivery Address" %}</h6>
+                    <p><strong>{{ order.first_name }} {{ order.last_name }}</strong><br>
+                    {{ order.address_line_1 }}, {{ order.street_number }}<br>
+                    {% trans "Phone" %}: {{ order.phone }}</p>
+                </div>
+                <div class="col-md-6 {% if request.LANGUAGE_CODE == 'ar' %}text-md-left{% else %}text-md-right{% endif %}">
+                    <h6 class="text-muted small text-uppercase">{% trans "Payment Summary" %}</h6>
+                    <p>{% trans "Total Items" %}: {{ order_products.count }}<br>
+                    <span class="h5 text-dark">{{ order.order_total }} QAR</span><br>
+                    <small class="text-muted">{% trans "Method" %}: {% trans "Cash on Delivery" %}</small></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+</section>
+
+<style>
+    /* Tracking System Styling */
+    .steps { border: 1px solid #e7e7e7; border-radius: 8px; padding: 20px 10px; background: #fff; }
+    .step { width: 100%; text-align: center; position: relative; }
+    .step-icon-wrap { width: 50px; height: 50px; border: 2px solid #e7e7e7; border-radius: 50%; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; background: #fff; position: relative; z-index: 2; }
+    .step.completed .step-icon-wrap { background: #007bff; border-color: #007bff; color: #fff; }
+    .step:not(:last-child):after { content: ""; position: absolute; top: 25px; left: 50%; width: 100%; height: 2px; background: #e7e7e7; z-index: 1; }
+    .step.completed:after { background: #007bff; }
+    .step-title { font-size: 12px; font-weight: 600; color: #606975; }
+    {% if request.LANGUAGE_CODE == 'ar' %}
+    .step:not(:last-child):after { left: auto; right: 50%; }
+    {% endif %}
+    @media (max-width: 576px) { .step:after { display: none; } .step { margin-bottom: 20px; } }
+</style>
+{% endblock %}

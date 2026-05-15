@@ -1,0 +1,19 @@
+{% autoescape off %}
+{% load i18n %}
+{% trans "Hi" %} {{ user.first_name }},
+
+{% trans "Thank you for your order! Your order #" %}{{ order.order_number }} has been received and is currently being processed.
+
+--- {% trans "LIVE TRACKING" %} ---
+{% trans "You can follow the status of your delivery at any time by clicking the link below:" %}
+{{ tracking_url }}
+
+--- {% trans "ORDER SUMMARY" %} ---
+{% trans "Order Number" %}: {{ order.order_number }}
+{% trans "Total Amount" %}: {{ order.order_total }} QAR
+{% trans "Payment Method" %}: {% trans "Cash on Delivery (COD)" %}
+
+{% trans "We will contact you shortly to confirm the delivery time." %}
+
+{% trans "Thank you for shopping with us!" %}
+{% endautoescape %}

@@ -1,0 +1,267 @@
+{% extends "base.html" %}
+{% load i18n %}{% load l10n %}{% load static %}
+
+{% block content %}
+{% get_current_language as LANGUAGE_CODE %}
+<style>
+    /* 1. Optimized Product Image Box */
+    .card-product-grid .img-wrap {
+        height: 250px; /* Adjusted to balance desktop grid and mobile view */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        background-color: #fff;
+    }
+
+    .card-product-grid .img-wrap img {
+        max-height: 100%;
+        max-width: 100%;
+        object-fit: contain;
+        padding: 10px; 
+    }
+
+    /* 2. Text Protection - Prevents cutting off on mobile */
+    .card-product-grid .title {
+        display: -webkit-box !important;
+        -webkit-line-clamp: 2; /* Increased to 2 lines for better readability on mobile */
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        
+        color: #212529 !important;
+        font-size: 0.9rem;
+        font-weight: 600;
+        line-height: 1.3;
+        min-height: 2.6em; /* Reserves space for two lines to keep grid aligned */
+        margin: 8px 0 4px 0;
+        text-align: center;
+    }
+
+    /* 3. Bottom Section Styling */
+    .card-product-grid .info-wrap {
+        padding: 15px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between; 
+        background-color: #fff;
+        border-top: 1px solid #eee;
+    }
+
+    .price-wrap {
+        margin-bottom: 10px;
+    }
+
+    /* 4. Grid Logic: Restoring 4 items on laptop, 2 on mobile */
+    .item-column {
+        flex: 0 0 50%;
+        max-width: 50%;
+        padding: 8px;
+    }
+
+    @media (min-width: 768px) {
+        .item-column { flex: 0 0 33.33%; max-width: 33.33%; }
+    }
+
+    @media (min-width: 992px) {
+        .item-column { flex: 0 0 25%; max-width: 25%; } /* Forces 4 items on laptop */
+    }
+
+    /* Banner Styling */
+    .store-banner {
+        padding: 60px 0;
+        background: linear-gradient(rgba(0, 102, 255, 0.7), rgba(0, 44, 155, 0.8)), 
+                    url("{% static 'images/banners/store-bg.jpg' %}") no-repeat center center;
+        background-size: cover;
+    }
+    .store-title { color: #fff; font-size: 2.5rem; font-weight: 800; text-shadow: 2px 2px 10px rgba(0,0,0,0.2); }
+    .sidebar-parent-text { font-size: 1rem; font-weight: 700; color: #333; text-decoration: none !important; }
+    .side-child-img { width: 24px; height: 24px; border-radius: 4px; object-fit: cover; margin-right: 10px; }
+    
+    {% if LANGUAGE_CODE == 'ar' %}
+    .mr-md-auto { margin-left: auto !important; margin-right: 0 !important; }
+    .side-child-img { margin-left: 10px !important; margin-right: 0 !important; }
+    {% endif %}
+    /* --- Specific Fix for Arabic Phone & Tablet View --- */
+    {% if LANGUAGE_CODE == 'ar' %}
+    @media (max-width: 991px) {
+        .card-product-grid .title {
+            /* Force exactly 2 lines for Arabic on small screens */
+            display: -webkit-box !important;
+            -webkit-line-clamp: 2 !important;
+            -webkit-box-orient: vertical !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+
+            /* Adjustments for Arabic mobile script height */
+            line-height: 1.5 !important; 
+            min-height: 3em !important;   /* Keeps the grid aligned on mobile */
+            font-size: 0.95rem !important;
+        }
+    }
+    {% endif %}
+</style>
+
+<section class="store-banner">
+    <div class="container-fluid px-lg-5 text-center">
+        {% if 'search' in request.path %}
+            <h2 class="store-title">{% trans "Search Result" %}</h2>
+        {% else %}
+            <h2 class="store-title">{% trans "Our Products" %}</h2>
+        {% endif %}
+    </div> 
+</section>
+
+<section class="section-content padding-y" {% if request.LANGUAGE_CODE == 'ar' %}dir="rtl" style="text-align: right;"{% endif %}>
+<div class="container-fluid px-lg-5">
+    <div class="row">
+        <aside class="col-lg-3 col-md-4">
+            <div class="card shadow-sm mb-3">
+                <header class="card-header bg-white"><h6 class="title font-weight-bold">{% trans "Filter Categories" %}</h6></header>
+                <div class="filter-content px-3 py-3">
+                    <ul class="list-menu list-unstyled">
+                    {% for category in links %}
+                        <li class="mb-3 category-item" style="list-style: none;">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <a href="{{ category.get_url }}" class="sidebar-parent-text">
+                                    {% if category.image %}
+                                        <img src="{{ category.image.url }}" class="side-child-img">
+                                    {% endif %}
+                                    {% if request.LANGUAGE_CODE == 'ar' %}{{ category.category_name_ar }}{% else %}{{ category.category_name }}{% endif %}
+                                </a>
+
+                                {% if category.children.all %}
+                                    <span class="category-toggle" onclick="toggleAccordion(this)" style="cursor: pointer;">
+                                        <i class="fa fa-chevron-down" style="transition: 0.3s;"></i>
+                                    </span>
+                                {% endif %}
+                            </div>
+
+                            {% if category.children.all %}
+                                <ul class="submenu" style="display: none; list-style: none; padding-left: 28px; margin-top: 10px;">
+                                    {% for child in category.children.all %}
+                                        <li class="mb-2">
+                                            <a href="{{ child.get_url }}" class="sidebar-parent-text" style="font-weight: 500; color: #666;">
+                                                {% if request.LANGUAGE_CODE == 'ar' %}{{ child.category_name_ar }}{% else %}{{ child.category_name }}{% endif %}
+                                            </a>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                    </ul>
+                </div>
+            </div> 
+        </aside> 
+
+        <main class="col-lg-9 col-md-8">
+            <header class="border-bottom mb-4 pb-3">
+                <div class="form-inline d-flex justify-content-between align-items-center">
+                    <span class="mr-md-auto"><b>{{ product_count }}</b> {% trans "Items found" %}</span>
+                    
+                    <div class="dropdown">
+                        <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
+                            {% trans "Sort by" %}
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="?sort=latest">{% trans "Latest Items" %}</a>
+                            <a class="dropdown-item" href="?sort=price_low">{% trans "Price: Low to High" %}</a>
+                            <a class="dropdown-item" href="?sort=price_high">{% trans "Price: High to Low" %}</a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="row">
+                {% for product in products %}
+                <div class="item-column">
+                    <figure class="card card-product-grid shadow-sm">
+                        <div class="img-wrap"> 
+                            <a href="{{ product.get_url }}"><img src="{{ product.images.url }}"></a>
+                        </div>
+                        <figcaption class="info-wrap">
+                            <a href="{{ product.get_url }}" class="title">
+                                {% if request.LANGUAGE_CODE == 'ar' %}
+                                    {{ product.product_name_ar|default:product.product_name_en }}
+                                {% else %}
+                                    {{ product.product_name_en|default:product.product_name }}
+                                {% endif %}
+                            </a>
+                            <div class="price-wrap text-center">
+                                <span class="price" style="color: #3167eb; font-weight: 700;">{{ product.price|unlocalize }} {% trans "QAR" %}</span>
+                            </div>
+                            <div class="action-wrap">
+                                {% if product.stock <= 0 %}
+                                    <button class="btn btn-block btn-danger disabled"> {% trans "Out of Stock" %} </button>
+                                {% else %}
+                                    {% if product.variation_set.all %}
+                                        <a href="{{ product.get_url }}" class="btn btn-block btn-primary">
+                                            <i class="fa fa-list"></i> {% trans "Select Options" %} 
+                                        </a>
+                                    {% else %}
+                                        <a href="{% url 'add_cart' product.id %}" class="btn btn-block btn-primary">
+                                            <i class="fa fa-shopping-cart"></i> {% trans "Add to Cart" %}
+                                        </a>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                        </figcaption>
+                    </figure>
+                </div> 
+                {% empty %}
+                    <div class="col-12 text-center py-5">
+                        <i class="fa fa-search text-muted mb-3" style="font-size: 60px;"></i>
+                        <h2 class="font-weight-bold">{% trans "No results found" %}</h2>
+                        <a href="{% url 'store' %}" class="btn btn-primary">{% trans "Back to Store" %}</a>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <nav class="mt-4">
+                {% if products.has_other_pages %}
+                <ul class="pagination">
+                    {% if products.has_previous %}
+                    <li class="page-item"><a class="page-link" href="?page={{products.previous_page_number}}">{% trans "Previous" %}</a></li>
+                    {% endif %}
+
+                    {% for i in products.paginator.page_range %}
+                        <li class="page-item {% if products.number == i %}active{% endif %}">
+                            <a class="page-link" href="?page={{i}}">{{i}}</a>
+                        </li>
+                    {% endfor %}
+
+                    {% if products.has_next %}
+                    <li class="page-item"><a class="page-link" href="?page={{products.next_page_number}}">{% trans "Next" %}</a></li>
+                    {% endif %}
+                </ul>
+                {% endif %}
+            </nav>
+        </main> 
+    </div>
+</div> 
+</section>
+
+<script>
+function toggleAccordion(element) {
+    const parentLi = element.closest('.category-item');
+    const currentSubmenu = parentLi.querySelector('.submenu');
+    const currentIcon = element.querySelector('i');
+    
+    document.querySelectorAll('.submenu').forEach((menu) => {
+        if (menu !== currentSubmenu) menu.style.display = "none";
+    });
+    document.querySelectorAll('.category-toggle i').forEach((icon) => {
+        if (icon !== currentIcon) icon.style.transform = "rotate(0deg)";
+    });
+
+    if (currentSubmenu.style.display === "none" || currentSubmenu.style.display === "") {
+        currentSubmenu.style.display = "block";
+        currentIcon.style.transform = "rotate(180deg)";
+    } else {
+        currentSubmenu.style.display = "none";
+        currentIcon.style.transform = "rotate(0deg)";
+    }
+}
+</script>
+{% endblock %}

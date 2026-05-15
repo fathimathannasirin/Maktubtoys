@@ -1,0 +1,52 @@
+/* Star Rating System */
+.rate > input {
+    display: none !important;
+}
+
+.rate {
+    display: inline-block;
+    border: 0;
+}
+
+.rate > label {
+    float: right;
+    color: #ccc; /* Default grey star */
+    cursor: pointer;
+}
+
+.rate > label:before {
+    display: inline-block;
+    font-size: 1.5rem;
+    font-family: FontAwesome !important; /* Force use of FA 4.7 */
+    content: "\f005"; /* Star code */
+    margin: 0;
+    padding: 0.3rem .2rem;
+}
+
+/* Half star logic */
+.rate > .half:before {
+    content: "\f089" !important;
+    position: absolute;
+    padding-right: 0;
+}
+
+/* Color change when selected or hovered */
+.rate > input:checked ~ label,
+.rate:not(:checked) > label:hover,
+.rate:not(:checked) > label:hover ~ label {
+    color: #ffb503 !important;
+}
+
+.rating-star i{
+    color: #ffb503 !important;
+}
+
+ul.thumb{
+    list-style: none;
+    margin: 10px;
+}
+ul.thumb li img{
+    width: 80px;
+    height: 80px;
+    border: 1px solid grey;
+}

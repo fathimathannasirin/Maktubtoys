@@ -1,0 +1,175 @@
+{% extends "admin/index.html" %}
+{% load i18n static %}
+{% load nvd3_tags %}
+{% load googlecharts %}
+
+
+{% block content %}
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+    google.charts.load('current', {'packages':['corechart']});
+</script>
+<style>
+    /* Force the admin content area to be full width of the screen */
+    #content { 
+        padding: 0 !important; 
+        max-width: 100% !important; 
+        width: 100% !important;
+    }
+
+    .admin-dashboard-wrapper { 
+        display: flex; 
+        gap: 24px; 
+        padding: 24px; 
+        background: #f0f2f5; 
+        min-height: 80vh;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    /* Fixed width Sidebar */
+    .sidebar-kpis { 
+        width: 280px; 
+        flex-shrink: 0; 
+        display: flex; 
+        flex-direction: column; 
+        gap: 16px; 
+    }
+
+    /* Flexible Main Stats Area */
+    .main-stats-area { 
+        flex-grow: 1; 
+        display: flex; 
+        flex-direction: column; 
+        gap: 24px; 
+        min-width: 0; 
+    }
+
+    .kpi-card { 
+        background: white; 
+        border: 1px solid #e3e6f0; 
+        padding: 20px; 
+        border-radius: 8px; 
+        text-align: center;
+        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+        border-left: 4px solid #3167eb; 
+    }
+
+    .kpi-title { font-size: 11px; font-weight: bold; color: #4e73df; text-transform: uppercase; margin-bottom: 5px; }
+    .kpi-value { font-size: 24px; font-weight: 700; color: #5a5c69; }
+
+    .graph-box, .recent-orders-box { 
+        background: white; 
+        border: 1px solid #e3e6f0; 
+        padding: 25px; 
+        border-radius: 8px;
+        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+    }
+    
+    .box-header { margin-top: 0; font-size: 18px; color: #333; border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 20px; }
+
+    .dashboard-table { width: 100%; border-collapse: collapse; }
+    .dashboard-table th { text-align: left; padding: 12px; border-bottom: 2px solid #e3e6f0; color: #4e73df; font-size: 12px; }
+    .dashboard-table td { padding: 12px; border-bottom: 1px solid #eee; font-size: 14px; }
+
+    .status-badge { padding: 5px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 10px; text-transform: uppercase; }
+</style>
+
+<div class="admin-dashboard-wrapper">
+    <div class="sidebar-kpis">
+        <div class="kpi-card" style="border-left-color: #4e73df;">
+            <div class="kpi-title">Total Orders</div>
+            <div class="kpi-value">{{ total_orders_count }}</div>
+        </div>
+        <div class="kpi-card" style="border-left-color: #1cc88a;">
+            <div class="kpi-title">Total Sales</div>
+            <div class="kpi-value">{{ total_sales_amount|floatformat:2 }} QAR</div>
+        </div>
+        <div class="kpi-card" style="border-left-color: #36b9cc;">
+            <div class="kpi-title">Registered Customers</div>
+            <div class="kpi-value">{{ total_customers_count }}</div>
+        </div>
+        <div class="kpi-card" style="border-left-color: #36b9cc;">
+            <div class="kpi-title">Live Carts</div>
+            <div class="kpi-value">{{ abandoned_carts_count }}</div>
+        </div>
+        <div class="kpi-card" style="border-left-color: #fd7e14;">
+            <div class="kpi-title">Active Products</div>
+            <div class="kpi-value">{{ active_products_count }}</div>
+        </div>
+        <div class="kpi-card" style="border-left-color: #e74a3b;">
+            <div class="kpi-title">Out of Stock</div>
+            <div class="kpi-value" style="color: #e74a3b;">{{ out_of_stock_count }}</div>
+        </div>
+    </div>
+
+    <div class="main-stats-area">
+        {% if kpi_graph %}
+            {% for chart_item in kpi_graph %}
+                <div class="graph-box">
+                    <h3 class="box-header">{{ chart_item.title }}</h3>
+                    
+                    {# FAIL-SAFE: Only try to render if values exist #}
+                    {% if chart_item.values %}
+                        <div id="chart_div_{{ forloop.counter0 }}" style="width: 100%; height: 300px;"></div>
+                        <script type="text/javascript">
+                            google.charts.setOnLoadCallback(drawChart_{{ forloop.counter0 }});
+                            function drawChart_{{ forloop.counter0 }}() {
+                                var data = google.visualization.arrayToDataTable({{ chart_item.values|safe }});
+                                var options = {{ chart_item.options|safe }};
+                                var chart = new google.visualization.ColumnChart(document.getElementById('chart_div_{{ forloop.counter0 }}'));
+                                chart.draw(data, options);
+                            }
+                        </script>
+                    {% else %}
+                        <p style="text-align: center; color: #858796;">Configure this chart in "Dashboard Stats Criteria".</p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="graph-box">
+                <h3 class="box-header">Business Analytics</h3>
+                <p style="color: #858796; font-size: 0.9rem;">No charts are configured yet.</p>
+            </div>
+        {% endif %}
+    </div>
+        <div class="recent-orders-box">
+            <h3 class="box-header">Recent Orders</h3>
+            <table class="dashboard-table">
+                <thead>
+                    <tr>
+                        <th>Order #</th>
+                        <th>Customer</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in recent_orders_list %}
+                    <tr style="border-bottom: 1px solid #eee;">
+                        <td style="font-weight: bold; color: #4e73df;">#{{ order.order_number }}</td>
+                        <td>{{ order.full_name }}</td>
+                        <td>{{ order.order_total }} QAR</td>
+                        <td>
+                            <span style="padding: 3px 8px; border-radius: 4px; color: white; font-size: 10px; font-weight: bold; background-color: 
+                                {% if order.status == 'New' %}#28a745
+                                {% elif order.status == 'Accepted' %}#17a2b8
+                                {% elif order.status == 'Packed' %}#6f42c1
+                                {% elif order.status == 'On The Way' %}#fd7e14
+                                {% elif order.status == 'Completed' %}#007bff
+                                {% else %}#6c757d{% endif %};">
+                                {{ order.status }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="4" style="text-align:center;">No recent orders.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{{ block.super }}
+{% endblock %}
