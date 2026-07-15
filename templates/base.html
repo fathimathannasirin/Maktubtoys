@@ -8,9 +8,9 @@
     <meta http-equiv="cache-control" content="max-age=604800" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <title>{% trans "Thenzalathmaha | One of the Best Online Shopping Platform" %}</title>
+    <title>{% trans "Maktub Trading | One of the Best Online Shopping Platform" %}</title>
 
-    <link href="{% static 'images/favicon.ico' %}" rel="shortcut icon" type="image/x-icon">
+    <link href="{% static 'images/maktub.jpeg' %}" rel="shortcut icon" type="image/x-icon">
 
     <script src="{% static 'js/jquery-2.0.0.min.js' %}" type="text/javascript"></script>
     <script src="{% static 'js/bootstrap.bundle.min.js' %}" type="text/javascript"></script>
@@ -30,18 +30,17 @@
     <style>
     /* 1. Background Logic */
     body {
-        {% block bg_image %}
-        background: url("{% static 'images/backk.png' %}");
-        {% endblock %}
-        background-size: cover;
-        background-attachment: fixed;
-        background-repeat: no-repeat;
-        padding-top: 130px; 
+        background-color: #F5F2EB; /* Light beige color */
+        padding-top: 130px;
+         
     }
 
     @media (max-width: 991px) {
-        /* Consistent padding to push banner down on phones */
-        body { padding-top: 220px !important; } 
+        body { padding-top: 220px !important; }
+    }
+
+    @media (min-width: 768px) and (max-width: 991px) {
+        body { padding-top: 190px !important; }
     }
 
     /* 2. STAR RATING INPUT SYSTEM */
@@ -58,6 +57,43 @@
     .fa-star, .fa-star-half-o { color: #ffb503 !important; }
     .fa-star-o { color: #ccc !important; }
     .rating-star { display: inline-flex; align-items: center; }
+
+    .announcement-bar {
+        background: linear-gradient(90deg, #6D001F 0%, #400116 100%);
+        color: #F5F2EB;
+        border-top: 1px solid rgba(245, 242, 235, 0.16);
+        overflow: hidden;
+        padding: 8px 0;
+        position: relative;
+        z-index: 999;
+    }
+
+    .announcement-track {
+        display: flex;
+        width: max-content;
+        animation: announcement-scroll 22s linear infinite;
+        will-change: transform;
+    }
+
+    .announcement-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 0 24px;
+        white-space: nowrap;
+        font-size: 0.95rem;
+        font-weight: 600;
+        letter-spacing: 0.01em;
+    }
+
+    .announcement-item i {
+        color: #F5F2EB;
+    }
+
+    @keyframes announcement-scroll {
+        from { transform: translateX(0); }
+        to { transform: translateX(-50%); }
+    }
 </style>
 
 <style>
@@ -99,6 +135,19 @@
 <body>
 
 {% include 'includes/navbar.html' %}
+
+{% if announcements %}
+<section class="announcement-bar" aria-label="Announcements">
+    <div class="announcement-track">
+        {% for announcement in announcements %}
+            <span class="announcement-item"><i class="fa fa-bolt"></i> {{ announcement.text }}</span>
+        {% endfor %}
+        {% for announcement in announcements %}
+            <span class="announcement-item"><i class="fa fa-bolt"></i> {{ announcement.text }}</span>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
 
 {% block content %}
 {% endblock %}

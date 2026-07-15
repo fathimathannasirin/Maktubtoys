@@ -4,77 +4,118 @@
 
 {% block content %}
 <style>
-    /* Fixed: Style the wrapper instead of the body to keep Navbar safe */
     .register-wrapper {
-        background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), 
-                    url("{% static 'images/sign.jpg' %}");
-        background-size: cover;
-        background-position: center;
-        min-height: 90vh; /* Adjusts height without breaking footer */
+        background: linear-gradient(135deg, #f7efe3 0%, #efe2ce 100%);
+        min-height: 100vh;
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 50px 0;
+        padding: 120px 20px 40px;
     }
 
     .register-card {
-        max-width: 950px;
-        width: 90%;
+        max-width: 980px;
+        width: 100%;
         background: #fff;
         border-radius: 20px;
         overflow: hidden;
         display: flex;
-        box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+        box-shadow: 0 18px 40px rgba(109, 0, 31, 0.12);
+        border: 1px solid #e8ddcc;
     }
 
-    /* Left Side - Image Background */
     .image-side {
-        background: #fff9e6; /* The light yellow from the screenshot */
-        width: 45%;
+        background: linear-gradient(135deg, #6D001F 0%, #8B4F2D 100%);
+        width: 42%;
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 20px;
+        padding: 40px;
+        color: #fff;
     }
-    
-    /* Right Side - Form */
+
+    .brand-panel {
+        width: 100%;
+        max-width: 330px;
+    }
+
+    .brand-icon {
+        width: 54px;
+        height: 54px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.2);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.3rem;
+        margin-bottom: 16px;
+    }
+
+    .brand-panel h4 {
+        font-size: 1.4rem;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .brand-panel p {
+        color: rgba(255,255,255,0.9);
+        margin-bottom: 16px;
+    }
+
+    .brand-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .brand-list li {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 8px;
+        color: rgba(255,255,255,0.95);
+    }
+
     .form-side {
-        width: 55%;
-        padding: 40px 50px;
+        width: 58%;
+        padding: 44px 42px;
+        background: #fff;
     }
 
-    .social-btn {
-        border: 1px solid #ddd;
+    .form-control {
         border-radius: 8px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 10px;
-        text-decoration: none;
-        color: #333;
-        margin-bottom: 20px;
+        padding: 12px 14px;
+        border: 1px solid #d8c9ae;
     }
 
-    .text-divider {
-        text-align: center;
-        margin-bottom: 20px;
-        color: #bbb;
-        position: relative;
+    .form-control:focus {
+        border-color: #8B4F2D;
+        box-shadow: 0 0 0 0.2rem rgba(139, 79, 45, 0.16);
     }
 
     .btn-create {
-        background-color: #28a745; /* Green button */
+        background-color: #6D001F;
         color: #fff;
         border: none;
         padding: 12px;
         border-radius: 8px;
         width: 100%;
-        font-weight: bold;
+        font-weight: 700;
+        transition: background 0.3s ease;
+    }
+
+    .btn-create:hover {
+        background-color: #400116;
     }
 
     @media (max-width: 768px) {
-        .image-side { display: none; }
-        .form-side { width: 100%; padding: 30px; }
+        .image-side {
+            display: none;
+        }
+        .form-side {
+            width: 100%;
+            padding: 30px;
+        }
     }
 </style>
 
@@ -82,31 +123,45 @@
     <div class="register-card">
         
         <div class="image-side">
-            <img src="{% static 'images/tinylog.png' %}" style="max-width: 100%; height: auto;" alt="Register Visual">
+            <div class="brand-panel">
+                <div class="brand-icon">
+                    <i class="fa fa-user-plus"></i>
+                </div>
+                <h4>{% trans "Create your account" %}</h4>
+                <p>{% trans "Join Maktub Trading for fast shopping, secure checkout, and great support." %}</p>
+                <ul class="brand-list">
+                    <li><i class="fa fa-check-circle"></i> {% trans "Quick sign up" %}</li>
+                    <li><i class="fa fa-check-circle"></i> {% trans "Order tracking" %}</li>
+                    <li><i class="fa fa-check-circle"></i> {% trans "Exclusive offers" %}</li>
+                </ul>
+            </div>
         </div>
 
         <div class="form-side">
         {% include "includes/alerts.html" %}
 
         <div class="mb-4">
-            <h3 class="fw-bold" style="color: #004a99;">Thenzelmaha</h3>
-            <p class="text-muted">{% trans "Already have an account?" %}<a href="{% url 'login' %}" class="text-warning">{% trans "Sign in" %}</a></p>
+            <h3 class="fw-bold" style="color: #6D001F;">Maktub Trading</h3>
+            <p class="text-muted">{% trans "Already have an account?" %} <a href="{% url 'login' %}" style="color: #8B4F2D; font-weight: 600;">{% trans "Sign in" %}</a></p>
         </div>
-
-        <div class="text-divider">OR</div>
 
         <form method="POST">
             {% csrf_token %}
             
             {% if form.errors %}
                 <div class="alert alert-danger">
-                    <strong>Please fix the following:</strong>
+                    <strong>{% trans "Please fix the following:" %}</strong>
                     <ul>
                         {% for field in form %}
                             {% if field.errors %}
-                                <li>{{ field.label }}: {{ field.errors|striptags }}</li>
+                                <li><strong>{{ field.label }}:</strong> {{ field.errors|striptags }}</li>
                             {% endif %}
                         {% endfor %}
+                        {% if form.non_field_errors %}
+                            {% for error in form.non_field_errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        {% endif %}
                     </ul>
                 </div>
             {% endif %}

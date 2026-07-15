@@ -8,20 +8,19 @@ from store.models import Product
 from Accounts.models import Account
 from carts.models import Cart
 from category.models import Category
-from django.urls import reverse
+from django.urls import path, reverse
+from django.template.response import TemplateResponse
+from django.shortcuts import get_object_or_404
 from rangefilter.filters import DateRangeFilter
 import datetime
 
 class BaseAdmin(admin.ModelAdmin):
     class Media:
         js = ('js/admin_form_validation.js',)
-# Safe import for the charts library
-try:
-    from admin_tools_stats.admin import AdminChartMixin
-    HAS_CHARTS = True
-except ImportError:
-    HAS_CHARTS = False
-    class AdminChartMixin: pass
+
+# Keep the dashboard simple and stable without depending on the stats plugin.
+class AdminChartMixin:
+    pass
 
 class OrderProductInline(admin.TabularInline):
     model = OrderProduct
@@ -96,13 +95,32 @@ class OrderAdmin(ExportActionMixin,BaseAdmin,AdminChartMixin, admin.ModelAdmin):
                 instance.save()
         formset.save_m2m()
 
+    def get_urls(self):
+        urls = super().get_urls()
+        custom_urls = [
+            path(
+                '<int:order_id>/invoice/',
+                self.admin_site.admin_view(self.admin_invoice_view),
+                name='orders_order_invoice',
+            ),
+        ]
+        return custom_urls + urls
+
+    def admin_invoice_view(self, request, order_id):
+        order = get_object_or_404(Order, pk=order_id)
+        order_detail = OrderProduct.objects.filter(order=order)
+        context = {
+            'order': order,
+            'order_detail': order_detail,
+            'is_admin_view': True,
+        }
+        return TemplateResponse(request, 'orders/admin_invoice_pdf.html', context)
+
     def view_invoice(self, obj):
         if obj.id:
-            # We use obj.id because your URL pattern [0-9]+ ONLY accepts numbers.
-            # This is exactly what your website uses, so it won't break anything.
-            url = reverse('order_detail', args=[obj.id]) + '?mode=admin'
+            url = reverse('admin:orders_order_invoice', args=[obj.id])
             return format_html(
-                '<a class="button" href="{}" target="_blank" style="...">VIEW</a>', 
+                '<a class="button" href="{}" target="_blank" style="background:#6D001F; color:white; padding:6px 10px; border-radius:4px; text-decoration:none;">VIEW</a>',
                 url
             )
         return "N/A"
@@ -179,20 +197,8 @@ def custom_admin_index(request, extra_context=None):
     except Exception as e:
         print(f"Dashboard calculation error: {e}")
 
-    if HAS_CHARTS:
-        try:
-            from admin_tools_stats.views import get_dashboard_stats
-            # We call this, but we MUST ensure it doesn't crash the whole page
-            stats = get_dashboard_stats(request)
-            
-            # Only add to context if it's a valid list/data structure
-            if stats and not hasattr(stats, 'url'): # Ensure it's not a Redirect object
-                extra_context['kpi_graph'] = stats
-            else:
-                extra_context['kpi_graph'] = []
-        except Exception as e:
-            print(f"Graph loading error: {e}")
-            extra_context['kpi_graph'] = []
+    # Always provide a safe empty chart list so the admin dashboard renders without errors.
+    extra_context['kpi_graph'] = []
 
     return original_admin_index(request, extra_context)
 

@@ -69,14 +69,109 @@
 
     /* Banner Styling */
     .store-banner {
-        padding: 60px 0;
-        background: linear-gradient(rgba(0, 102, 255, 0.7), rgba(0, 44, 155, 0.8)), 
-                    url("{% static 'images/banners/store-bg.jpg' %}") no-repeat center center;
+        position: relative;
+        overflow: hidden;
+        padding: 70px 0;
+        background:
+            linear-gradient(135deg, #6D001F 0%, #400116 45%, #8D2140 100%),
+            url("{% static 'images/banners/store-bg.jpg' %}") no-repeat center center;
         background-size: cover;
     }
-    .store-title { color: #fff; font-size: 2.5rem; font-weight: 800; text-shadow: 2px 2px 10px rgba(0,0,0,0.2); }
+    .store-banner::before,
+    .store-banner::after {
+        content: "";
+        position: absolute;
+        border-radius: 50%;
+        pointer-events: none;
+        filter: blur(2px);
+    }
+    .store-banner::before {
+        width: 260px;
+        height: 260px;
+        background: rgba(245, 242, 235, 0.18);
+        top: -90px;
+        right: -40px;
+    }
+    .store-banner::after {
+        width: 180px;
+        height: 180px;
+        background: rgba(245, 242, 235, 0.14);
+        bottom: -60px;
+        left: -30px;
+    }
+    .store-banner-card {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        padding: 36px 38px;
+        border-radius: 28px;
+        background: rgba(245, 242, 235, 0.14);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        box-shadow: 0 18px 50px rgba(65, 38, 16, 0.22);
+        border: 1px solid rgba(245, 242, 235, 0.24);
+    }
+    .store-banner-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 14px;
+        border-radius: 999px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        background: rgba(245, 242, 235, 0.2);
+        color: #F5F2EB;
+        margin-bottom: 14px;
+    }
+    .store-title {
+        margin: 0 0 10px 0;
+        color: #fff;
+        font-size: clamp(2rem, 3vw, 3rem);
+        font-weight: 800;
+        line-height: 1.1;
+        text-shadow: 0 8px 24px rgba(0,0,0,0.18);
+    }
+    .store-subtitle {
+        margin: 0;
+        max-width: 640px;
+        color: rgba(255,255,255,0.95);
+        font-size: 1rem;
+        line-height: 1.7;
+    }
+    .store-banner-highlights {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: flex-end;
+    }
+    .store-highlight-pill {
+        padding: 10px 14px;
+        border-radius: 999px;
+        background: rgba(245, 242, 235, 0.16);
+        border: 1px solid rgba(245, 242, 235, 0.24);
+        color: #F5F2EB;
+        font-size: 0.9rem;
+        font-weight: 600;
+        white-space: nowrap;
+    }
     .sidebar-parent-text { font-size: 1rem; font-weight: 700; color: #333; text-decoration: none !important; }
     .side-child-img { width: 24px; height: 24px; border-radius: 4px; object-fit: cover; margin-right: 10px; }
+
+    @media (max-width: 767px) {
+        .store-banner-card {
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 28px 24px;
+        }
+        .store-banner-highlights {
+            justify-content: flex-start;
+        }
+    }
     
     {% if LANGUAGE_CODE == 'ar' %}
     .mr-md-auto { margin-left: auto !important; margin-right: 0 !important; }
@@ -103,13 +198,27 @@
 </style>
 
 <section class="store-banner">
-    <div class="container-fluid px-lg-5 text-center">
-        {% if 'search' in request.path %}
-            <h2 class="store-title">{% trans "Search Result" %}</h2>
-        {% else %}
-            <h2 class="store-title">{% trans "Our Products" %}</h2>
-        {% endif %}
-    </div> 
+    <div class="container-fluid px-lg-5">
+        <div class="store-banner-card">
+            <div>
+                <div class="store-banner-badge">
+                    <i class="fa fa-star"></i>
+                    {% trans "Curated Collection" %}
+                </div>
+                {% if 'search' in request.path %}
+                    <h2 class="store-title">{% trans "Search Result" %}</h2>
+                {% else %}
+                    <h2 class="store-title">{% trans "Our Products" %}</h2>
+                {% endif %}
+                <p class="store-subtitle">
+                    {% trans "Discover quality essentials, everyday favorites, and fresh arrivals in one elegant shopping experience." %}
+                </p>
+            </div>
+            <div class="store-banner-highlights">
+                <span class="store-highlight-pill"><i class="fa fa-truck mr-2"></i>{% trans "Fast Delivery" %}</span>
+            </div>
+        </div>
+    </div>
 </section>
 
 <section class="section-content padding-y" {% if request.LANGUAGE_CODE == 'ar' %}dir="rtl" style="text-align: right;"{% endif %}>
@@ -189,7 +298,7 @@
                                 {% endif %}
                             </a>
                             <div class="price-wrap text-center">
-                                <span class="price" style="color: #3167eb; font-weight: 700;">{{ product.price|unlocalize }} {% trans "QAR" %}</span>
+                                <span class="price" style="color: #3167eb; font-weight: 700;">{{ product.price|floatformat:2 }} {% trans "QAR" %}</span>
                             </div>
                             <div class="action-wrap">
                                 {% if product.stock <= 0 %}

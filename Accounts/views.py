@@ -12,6 +12,8 @@ from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import EmailMessage
 from django.http import HttpResponse
+from django.urls import reverse
+from urllib.parse import urlencode
 
 from carts.views import _cart_id
 import requests
@@ -28,7 +30,12 @@ def register(request):
             phone_number =form.cleaned_data['phone_number']
             email =form.cleaned_data['email']
             password =form.cleaned_data['password']
-            username = email.split("@")[0]
+            base_username = email.split("@")[0]
+            username = base_username
+            counter = 1
+            while Account.objects.filter(username=username).exists():
+                username = f"{base_username}{counter}"
+                counter += 1
             user =Account.objects.create_user(first_name=first_name, last_name=last_name, email=email, username=username, password=password)
             user.phone_number = phone_number
             user.save()
@@ -51,7 +58,7 @@ def register(request):
             send_email = EmailMessage(mail_subject, message, to=[to_email])
             send_email.send()
             messages.success(request, 'Thankyou for registering with us. We have sent a verification email to your email address. Please verify it.')
-            return redirect('/en/accounts/login/?command=verification&email=' + email)
+            return redirect(f"{reverse('login')}?{urlencode({'command': 'verification', 'email': email})}")
     else:
         form = RegistrationForm()
     context={
@@ -273,14 +280,16 @@ def Change_Password(request):
 @login_required(login_url='login')
 def order_detail(request, order_id):
     try:
+        order = Order.objects.filter(pk=order_id).first() or Order.objects.filter(order_number=order_id).first()
+        if order is None:
+            return redirect('my_orders')
+
         # Allows Admin to see any order; customers can only see their own
-        if request.user.is_staff:
-            order = Order.objects.get(order_number=order_id)
-        else:
-            order = Order.objects.get(order_number=order_id, user=request.user)
-            
+        if not request.user.is_staff and order.user_id != request.user.id:
+            return redirect('my_orders')
+
         order_detail = OrderProduct.objects.filter(order=order)
-        
+
         # Detects if the 'VIEW INVOICE' button was clicked in the Admin
         is_admin_view = request.GET.get('mode') == 'admin'
 

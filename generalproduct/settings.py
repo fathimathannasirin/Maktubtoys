@@ -29,6 +29,7 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = [
+    "*",
     'localhost',
     '127.0.0.1',
     '.loca.lt',
@@ -62,7 +63,6 @@ INSTALLED_APPS = [
 
     # 5. Third-party & Project Apps
     'admin_honeypot',
-    'admin_tools_stats', 
     'django_nvd3',
     'googlecharts',
     'social_django',
@@ -111,6 +111,7 @@ TEMPLATES = [
                 'django.template.context_processors.i18n',
                 'category.context_processors.menu_links',
                 'carts.context_processors.counter',
+                'home.context_processors.announcements',
                 'social_django.context_processors.backends',
                 'social_django.context_processors.login_redirect',
             ],
@@ -208,9 +209,16 @@ EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:8000',
     'http://127.0.0.1:8000',
+    'http://0.0.0.0:8000',
     'https://localhost:8000',
     'https://127.0.0.1:8000',
+    'https://0.0.0.0:8000',
+    'http://*.loca.lt',
     'https://*.loca.lt',
+    'http://*.ngrok-free.app',
+    'https://*.ngrok-free.app',
+    'http://*.trycloudflare.com',
+    'https://*.trycloudflare.com',
 ]
 
 # Ensure these are False while you are developing locally
@@ -238,10 +246,6 @@ PREFIX_DEFAULT_LANGUAGE = True
 X_FRAME_OPTIONS = 'SAMEORIGIN'
 SILENCED_SYSTEM_CHECKS = ['security.W019']
 
-ADMIN_TOOLS_STATS_DASHBOARD_STATS_ONLY = True
-ADMIN_TOOLS_STATS_SHOW_GRAPH_INDEX = True
-ADMIN_TOOLS_STATS_GRAPH_TYPE = 'nvd3'
-ADMIN_TOOLS_STATS_NAV_BAR = True
 SILENCED_SYSTEM_CHECKS = ['admin_tools.W001']
 
 # Change this temporarily to see the email in your VS Code terminal

@@ -1,0 +1,341 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block content %}
+<style>
+    .stats-shell {
+        padding: 24px;
+        background: linear-gradient(135deg, #f5f5f5 0%, #e8e0dc 100%);
+        min-height: 100vh;
+    }
+    
+    .dashboard-title {
+        margin-bottom: 12px;
+        font-size: 28px;
+        font-weight: 700;
+        color: #1a1a1a;
+    }
+    
+    .dashboard-subtitle {
+        margin-bottom: 28px;
+        color: #666;
+        font-size: 14px;
+    }
+    
+    .kpi-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 12px;
+        margin-bottom: 28px;
+    }
+    
+    .kpi-card {
+        background: #fff;
+        border: 1px solid #e0d5cf;
+        border-radius: 12px;
+        padding: 16px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        text-align: center;
+    }
+    
+    .kpi-card h3 {
+        margin: 0 0 8px;
+        font-size: 11px;
+        text-transform: uppercase;
+        color: #6D001F;
+        letter-spacing: 0.08em;
+        font-weight: 700;
+    }
+    
+    .kpi-card .value {
+        font-size: 26px;
+        font-weight: 700;
+        color: #212529;
+    }
+    
+    .chart-panel {
+        background: linear-gradient(135deg, #ffffff 0%, #faf6f2 100%);
+        border: 2px solid #dcc9bc;
+        border-radius: 16px;
+        padding: 28px;
+        box-shadow: 0 12px 40px rgba(109, 0, 31, 0.12);
+        margin-bottom: 24px;
+    }
+    
+    .chart-panel h2 {
+        margin: 0 0 8px;
+        font-size: 20px;
+        font-weight: 700;
+        color: #1a1a1a;
+    }
+    
+    .chart-panel .subtitle {
+        margin-bottom: 20px;
+        font-size: 13px;
+        color: #888;
+    }
+    
+    .chart-container {
+        position: relative;
+        width: 100%;
+        height: 380px;
+        background: linear-gradient(180deg, #fefdfb 0%, #faf4f0 100%);
+        border-radius: 12px;
+        padding: 20px;
+        box-sizing: border-box;
+        display: flex;
+        align-items: flex-end;
+        gap: 16px;
+    }
+    
+    .chart-bars-wrapper {
+        flex: 1;
+        display: flex;
+        align-items: flex-end;
+        gap: 18px;
+        height: 100%;
+        padding: 12px 0;
+        position: relative;
+    }
+    
+    .chart-bar {
+        flex: 1;
+        background: linear-gradient(180deg, #e9a3b0 0%, #6D001F 100%);
+        border-radius: 10px 10px 0 0;
+        position: relative;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        min-height: 8px;
+        transition: all 0.3s ease;
+    }
+    
+    .chart-bar:hover {
+        filter: brightness(1.1);
+        box-shadow: 0 4px 12px rgba(109, 0, 31, 0.2);
+    }
+    
+    .chart-bar-label {
+        position: absolute;
+        bottom: -28px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 12px;
+        font-weight: 600;
+        color: #555;
+        white-space: nowrap;
+    }
+    
+    .chart-bar-value {
+        position: absolute;
+        top: -26px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 13px;
+        font-weight: 700;
+        color: #6D001F;
+    }
+    
+    .chart-legend {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        margin-top: 32px;
+        padding-top: 16px;
+        border-top: 1px solid #e8d8d2;
+    }
+    
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+        color: #555;
+    }
+    
+    .legend-color {
+        width: 16px;
+        height: 16px;
+        border-radius: 4px;
+    }
+    
+    .recent-orders-panel {
+        background: #fff;
+        border: 1px solid #e0d5cf;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+    
+    .recent-orders-panel h3 {
+        margin: 0 0 16px;
+        font-size: 16px;
+        font-weight: 700;
+        color: #1a1a1a;
+    }
+    
+    .orders-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    
+    .orders-table th {
+        text-align: left;
+        padding: 10px 12px;
+        background: #f8f6f3;
+        border-bottom: 2px solid #e8d8d2;
+        font-size: 12px;
+        font-weight: 700;
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+    
+    .orders-table td {
+        padding: 12px;
+        border-bottom: 1px solid #f0e8e3;
+        font-size: 13px;
+    }
+    
+    .orders-table tr:last-child td {
+        border-bottom: none;
+    }
+    
+    .order-status {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+    
+    .status-new { background: #d4edda; color: #155724; }
+    .status-accepted { background: #d1ecf1; color: #0c5460; }
+    .status-packed { background: #e2e3e5; color: #383d41; }
+    .status-on-the-way { background: #fff3cd; color: #856404; }
+    .status-completed { background: #cfe2ff; color: #084298; }
+</style>
+
+<div class="stats-shell">
+    <div class="dashboard-title">Admin Analytics Dashboard</div>
+    <div class="dashboard-subtitle">Real-time overview of your store performance</div>
+    
+    <div class="kpi-grid">
+        <div class="kpi-card">
+            <h3>Total Orders</h3>
+            <div class="value">{{ total_orders }}</div>
+        </div>
+        <div class="kpi-card">
+            <h3>Total Sales</h3>
+            <div class="value">{{ total_sales|floatformat:0 }} QAR</div>
+        </div>
+        <div class="kpi-card">
+            <h3>Completed</h3>
+            <div class="value">{{ completed_orders }}</div>
+        </div>
+        <div class="kpi-card">
+            <h3>Pending</h3>
+            <div class="value">{{ pending_orders }}</div>
+        </div>
+        <div class="kpi-card">
+            <h3>Customers</h3>
+            <div class="value">{{ total_customers }}</div>
+        </div>
+        <div class="kpi-card">
+            <h3>Active Products</h3>
+            <div class="value">{{ active_products }}</div>
+        </div>
+        <div class="kpi-card">
+            <h3>Out of Stock</h3>
+            <div class="value">{{ out_of_stock }}</div>
+        </div>
+    </div>
+    
+    <div class="chart-panel">
+        <h2>Sales & Orders Analytics</h2>
+        <div class="subtitle">Monthly performance and order status breakdown</div>
+        
+        <div class="chart-container">
+            <div class="chart-bars-wrapper" id="chartWrapper"></div>
+        </div>
+        
+        <div class="chart-legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(180deg, #e9a3b0 0%, #6D001F 100%);"></div>
+                <span>Orders Count</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(135deg, #c24361 0%, #8B1538 100%);"></div>
+                <span>Sales Performance</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="recent-orders-panel">
+        <h3>📋 Recent Orders</h3>
+        <table class="orders-table">
+            <thead>
+                <tr>
+                    <th>Order #</th>
+                    <th>Customer</th>
+                    <th>Status</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in recent_orders %}
+                <tr>
+                    <td><strong>#{{ order.order_number }}</strong></td>
+                    <td>{{ order.full_name }}</td>
+                    <td>
+                        <span class="order-status status-{{ order.status|lower|cut:' ' }}">
+                            {{ order.status }}
+                        </span>
+                    </td>
+                    <td><strong>{{ order.order_total|floatformat:2 }} QAR</strong></td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" style="text-align: center; color: #999;">No recent orders yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const chartWrapper = document.getElementById('chartWrapper');
+        const chartData = [
+            { label: 'Completed', value: {{ completed_orders }}, max: Math.max({{ completed_orders }}, {{ pending_orders }}, {{ total_orders }}) },
+            { label: 'Pending', value: {{ pending_orders }}, max: Math.max({{ completed_orders }}, {{ pending_orders }}, {{ total_orders }}) },
+            { label: 'Total', value: {{ total_orders }}, max: Math.max({{ completed_orders }}, {{ pending_orders }}, {{ total_orders }}) }
+        ];
+        
+        const maxValue = Math.max(...chartData.map(d => d.value), 1);
+        const containerHeight = chartWrapper.parentElement.offsetHeight - 40;
+        
+        chartData.forEach((item, idx) => {
+            const bar = document.createElement('div');
+            bar.className = 'chart-bar';
+            const heightPercent = (item.value / maxValue) * 100;
+            bar.style.height = heightPercent + '%';
+            
+            const valueLabel = document.createElement('div');
+            valueLabel.className = 'chart-bar-value';
+            valueLabel.textContent = item.value;
+            bar.appendChild(valueLabel);
+            
+            const label = document.createElement('div');
+            label.className = 'chart-bar-label';
+            label.textContent = item.label;
+            bar.appendChild(label);
+            
+            chartWrapper.appendChild(bar);
+        });
+    });
+</script>
+{% endblock %}

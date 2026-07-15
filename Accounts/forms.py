@@ -5,9 +5,12 @@ class RegistrationForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput(attrs={
         'placeholder':'Enter password',
         'class': 'form-control',
+        'autocomplete': 'new-password',
     }))
     confirm_password = forms.CharField(widget=forms.PasswordInput(attrs={
-        'placeholder':'confirm password'
+        'placeholder':'Confirm password',
+        'class': 'form-control',
+        'autocomplete': 'new-password',
     }))
     class Meta:
         model = Account
@@ -31,6 +34,8 @@ class RegistrationForm(forms.ModelForm):
             raise forms.ValidationError(
                 "Passwords do not match!"
             )
+
+        return cleaned_data
 
 class UserForm(forms.ModelForm):
     class Meta:

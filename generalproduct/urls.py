@@ -22,15 +22,15 @@ from django.conf.urls.i18n import i18n_patterns
 
 # 1. Non-translatable URLs (Keep these outside i18n_patterns)
 urlpatterns = [
-    path('admin_tools_stats/', include('admin_tools_stats.urls')),
     path('admin_tools/', include('admin_tools.urls')),
     path('admin/', include('admin_honeypot.urls', namespace='admin_honeypot')),
-    path('i18n/', include('django.conf.urls.i18n')), # Required for language switching
-    
+    path('i18n/', include('django.conf.urls.i18n')),  # Required for language switching
 ]
+
 
 # 2. Translatable URLs (Wrapped in i18n_patterns)
 urlpatterns += i18n_patterns(
+    path('securelogin/stats/', views.admin_stats_dashboard, name='admin_stats_dashboard'),
     path('securelogin/', admin.site.urls),
     path('', views.home, name='home'),
     path('store/', include('store.urls')),

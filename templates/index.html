@@ -6,7 +6,7 @@
 <style>
     /* --- 1. HERO SECTION --- */
     .hero-section { 
-        background-image: url('{% static "images/bnner.png" %}');
+        background-image: url('{% static "images/toy_banner_1_great_sale.png" %}');
         background-size: cover; 
         background-position: center; 
         background-repeat: no-repeat;
@@ -14,9 +14,11 @@
         display: flex;
         align-items: center;
         position: relative;
+        border-radius: 18px;
+        overflow: hidden;
     }
-    .hero-content { position: relative; z-index: 2; padding-left: 20px; }
-    .hero-title { font-size: 3.8rem; font-weight: 800; color: #2d5a27; line-height: 1; margin-bottom: 20px; }
+    .hero-content { position: relative; z-index: 2; padding: 24px 20px; }
+    .hero-title { font-size: clamp(1.4rem, 3vw, 3.8rem); font-weight: 800; color: #2d5a27; line-height: 1.05; margin-bottom: 20px; }
     .hero-title span { color: #ff9900; }
 
     /* --- 2. SLIDER LOGIC --- */
@@ -25,16 +27,17 @@
         flex-wrap: nowrap;
         overflow-x: auto;
         gap: 12px;
-        padding: 15px 0; 
-        scrollbar-width: none; 
+        padding: 12px 2px 16px;
+        scrollbar-width: none;
         scroll-snap-type: x mandatory;
         -webkit-overflow-scrolling: touch;
+        align-items: stretch;
     }
     .slider-container-go::-webkit-scrollbar { display: none; }
 
     .item-5-fixed {
-        flex: 0 0 calc(20% - 10px); 
-        min-width: calc(20% - 10px);
+        flex: 0 0 calc(50% - 10px);
+        min-width: calc(50% - 10px);
         scroll-snap-align: start;
         display: flex;
     }
@@ -42,53 +45,62 @@
 
     /* --- 3. CATEGORY CARDS --- */
     .category-card-go {
-        background: #fff; border: 1px solid #eaeaea; border-radius: 8px;
+        background: #fff; border: 1px solid #eaeaea; border-radius: 12px;
         padding: 20px 10px; text-align: center; width: 100%; transition: 0.3s;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        min-height: 220px;
     }
-    .cat-circle-container { width: 110px; height: 110px; margin: 0 auto 12px auto; border-radius: 50%; overflow: hidden; border: 1px solid #eee; }
+    .cat-circle-container { width: 96px; height: 96px; margin: 0 auto 12px auto; border-radius: 50%; overflow: hidden; border: 1px solid #eee; }
     .cat-circle-container img { width: 100%; height: 100%; object-fit: cover; }
 
     /* --- 4. PRODUCT CARDS --- */
     .go-mini-card {
-        background: #fff; border: 1px solid #f0f0f0; border-radius: 8px; padding: 15px; text-align: center; 
-        display: flex; flex-direction: column; width: 100%; min-height: 360px;
+        background: #fff; border: 1px solid #f0f0f0; border-radius: 12px; padding: 15px; text-align: center;
+        display: flex; flex-direction: column; width: 100%; min-height: 360px; height: 100%;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.03);
     }
     .img-wrap-go { height: 165px; width: 100%; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; overflow: hidden; }
     .img-wrap-go img { max-height: 100%; max-width: 100%; object-fit: contain; }
-    .product-name-go { font-size: 1.05rem; font-weight: 700; height: 48px; line-height: 1.2; overflow: hidden; margin-bottom: 8px; color: #333; }
-    .product-price-go { font-size: 1.15rem; color: #28a745; font-weight: 800; margin-bottom: 5px; }
-    .btn-add-go { font-size: 0.95rem; font-weight: 700; padding: 8px 0; }
+    .product-name-go { font-size: 1rem; font-weight: 700; min-height: 46px; line-height: 1.25; overflow: hidden; margin-bottom: 8px; color: #333; }
+    .product-price-go { font-size: 1rem; color: #28a745; font-weight: 800; margin-bottom: 5px; }
+    .btn-add-go { font-size: 0.9rem; font-weight: 700; padding: 8px 0; margin-top: auto; }
 
     /* --- 5. SECTION CONTROLS --- */
     .category-banner-item, .dynamic-selection-section { display: none; } 
     .active-item { display: block !important; animation: fadeIn 0.6s ease-in-out; }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    .section-header-go { display: flex; justify-content: space-between; align-items: center; margin-top: 40px; margin-bottom: 20px; border-bottom: 1px solid #eee; }
+    .section-header-go { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 40px; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
 
     /* --- RESPONSIVENESS UPDATES --- */
-    @media (max-width: 992px) {
-        .hero-section { min-height: 400px; }
-        .hero-title { font-size: 2.8rem; }
+    @media (min-width: 992px) {
         .item-5-fixed {
-            flex: 0 0 calc(33.33% - 10px); 
-            min-width: calc(33.33% - 10px);
+            flex: 0 0 calc(20% - 10px);
+            min-width: calc(20% - 10px);
         }
     }
 
-    @media (max-width: 768px) {
+    @media (min-width: 768px) and (max-width: 991px) {
+        .hero-section { min-height: 420px; }
+        .item-5-fixed {
+            flex: 0 0 calc(33.33% - 10px);
+            min-width: calc(33.33% - 10px);
+        }
+        .go-mini-card { min-height: 340px; }
+    }
+
+    @media (max-width: 767px) {
         .hero-section { 
             background-image: url('{% static "images/neww.jpg" %}');
-            min-height: 280px; /* Matching your current mobile height */
+            min-height: 280px;
             background-size: contain; 
             background-position: top center;
+            border-radius: 12px;
         }
         .hero-title { font-size: 1.2rem; margin-bottom: 5px; }
-        
-        /* Adjusted padding so buttons/text don't conflict with banner graphics */
-        .hero-content { padding-left: 10px; padding-top: 50px; } 
+        .hero-content { padding: 14px 12px 16px; } 
 
         .item-5-fixed {
-            flex: 0 0 calc(50% - 10px); 
+            flex: 0 0 calc(50% - 10px);
             min-width: calc(50% - 10px);
         }
         /* MOBILE: Force one line and hide the rest */
@@ -108,6 +120,51 @@
     }
 </style>
 
+<style>
+/* Carousel specific styles */
+.banner-carousel { position: relative; overflow: hidden; }
+.carousel-inner { position: relative; width: 100%; height: 520px; }
+.carousel-item { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 0.6s ease-in-out; }
+.carousel-item.active { opacity: 1; position: relative; }
+.carousel-image { object-fit: cover; height: 100%; width: 100%; }
+.carousel-caption { position: absolute; left: 40px; bottom: 40px; z-index: 3; color: #fff; text-align: left; max-width: min(60%, 560px); }
+.carousel-caption .hero-title { color: #F5F2EB; font-size: clamp(1.2rem, 2.6vw, 2.4rem); }
+.carousel-caption .hero-sub { color: rgba(245,242,235,0.95); font-size: clamp(0.9rem, 1.2vw, 1.05rem); margin-top: 8px; }
+.carousel-control { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(64,1,22,0.6); color: #F5F2EB; border: none; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; cursor: pointer; z-index: 5; }
+.carousel-control.prev { left: 16px; }
+.carousel-control.next { right: 16px; }
+
+@media (max-width: 991px) {
+    .carousel-inner { height: 400px; }
+}
+
+@media (max-width: 767px) {
+    .carousel-inner { height: 320px; }
+    .carousel-caption { left: 18px; right: 18px; bottom: 20px; max-width: 90%; }
+    .carousel-caption .hero-title { font-size: 1.15rem; }
+    .carousel-control { width: 40px; height: 40px; font-size: 1.15rem; }
+}
+</style>
+
+{% if banners %}
+<section class="banner-carousel" aria-label="Homepage banners">
+    <div class="carousel-inner">
+        {% for banner in banners %}
+            <div class="carousel-item{% if forloop.first %} active{% endif %}" data-index="{{ forloop.counter0 }}">
+                {% if banner.link %}<a href="{{ banner.link }}">{% endif %}
+                <img src="{{ banner.image.url }}" alt="{{ banner.title|default:'Banner' }}" class="d-block w-100 carousel-image">
+                <div class="carousel-caption">
+                    {% if banner.title %}<h2 class="hero-title">{{ banner.title }}</h2>{% endif %}
+                    {% if banner.subtitle %}<p class="hero-sub">{{ banner.subtitle }}</p>{% endif %}
+                </div>
+                {% if banner.link %}</a>{% endif %}
+            </div>
+        {% endfor %}
+    </div>
+    <button class="carousel-control prev" aria-label="Previous banner">‹</button>
+    <button class="carousel-control next" aria-label="Next banner">›</button>
+</section>
+{% else %}
 <section class="hero-section" {% if LANGUAGE_CODE == 'ar' %}style="background-position: center left; text-align: right;"{% endif %}>
     <div class="container-fluid px-lg-5">
         <div class="row">
@@ -120,6 +177,7 @@
         </div>
     </div>
 </section>
+{% endif %}
 
 <div class="container-fluid mt-4 px-lg-5">
     <h3 class="text-center font-weight-bold mb-4" style="color: #333; font-size: 1.75rem;">{% trans "Our Top Category" %}</h3>
@@ -151,7 +209,7 @@
                 <div class="img-wrap-go"><a href="{{ product.get_url }}"><img src="{{ product.images.url }}"></a></div>
                 <h6 class="product-name-go">{{ product.product_name }}</h6>
                 <div class="mt-auto">
-                    <p class="product-price-go">{{ product.price|unlocalize }} {% trans "QAR" %}</p>
+                    <p class="product-price-go">{{ product.price|floatformat:2 }} {% trans "QAR" %}</p>
                     <div class="rating-star mb-2" style="font-size: 0.85rem;">
                         <span>
                             <i class="fa fa-star{% if product.averageReview < 0.5 %}-o{% elif product.averageReview >= 0.5 and product.averageReview < 1 %}-half-o {% endif %}" aria-hidden="true"></i>
@@ -202,7 +260,7 @@
                                     <div class="img-wrap-go"><a href="{{ product.get_url }}"><img src="{{ product.images.url }}"></a></div>
                                     <h6 class="product-name-go">{{ product.product_name }}</h6>
                                     <div class="mt-auto">
-                                        <p class="product-price-go">{{ product.price|unlocalize }} {% trans "QAR" %}</p>
+                                        <p class="product-price-go">{{ product.price|floatformat:2 }} {% trans "QAR" %}</p>
                                         <a href="{% url 'add_cart' product.id %}" class="btn btn-block btn-success btn-add-go">{% trans "ADD TO CART" %}</a>
                                     </div>
                                 </div>
@@ -267,6 +325,38 @@
                 }
             }, 3500);
         });
+    });
+</script>
+
+<script>
+    // Separate carousel script for admin-managed banners (auto 3s, manual arrows)
+    document.addEventListener('DOMContentLoaded', function(){
+        const track = document.querySelector('.carousel-inner');
+        if(!track) return;
+        const items = Array.from(track.querySelectorAll('.carousel-item'));
+        const prevBtn = document.querySelector('.carousel-control.prev');
+        const nextBtn = document.querySelector('.carousel-control.next');
+        let current = items.findIndex(i=>i.classList.contains('active'));
+        if(current < 0) current = 0;
+        let interval = null;
+        const AUTO_MS = 3000;
+
+        function show(index){
+            items.forEach(it=>it.classList.remove('active'));
+            items[(index+items.length)%items.length].classList.add('active');
+            current = (index+items.length)%items.length;
+        }
+
+        function start(){ if(interval) clearInterval(interval); interval = setInterval(()=>show(current+1), AUTO_MS); }
+        function stop(){ if(interval){ clearInterval(interval); interval=null; } }
+
+        if(nextBtn) nextBtn.addEventListener('click', ()=>{ stop(); show(current+1); start(); });
+        if(prevBtn) prevBtn.addEventListener('click', ()=>{ stop(); show(current-1); start(); });
+
+        track.addEventListener('mouseenter', stop);
+        track.addEventListener('mouseleave', start);
+
+        if(items.length>1) start();
     });
 </script>
 {% endblock %}

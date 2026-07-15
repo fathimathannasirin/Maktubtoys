@@ -3,57 +3,149 @@
 <style>
     /* 1. TOP BAR SECTION */
     .navbar-top-bg {
-        background-color: #72a6dbff;
-        height: 40px;
+        background: linear-gradient(90deg, #6D001F 0%, #400116 100%);
+        color: #F5F2EB;
+        min-height: 42px;
         position: fixed;
         top: 0;
         width: 100%;
         z-index: 1001;
         display: flex;
         align-items: center;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+    }
+
+    .navbar-top-bg,
+    .navbar-top-bg * {
+        color: #F5F2EB !important;
+    }
+
+    .navbar-top-bg .nav-link {
+        font-size: 0.9rem;
+        padding: 6px 10px;
+    }
+
+    .navbar-top-bg a:hover {
+        color: #F5F2EB !important;
+        opacity: 0.95;
     }
 
     /* 2. MAIN HEADER SECTION */
     .header-main {
-        background: rgba(255, 255, 255, 0.05) !important;
-        backdrop-filter: blur(15px);
-        -webkit-backdrop-filter: blur(15px);
+        background: #F5F2EB !important;
         position: fixed;
         width: 100%;
-        top: 40px;
+        top: 42px;
         z-index: 1000;
-        padding: 10px 0;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 12px 0;
+        border-bottom: 1px solid rgba(109, 0, 31, 0.12);
+        box-shadow: 0 4px 18px rgba(64, 1, 22, 0.08);
     }
 
-    .nav-elements-container { display: flex; gap: 15px; align-items: center; width: 100%; justify-content: flex-start; }
+    .nav-elements-container { display: flex; gap: 12px; align-items: center; width: 100%; justify-content: flex-start; flex-wrap: wrap; }
 
     /* 3. CATEGORY DROPDOWN */
     .dropdown-menu-custom {
         min-width: 650px !important;
-        border-radius: 8px; border: none;
-        box-shadow: 0px 10px 30px rgba(0,0,0,0.15);
+        border-radius: 12px;
+        border: 1px solid rgba(109, 0, 31, 0.1);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.12);
         margin-top: 15px !important;
+        background: #fff;
     }
-    .category-nav-item { display: flex; align-items: center; padding: 10px; border-radius: 6px; transition: 0.2s; text-decoration: none !important; }
-    .category-nav-item:hover { background-color: #f8f9fa; }
+    .category-nav-item { display: flex; align-items: center; padding: 10px; border-radius: 8px; transition: 0.2s; text-decoration: none !important; }
+    .category-nav-item:hover { background-color: #F5F2EB; }
     .nav-cat-img { width: 35px; height: 35px; border-radius: 4px; object-fit: cover; margin-right: 12px; }
-    .cat-text { font-size: 0.95rem; font-weight: 600; color: #333; }
+    .cat-text { font-size: 0.95rem; font-weight: 600; color: #400116; }
 
     /* 4. SEARCH BAR */
-    .search-group { display: flex; flex: 1; max-width: 500px; }
+    .search-group { display: flex; flex: 1; min-width: 220px; max-width: 500px; }
     .form-control-custom {
-        height: 40px; background: rgba(255, 255, 255, 0.1) !important;
-        border: 1px solid rgba(255, 255, 255, 0.2) !important;
-        color: #ffffff !important; border-radius: 6px 0 0 6px;
+        height: 42px;
+        background: #fff !important;
+        border: 1px solid rgba(109, 0, 31, 0.16) !important;
+        color: #400116 !important;
+        border-radius: 999px 0 0 999px;
+        box-shadow: inset 0 1px 2px rgba(0,0,0,0.03);
     }
-    .btn-search-custom { height: 40px; background-color: #3167eb !important; color: white; border: none; padding: 0 15px; border-radius: 0 5px 5px 0; }
+    .btn-search-custom { height: 42px; background: linear-gradient(90deg, #6D001F, #400116) !important; color: #F5F2EB; border: none; padding: 0 16px; border-radius: 0 999px 999px 0; }
 
     /* 5. USER OPTIONS */
     .widgets-wrap { display: flex; align-items: center; gap: 20px; }
-    .header-main .nav-link, .header-main .widget-header .title, .header-main .icon-sm { color: #ffffff !important; }
+    .header-main .nav-link, .header-main .widget-header .title, .header-main .icon-sm { color: #6D001F !important; }
 
-    /* MOBILE OPTIMIZATIONS */
+    .header-right-wrap {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 8px;
+        width: 100%;
+        min-width: 0;
+        margin-left: -6px;
+    }
+
+    .widget-header {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        min-width: 0;
+        flex-shrink: 1;
+    }
+
+    .widget-header .user-links {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    .header-main .btn-primary {
+        background: linear-gradient(90deg, #6D001F, #400116);
+        border-color: #6D001F;
+        color: #F5F2EB;
+        border-radius: 999px;
+        font-weight: 600;
+    }
+
+    .header-main .btn-outline-primary {
+        background: #fff;
+        border-color: #6D001F;
+        color: #6D001F;
+        border-radius: 999px;
+        font-weight: 600;
+    }
+
+    .header-main .btn-primary:hover,
+    .header-main .btn-outline-primary:hover {
+        filter: brightness(0.96);
+        transform: translateY(-1px);
+    }
+
+    /* TABLET / DESKTOP OPTIMIZATIONS */
+    @media (min-width: 768px) and (max-width: 991px) {
+        .header-main {
+            padding: 10px 0;
+        }
+        .header-right-wrap {
+            gap: 6px;
+            margin-left: -10px;
+        }
+        .widget-header {
+            margin-right: 6px;
+        }
+        .widget-header .title {
+            font-size: 0.72rem;
+        }
+        .widget-header .user-links a,
+        .widget-header .user-links .sep {
+            font-size: 0.75rem;
+        }
+        .search-group {
+            max-width: 320px;
+        }
+    }
+
     @media (max-width: 991px) {
         /* TOP BAR VISIBLE ON MOBILE */
         .navbar-top-bg { 
@@ -71,14 +163,14 @@
         .navbar-top-bg .nav-link { color: #fff !important; font-size: 0.8rem; }
         
         .header-main { 
-            top: 40px; /* Stay below the top bar */
-            background: #72a6dbff !important; 
-            backdrop-filter: none; 
+            top: 42px;
+            background: #F5F2EB !important;
+            box-shadow: none;
         }
         .logo { max-height: 50px !important; }
-        .widget-header .title { font-size: 0.7rem; color: #fff !important; }
-        .widget-header a { color: #fff !important; }
-        .border-left { border-left: 1px solid rgba(255,255,255,0.3) !important; }
+        .widget-header .title { font-size: 0.7rem; color: #6D001F !important; }
+        .widget-header a { color: #6D001F !important; }
+        .border-left { border-left: 1px solid rgba(109, 0, 31, 0.2) !important; }
         
         .dropdown-menu-custom {
             min-width: 100% !important;
@@ -93,17 +185,22 @@
             text-align: {% if LANGUAGE_CODE == 'ar' %}right{% else %}left{% endif %};
         }
         /* Styling for the separators and link grouping */
-    .user-links {
-        gap: 8px;
-        align-items: center;
-    }
-    .user-links .sep {
-        color: rgba(255, 255, 255, 0.4);
-        font-size: 0.8rem;
-    }
+        .user-links {
+            gap: 8px;
+            align-items: center;
+        }
+        .user-links .sep {
+            color: rgba(109, 0, 31, 0.4);
+            font-size: 0.8rem;
+        }
 
-    /* Mobile-specific tightening to prevent wrapping */
-    @media (max-width: 991px) {
+        .header-right-wrap {
+            justify-content: flex-end;
+            gap: 6px;
+            margin-left: 0;
+        }
+
+        /* Mobile-specific tightening to prevent wrapping */
         .user-links {
             gap: 5px;
         }
@@ -144,7 +241,7 @@
             <div class="row align-items-center">
                 <div class="col-lg-2 col-md-3 col-5">
                     <a href="{% url 'home' %}" class="brand-wrap">
-                        <img class="logo" src="{% static 'images/logo.png' %}" style="max-height: 70px; width: auto;">
+                        <img class="logo" src="{% static 'images/maktub_navbar_692x250_larger_transparent.png' %}" style="max-height: 70px; width: auto;">
                     </a>
                 </div>
 
@@ -180,7 +277,7 @@
                 </div>
 
                 <div class="col-lg-3 col-md-3 col-7">
-                    <div class="d-flex justify-content-end align-items-center">
+                    <div class="header-right-wrap">
                         <div class="widget-header mr-2 mr-md-3 text-right">
                             {% if user.id is None %}
                                 <small class="title d-block">{% trans "Welcome" %}</small>

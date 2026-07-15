@@ -3,12 +3,6 @@
 
 {% block extrahead %}
     {{ block.super }}
-    
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            // document.body.style.backgroundColor = "red"; // Optional: only if you really need it
-        });
-    </script>
-
+    <link rel="stylesheet" href="{% static 'css/admin.css' %}">
     <script src="{% static 'js/admin_form_validation.js' %}"></script>
 {% endblock %}

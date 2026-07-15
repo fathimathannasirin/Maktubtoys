@@ -56,7 +56,7 @@
         {% csrf_token %}
         <article class="content-body p-4"> 
             <span class="text-uppercase font-weight-bold text-muted small" style="letter-spacing: 1px; color: #888;"> 
-                {% trans "General Products" %} 
+                {% trans "Maktub Trading" %} 
             </span>
             
             <h2 class="title mt-1 mb-3" style="font-weight: 700; color: #212529;">{{ single_product.product_name }}</h2>
@@ -72,7 +72,7 @@
             </div>
             
             <div class="mb-4"> 
-                <var class="price h3" style="color: #3167eb; font-weight: 700;">{{ single_product.price|unlocalize }} <span style="font-size: 1rem;">{% trans "QAR" %}</span></var>
+                <var class="price h3" style="color: #3167eb; font-weight: 700;">{{ single_product.price|floatformat:2 }} <span style="font-size: 1rem;">{% trans "QAR" %}</span></var>
                 <span class="text-success ml-2 small"><i class="fa fa-check-circle"></i> {% trans "In Stock" %}</span>
             </div> 
 
