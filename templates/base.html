@@ -17,8 +17,6 @@
     
     <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet" type="text/css"/>
     
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    
     <link href="{% static 'fonts/fontawesome/css/all.min.css' %}" type="text/css" rel="stylesheet">
 
     <link href="{% static 'css/ui.css' %}" rel="stylesheet" type="text/css"/>
@@ -30,7 +28,7 @@
     <style>
     /* 1. Background Logic */
     body {
-        background-color: #F5F2EB; /* Light beige color */
+        background-color: #f9f7f4; /* Light beige color */
         padding-top: 130px;
          
     }
@@ -43,25 +41,16 @@
         body { padding-top: 190px !important; }
     }
 
-    /* 2. STAR RATING INPUT SYSTEM */
-    .rate > input { display: none !important; }
-    .rate { display: inline-block; border: 0; }
-    .rate > label { float: right; color: #ccc; cursor: pointer; transition: color 0.2s; }
-    .rate > label:before { display: inline-block; font-size: 1.3rem; font-family: FontAwesome !important; content: "\f005"; margin: 0; padding: 0.3rem .2rem; }
-    .rate > .half:before { content: "\f089" !important; position: absolute; padding-right: 0; }
-    .rate > input:checked ~ label, .rate:not(:checked) > label:hover, .rate:not(:checked) > label:hover ~ label { color: #ffb503 !important; }
-    .rate > input:checked + label:hover, .rate > input:checked ~ label:hover, .rate > label:hover ~ input:checked ~ label, .rate > input:checked ~ label:hover ~ label { color: #ffb503 !important; }
-
-    /* 3. STAR DISPLAY SYSTEM */
-    .rating-star i { font-family: 'FontAwesome' !important; font-style: normal; letter-spacing: 1px; }
-    .fa-star, .fa-star-half-o { color: #ffb503 !important; }
-    .fa-star-o { color: #ccc !important; }
+    /* 2. STAR DISPLAY SYSTEM */
+    .rating-star i { font-style: normal; letter-spacing: 1px; }
+    .fa-star, .fa-star-half-alt { color: #ffb503 !important; }
+    .far.fa-star { color: #ccc !important; }
     .rating-star { display: inline-flex; align-items: center; }
 
     .announcement-bar {
         background: linear-gradient(90deg, #6D001F 0%, #400116 100%);
         color: #F5F2EB;
-        border-top: 1px solid rgba(245, 242, 235, 0.16);
+        border-top: 1px solid rgba(140, 138, 133, 0.16);
         overflow: hidden;
         padding: 8px 0;
         position: relative;
@@ -105,7 +94,6 @@
     {% endif %}
 </style>
 {% if LANGUAGE_CODE == 'ar' %}
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap-rtl.min.css">
     <style>
         
         /* Fix User Profile and Logo alignment in Arabic Mobile */

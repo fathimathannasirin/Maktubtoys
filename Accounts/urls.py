@@ -17,8 +17,13 @@ urlpatterns =[
     path('my_orders/', views.my_orders, name='my_orders'),
     path('edit_profile/', views.edit_profile, name='edit_profile'),
     path('Change_Password/', views.Change_Password, name='Change_Password'),
-    path('order_detail/<int:order_id>/', views.order_detail, name='order_detail'),
+    path('order_detail/<str:order_id>/', views.order_detail, name='order_detail'),
 
     path('contact-us/', views.contact_us, name='contact_us'),
+    path('return-refund-policy/', views.return_refund_policy, name='return_refund_policy'),
+    path('contact_info/', views.contact_info, name='contact_info'),
+    path('terms_of_service/', views.terms_of_service, name='terms_of_service'),
+    path('shipping-policy/', views.shipping_policy, name='shipping_policy'),
+
 ]
 

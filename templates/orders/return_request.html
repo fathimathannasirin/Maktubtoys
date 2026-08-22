@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+<section class="section-content padding-y bg-light" {% if request.LANGUAGE_CODE == 'ar' %}dir="rtl" style="text-align: right;"{% endif %}>
+    <div class="container" style="max-width: 900px;">
+        {% include "includes/alerts.html" %}
+
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body p-4">
+                <h4 class="mb-2">{% trans "Return Request" %}</h4>
+                <p class="text-muted mb-0">{% trans "Order" %}: <strong>#{{ order.order_number }}</strong></p>
+            </div>
+        </div>
+
+        {% if existing_request %}
+            <div class="alert alert-info">
+                {% trans "A return request already exists for this order." %}
+                <br>
+                <strong>{% trans "Request ID" %}:</strong> {{ existing_request.return_request_id }}
+            </div>
+            <a href="{% url 'order_detail' order.order_number %}" class="btn btn-outline-secondary">{% trans "Back to Order" %}</a>
+        {% elif not is_eligible %}
+            <div class="alert alert-warning mb-3">{{ eligibility_message }}</div>
+            <a href="{% url 'order_detail' order.order_number %}" class="btn btn-outline-secondary">{% trans "Back to Order" %}</a>
+        {% else %}
+            <form method="POST" enctype="multipart/form-data" id="return-request-form" class="card shadow-sm border-0">
+                {% csrf_token %}
+                <div class="card-body p-4">
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+                    {% endif %}
+
+                    <div class="form-group">
+                        <label for="id_reason">{% trans "Return Reason" %}</label>
+                        <select name="reason" id="id_reason" class="form-control" required>
+                            <option value="">{% trans "Select a reason" %}</option>
+                            {% for value, label in form.fields.reason.choices %}
+                                <option value="{{ value }}" {% if form.reason.value == value %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                        {% if form.reason.errors %}<small class="text-danger">{{ form.reason.errors|striptags }}</small>{% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id_description">{% trans "Description" %}</label>
+                        <textarea id="id_description" name="description" class="form-control" rows="5" required>{{ form.description.value|default_if_none:'' }}</textarea>
+                        {% if form.description.errors %}<small class="text-danger">{{ form.description.errors|striptags }}</small>{% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id_images">{% trans "Upload Images (Optional)" %}</label>
+                        <input type="file" id="id_images" name="images" class="form-control-file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" multiple>
+                        <small class="text-muted">{% trans "Up to 5 images. Allowed formats: JPG, PNG, WEBP." %}</small>
+                    </div>
+
+                    <div class="alert alert-light border mb-3">
+                        <h6 class="mb-2">{% trans "Return Policy Notice" %}</h6>
+                        <ul class="mb-0 pl-3">
+                            {% for point in policy_notice_points %}
+                                <li>{{ point }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                    <div class="custom-control custom-checkbox mb-2">
+                        <input type="checkbox" class="custom-control-input" id="id_return_shipping_acknowledged" name="return_shipping_acknowledged" {% if form.return_shipping_acknowledged.value %}checked{% endif %} required>
+                        <label class="custom-control-label" for="id_return_shipping_acknowledged">
+                            {% trans "I understand that return shipping charges are my responsibility." %}
+                        </label>
+                    </div>
+                    {% if form.return_shipping_acknowledged.errors %}<small class="text-danger d-block mb-2">{{ form.return_shipping_acknowledged.errors|striptags }}</small>{% endif %}
+
+                    <div class="custom-control custom-checkbox mb-3">
+                        <input type="checkbox" class="custom-control-input" id="id_policy_terms_accepted" name="policy_terms_accepted" {% if form.policy_terms_accepted.value %}checked{% endif %} required>
+                        <label class="custom-control-label" for="id_policy_terms_accepted">
+                            {% trans "I agree to the return and refund terms listed above." %}
+                        </label>
+                    </div>
+                    {% if form.policy_terms_accepted.errors %}<small class="text-danger d-block mb-3">{{ form.policy_terms_accepted.errors|striptags }}</small>{% endif %}
+
+                    <div class="d-flex flex-wrap" style="gap: 10px;">
+                        <button type="submit" class="btn btn-primary" id="submit-return-btn">{% trans "Submit Return Request" %}</button>
+                        <a href="{% url 'order_detail' order.order_number %}" class="btn btn-outline-secondary">{% trans "Cancel" %}</a>
+                    </div>
+                </div>
+            </form>
+        {% endif %}
+    </div>
+</section>
+
+<script>
+(function () {
+    const form = document.getElementById('return-request-form');
+    if (!form) {
+        return;
+    }
+
+    const submitBtn = document.getElementById('submit-return-btn');
+    const imagesInput = document.getElementById('id_images');
+
+    form.addEventListener('submit', function (event) {
+        const imageCount = imagesInput && imagesInput.files ? imagesInput.files.length : 0;
+        if (imageCount > 5) {
+            event.preventDefault();
+            alert('You can upload up to 5 images only.');
+            return;
+        }
+
+        const confirmed = window.confirm('Submit this return request now?');
+        if (!confirmed) {
+            event.preventDefault();
+            return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Submitting...';
+    });
+})();
+</script>
+{% endblock %}

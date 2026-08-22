@@ -3,13 +3,31 @@ from django.db.models import Sum
 from django.shortcuts import render
 from django.template.response import TemplateResponse
 from Accounts.models import Account
+from home.models import SectionOfferBanner
 from orders.models import Order
 from store.models import Category, Product, ReviewRating
 
 
 def home(request):
     products = Product.objects.filter(is_available=True).order_by('created_date')
-    categories = Category.objects.filter()
+    categories = Category.objects.all().select_related('parent')
+    parent_categories = [category for category in categories if category.parent_id is None]
+
+    section_offer_banners = list(
+        SectionOfferBanner.objects.filter(is_active=True).select_related('category').order_by('order', 'created_at')
+    )
+    specific_banner_map = {
+        banner.category_id: banner
+        for banner in section_offer_banners
+        if banner.category_id
+    }
+    global_banners = [banner for banner in section_offer_banners if banner.category_id is None]
+
+    for index, parent_category in enumerate(parent_categories):
+        selected_banner = specific_banner_map.get(parent_category.id)
+        if selected_banner is None and global_banners:
+            selected_banner = global_banners[index % len(global_banners)]
+        parent_category.section_offer_banner = selected_banner
 
     reviews = ReviewRating.objects.filter(product_id__in=products, status=True).select_related('user')
 
@@ -17,6 +35,7 @@ def home(request):
         'products': products,
         'categories': categories,  # Keeps your original variable intact
         'links': categories,       # Added so the {% for category in links %} sliders in index.html work!
+        'parent_categories': parent_categories,
         'reviews': reviews,        # Safe from UnboundLocalError and optimized for performance
     }
     return render(request, 'index.html', context)

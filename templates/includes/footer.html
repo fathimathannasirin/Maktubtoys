@@ -1,33 +1,221 @@
-<!-- ========================= FOOTER ========================= -->
 {% load i18n %}
-<footer class="section-footer border-top" {% if request.LANGUAGE_CODE == 'ar' %}dir="rtl" style="text-align: right;"{% endif %}>
+{% load static %}
+
+<!-- Inline Styles specifically for this Footer Section -->
+<style>
+    .main-site-footer {
+        background: linear-gradient(30deg, #6D001F 0%, #400116 100%);
+        color: #f0d6e8;
+        padding: 50px 0 20px;
+        font-size: 0.9rem;
+        font-family: inherit;
+    }
+
+    .footer-col {
+        margin-bottom: 25px;
+    }
+
+    .footer-logo img {
+        max-height: 55px;
+        width: auto;
+    }
+
+    .brand-desc {
+        color: #f0d6e8;
+        line-height: 1.6;
+        font-size: 0.88rem;
+        margin-top: 15px;
+    }
+
+    .footer-heading {
+        color: #f6de99; /* Accent Yellow Heading */
+        font-size: 1rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+    }
+
+    .footer-links, .contact-info {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .footer-links li {
+        margin-bottom: 10px;
+    }
+
+    .footer-links a {
+        color: #f0d6e8;
+        text-decoration: none;
+        transition: opacity 0.2s ease, color 0.2s ease;
+    }
+
+    .footer-links a:hover {
+        color: #d3bc77;
+    }
+
+    .contact-info li {
+        margin-bottom: 12px;
+        color: #f0d6e8;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .contact-info i {
+        width: 18px;
+        color: #d7bf77;
+        text-align: center;
+    }
+
+    /* Social Icons Styling */
+    .social-icons {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    .social-btn {
+        width: 38px;
+        height: 38px;
+        background-color: rgba(255, 255, 255, 0.15);
+        color: #f0d6e8;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    .social-btn:hover {
+        background-color: #ffca28;
+        color: #831362;
+    }
+
+    /* Footer Bottom Line & Policies */
+    .footer-divider {
+        border-color: rgba(255, 255, 255, 0.15);
+        margin: 30px 0 20px;
+    }
+
+    .copyright-text {
+        margin: 0;
+        color: #f0d6e8;
+        font-size: 0.85rem;
+    }
+
+    .bottom-policy-links {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: inline-flex;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .bottom-policy-links a {
+        color: #f0d6e8;
+        text-decoration: none;
+        font-size: 0.85rem;
+    }
+
+    .bottom-policy-links a:hover {
+        color: #f0d6e8;
+    }
+</style>
+
+<!-- ========================= FOOTER ========================= -->
+<footer class="main-site-footer" {% if request.LANGUAGE_CODE == 'ar' %}dir="rtl" style="text-align: right;"{% endif %}>
 	<div class="container-fluid px-lg-5">
-		<section class="footer-bottom border-top row">
-			<div class="col-md-2">
-				<p class="text-muted"> &copy; {% trans "Maktub Trading" %} </p>
+		<div class="row">
+			
+			<!-- Column 1: Brand Info -->
+			<div class="col-lg-3 col-md-6 footer-col">
+				<a href="/" class="footer-logo">
+					<img src="{% static 'images/maktub_transparent_hires.png' %}" alt="Logo" class="img-fluid">
+				</a>
+				<p class="brand-desc">
+					{% trans "Bringing quality, innovation, and joy to homes across Qatar. At Maktub Trading, we curate premium toys, lifestyle tech, and essentials to keep your family smiling every step of the way." %}
+				</p>
 			</div>
-			<div class="col-md-8 text-md-center">
-				<span  class="px-2">{% trans "Sales@maktubqatar.com" %}</span>
-				<span  class="px-2">+974-71292725</span>
-				<span  class="px-2">{% trans "Doha, Qatar" %}</span>
+
+			<!-- Column 2: Shop by Category -->
+			<div class="col-lg-3 col-md-6 footer-col">
+				<h5 class="footer-heading">{% trans "SHOP BY CATEGORY" %}</h5>
+				<ul class="footer-links">
+                    <li><a href="{% url 'products_by_category' 'plastic-tables' %}">{% trans "Plastic Tables" %}</a></li>
+                    <li><a href="{% url 'products_by_category' 'play-house' %}">{% trans "Play House" %}</a></li>
+                    <li><a href="{% url 'products_by_category' 'little-tikess' %}">{% trans "Little Tikess" %}</a></li>
+				</ul>
 			</div>
-			<div class="col-md-2 text-md-right text-muted">
-				<i class="fab fa-lg fa-cc-visa"></i>
-				<i class="fab fa-lg fa-cc-paypal"></i>
-				<i class="fab fa-lg fa-cc-mastercard"></i>
+
+			<!-- Column 3: Customer Support -->
+			<div class="col-lg-3 col-md-6 footer-col">
+				<h5 class="footer-heading">{% trans "CUSTOMER SUPPORT" %}</h5>
+				<ul class="footer-links">
+					<li><a href="{% url 'contact_info' %}">{% trans "Contact Information" %}</a></li>
+					<li><a href="{% url 'return_refund_policy' %}">{% trans "Refund Policy" %}</a></li>
+					<li><a href="{% url 'terms_of_service' %}">{% trans "Terms of Service" %}</a></li>
+					<li><a href="{% url 'shipping_policy' %}">{% trans "Shipping Policy" %}</a></li>
+				</ul>
 			</div>
-		</section>
-	</div><!-- //container -->
+
+			<!-- Column 4: Get In Touch & Socials -->
+			<div class="col-lg-3 col-md-6 footer-col">
+				<h5 class="footer-heading">{% trans "GET IN TOUCH" %}</h5>
+				<ul class="contact-info">
+					<li><i class="fas fa-map-marker-alt"></i> {% trans "Building 30, Street 882 (Al Sana St), Zone 26 Najma, Al Doha Municipality, Doha, Qatar" %}</li>
+					<li><i class="fas fa-phone-alt"></i> +974-71292725</li>
+					<li><i class="fas fa-envelope"></i> Sales@maktubqatar.com</li>
+				</ul>
+
+				<!-- Social Media Links -->
+				<div class="social-icons">
+					<a href="#" class="social-btn"><i class="fab fa-facebook-f"></i></a>
+					<a href="#" class="social-btn"><i class="fab fa-instagram"></i></a>
+					<a href="#" class="social-btn"><i class="fab fa-whatsapp"></i></a>
+					<a href="#" class="social-btn"><i class="fab fa-snapchat-ghost"></i></a>
+				</div>
+			</div>
+
+		</div>
+
+		<hr class="footer-divider">
+
+		<!-- Bottom Copyright & Policy Strip -->
+		<div class="row align-items-center">
+			<div class="col-md-6 text-center text-md-left mb-2 mb-md-0">
+				<p class="copyright-text">
+					&copy; {% now "Y" %} {% trans "Maktub Trading. All Rights Reserved." %}
+				</p>
+			</div>
+			<div class="col-md-6 text-center text-md-right">
+				<ul class="bottom-policy-links">
+					<li><a href="{% url 'terms_of_service' %}">{% trans "Terms of Service" %}</a></li>
+					<li><a href="{% url 'return_refund_policy' %}">{% trans "Refund Policy" %}</a></li>
+					<li><a href="{% url 'shipping_policy' %}">{% trans "Shipping Policy" %}</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
 </footer>
 <!-- ========================= FOOTER END // ========================= -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
 <script>
-	$(document).ready(function(){
-		$('.thumb a').click(function(e){
-			e.preventDefault();
-			$('.mainImage img').attr('src', $(this).attr("href"));
-		})
-	})
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.thumb a').forEach(function (link) {
+            link.addEventListener('click', function (event) {
+                event.preventDefault();
+                var mainImage = document.querySelector('.mainImage img');
+                if (mainImage) {
+                    mainImage.setAttribute('src', link.getAttribute('href'));
+                }
+            });
+        });
+    });
 </script>
 
 </body>

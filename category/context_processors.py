@@ -1,8 +1,13 @@
 from .models import Category
+from store.models import Product
 
 def menu_links(request):
     # 1. Fetch all parent categories (excluding subcategories from the top list)
     links = list(Category.objects.filter(parent=None))
+    age_links = Product.objects.filter(
+        is_available=True,
+        age__isnull=False,
+    ).order_by('age').values_list('age', flat=True).distinct()
     
     # 2. Find "Today's Deal" and move it to the top
     pinned_category = None
@@ -16,5 +21,8 @@ def menu_links(request):
     # 3. If found, insert it at the very first position (index 0)
     if pinned_category:
         links.insert(0, pinned_category)
-        
-    return dict(links=links)
+
+    return {
+        'links': links,
+        'age_links': age_links,
+    }

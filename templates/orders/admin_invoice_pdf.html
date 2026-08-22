@@ -7,18 +7,41 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
     <style>
         body { background-color: #fff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; }
-        .invoice-box { max-width: 850px; margin: auto; padding: 30px; border: 1px solid #eee; }
+        .invoice-box { max-width: 980px; margin: auto; padding: 28px; border: 1px solid #eceff3; }
         
-        .header-table { width: 100%; margin-bottom: 20px; }
-        .logo img { max-height: 70px; }
-        .invoice-title { font-size: 28px; color: #666; text-transform: uppercase; font-weight: 300; }
+        .header-table { width: 100%; margin-bottom: 18px; }
+        .logo img { max-height: 56px; }
+        .invoice-title { font-size: 30px; color: #4b5563; text-transform: uppercase; font-weight: 300; letter-spacing: 0.04em; }
         
-        .info-header { font-size: 10px; font-weight: bold; text-transform: uppercase; color: #888; border-bottom: 1px solid #eee; margin-bottom: 10px; }
-        .detail-text { font-size: 14px; line-height: 1.6; }
+        .info-header { font-size: 10px; font-weight: bold; text-transform: uppercase; color: #888; border-bottom: 1px solid #eee; margin-bottom: 10px; letter-spacing: 0.08em; }
+        .detail-text { font-size: 14px; line-height: 1.65; color: #1f2937; }
+        .muted-line { color: #6b7280; font-size: 12px; }
+        .status-pill { display: inline-block; padding: 4px 10px; border-radius: 4px; background: #2ea3f2; color: #fff; font-size: 12px; font-weight: 700; }
         
-        .table thead th { background-color: #fcfcfc; border-bottom: 1px solid #eee; font-size: 13px; color: #555; }
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 26px; }
+        .info-row { display: flex; gap: 10px; align-items: flex-start; font-size: 13px; }
+        .info-row span { min-width: 120px; color: #6b7280; font-weight: 700; text-align: right; }
+        .info-row strong { color: #111827; }
+        .info-wide { grid-column: 1 / -1; }
+
+        .invoice-band { background: #31a9ec; color: #fff; border: 1px solid #86d0fb; border-radius: 6px 6px 0 0; padding: 12px 16px; display: grid; grid-template-columns: 1.1fr 1.5fr 1fr 0.9fr; gap: 12px; align-items: center; font-size: 13px; }
+        .invoice-band .pill { display: inline-block; margin-left: 8px; padding: 4px 8px; border-radius: 4px; background: #273244; color: #fff; font-size: 12px; }
+        .invoice-band .right { text-align: right; }
+        .billing-box { margin-top: 18px; border: 1px solid #eceff3; border-radius: 6px; padding: 14px 16px; }
+        .billing-title { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #6b7280; font-weight: 700; margin-bottom: 8px; }
+
+        .table thead th { background-color: #fcfcfc; border-bottom: 1px solid #eee; font-size: 12px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.08em; }
+        .table td { vertical-align: middle; }
         .total-section { font-size: 15px; }
         .grand-total { font-size: 18px; font-weight: bold; border-top: 2px solid #333; padding-top: 10px; }
+        .product-cell { display: flex; gap: 12px; align-items: center; }
+        .product-thumb { width: 48px; height: 48px; border-radius: 6px; object-fit: cover; border: 1px solid #e5e7eb; background: #f8fafc; }
+        .product-name { font-weight: 700; line-height: 1.4; }
+        .product-sub { color: #6b7280; font-size: 12px; margin-top: 2px; }
+        .summary-table { width: 100%; border-collapse: collapse; }
+        .summary-table td { padding: 8px 0; }
+        .summary-table td:last-child { text-align: right; font-weight: 700; }
+        .summary-table .highlight td { border-top: 2px solid #dbe1ea; padding-top: 12px; color: #4f86c6; }
 
         @media print {
             .no-print { display: none !important; }
@@ -38,53 +61,78 @@
         <tr>
             <td>
                 <div class="logo"><img src="{% static 'images/maktub_navbar_692x250_larger_maroonbg.png' %}" alt="Logo"></div>
-                <div class="detail-text text-muted mt-2" style="font-size: 12px;">Doha, Qatar<br>Sales@maktubqatar.com</div>
+                <div class="detail-text mt-2">
+                    <strong>{{ order.full_name }}</strong><br>
+                    {% if order.phone %}{{ order.phone }}<br>{% endif %}
+                    {% if order.email %}{{ order.email }}<br>{% endif %}
+                </div>
             </td>
             <td class="text-right">
                 <div class="invoice-title">Invoice</div>
-                <div class="detail-text">
-                    <strong>Order #:</strong> {{ order.order_number }}<br>
-                    <strong>Date:</strong> {{ order.created_at|date:"d M Y" }}
+                <div class="detail-text mt-2">
+                    <strong>Invoice Number:</strong> {{ invoice_number_value }}<br>
+                    <strong>Parcel Number:</strong> {{ parcel_number_value|default:order.order_number }}<br>
+                    <strong>Date:</strong> {{ order.created_at|date:"d/m/Y" }}<br>
+                    <strong>Time:</strong> {{ order.created_at|time:"H:i" }}
                 </div>
             </td>
         </tr>
     </table>
 
-    <div class="row mt-5">
-        <div class="col-6">
-            <div class="info-header">Ship To:</div>
-            <div class="detail-text">
-                <strong>{{ order.full_name }}</strong><br>
-                {{ order.address_line_1 }}<br>
-                Bldg: {{ order.building_number }}, St: {{ order.street_number }}, Zone: {{ order.zone_number }}<br>
-                Phone: {{ order.phone }}
-            </div>
+    {% if order.full_name or order.phone or order.email or order.address_line_1 or order.address_line_2 or order.street_number or order.building_number or order.zone_number or payment_method_value %}
+    <div class="billing-box">
+        <div class="billing-title">Billing Address</div>
+        <div class="detail-text">
+            {% if order.full_name %}<strong>{{ order.full_name }}</strong><br>{% endif %}
+            {% if order.phone %}{{ order.phone }}<br>{% endif %}
+            {% if order.email %}{{ order.email }}<br>{% endif %}
+            {% if order.address_line_1 %}{{ order.address_line_1 }}{% endif %}
+            {% if order.address_line_2 %} - {{ order.address_line_2 }}{% endif %}
+            {% if order.street_number or order.building_number or order.zone_number %}
+            <br>Bldg: {{ order.building_number }}, St: {{ order.street_number }}, Zone: {{ order.zone_number }}
+            {% endif %}
+            {% if payment_method_value %}<br><strong>Payment Method:</strong> {{ payment_method_value }}{% endif %}
         </div>
-        <div class="col-6 text-right">
-            <div class="info-header">Order Info:</div>
-            <div class="detail-text">
-                <strong>Status:</strong> {{ order.status }}<br>
-                <strong>Payment:</strong> {{ order.payment.payment_method|default:"COD" }}
-            </div>
-        </div>
+    </div>
+    {% endif %}
+
+    <div class="invoice-band mt-4">
+        <div><strong>{{ parcel_number_value|default:order.order_number }}</strong> <span class="pill">{{ order.status }}</span></div>
+        <div>{% if warehouses %}{% for warehouse in warehouses %}{{ warehouse }}{% if not forloop.last %}, {% endif %}{% endfor %}{% else %}-{% endif %}</div>
+        <div>{{ order.created_at|date:"Y-m-d" }}</div>
+        <div class="right">QAR {{ order.order_total|floatformat:2 }}</div>
     </div>
 
     <table class="table mt-5">
         <thead>
             <tr>
-                <th>Product Details</th>
-                <th class="text-center">Unit Price</th>
-                <th class="text-center">Quantity</th>
-                <th class="text-right">Total</th>
+                <th>#</th>
+                <th>Product</th>
+                <th>Supplier(s)</th>
+                <th class="text-right">Price (QAR)</th>
+                <th class="text-center">Count</th>
             </tr>
         </thead>
         <tbody>
             {% for item in order_detail %}
             <tr>
-                <td class="detail-text">{{ item.product.product_name }}</td>
-                <td class="text-center detail-text">{{ item.product_price }} QAR</td>
-                <td class="text-center detail-text">{{ item.quantity }}</td>
-                <td class="text-right detail-text"><strong>{{ item.product_price }} QAR</strong></td>
+                <td>{{ forloop.counter }}</td>
+                <td>
+                    <div class="product-cell">
+                        {% if item.product.images %}
+                        <img class="product-thumb" src="{{ item.product.images.url }}" alt="{{ item.product.product_name }}">
+                        {% else %}
+                        <div class="product-thumb"></div>
+                        {% endif %}
+                        <div>
+                            <div class="product-name">{{ item.product.product_name }}</div>
+                            <div class="product-sub">ID: {{ item.product.product_code }}</div>
+                        </div>
+                    </div>
+                </td>
+                <td>{{ item.supplier|default:"-" }}</td>
+                <td class="text-right">{{ item.product_price|floatformat:2 }}</td>
+                <td class="text-center">{{ item.quantity }}</td>
             </tr>
             {% endfor %}
         </tbody>
@@ -92,10 +140,30 @@
 
     <div class="row justify-content-end mt-4">
         <div class="col-4 text-right total-section">
-            <p>Subtotal: <span class="ml-4">{{ order.order_total }} QAR</span></p>
-            <p>Tax: <span class="ml-4">{{ order.tax }} QAR</span></p>
+            <table class="summary-table">
+                <tr>
+                    <td>Subtotal</td>
+                    <td>QAR {{ subtotal|floatformat:2 }}</td>
+                </tr>
+                {% if order.tax %}
+                <tr>
+                    <td>Tax</td>
+                    <td>QAR {{ order.tax|floatformat:2 }}</td>
+                </tr>
+                {% endif %}
+                {% if order.payment and order.payment.amount_paid %}
+                <tr>
+                    <td>User Payment</td>
+                    <td>QAR {{ order.payment.amount_paid }}</td>
+                </tr>
+                {% endif %}
+                <tr class="highlight">
+                    <td>Grand Total</td>
+                    <td>QAR {{ order.order_total|floatformat:2 }}</td>
+                </tr>
+            </table>
             <div class="grand-total">
-                Grand Total: <span class="ml-3">{{ order.order_total }} QAR</span>
+                
             </div>
         </div>
     </div>

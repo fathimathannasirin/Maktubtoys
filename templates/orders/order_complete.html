@@ -16,6 +16,28 @@
                 </div>
 
                 <p class="mt-4">{% blocktrans %}Please keep <strong>{{ order.order_total }} QAR</strong> ready for the delivery agent.{% endblocktrans %}</p>
+
+                <div class="mt-4 text-left">
+                    <h5 class="mb-3">{% trans "Ordered Items" %}</h5>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-bordered">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>{% trans "Product" %}</th>
+                                    <th>{% trans "Qty" %}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in ordered_products %}
+                                <tr>
+                                    <td>{{ item.product.product_name }}</td>
+                                    <td>{{ item.quantity }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
                 
                 <hr>
                 <div class="d-grid gap-2">

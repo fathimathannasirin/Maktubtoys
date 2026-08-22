@@ -3,149 +3,253 @@
 
 {% block content %}
 {% get_current_language as LANGUAGE_CODE %}
-<style>
-    /* --- 1. HERO SECTION --- */
-    .hero-section { 
-        background-image: url('{% static "images/toy_banner_1_great_sale.png" %}');
-        background-size: cover; 
-        background-position: center; 
-        background-repeat: no-repeat;
-        min-height: 500px; 
-        display: flex;
-        align-items: center;
-        position: relative;
-        border-radius: 18px;
-        overflow: hidden;
-    }
-    .hero-content { position: relative; z-index: 2; padding: 24px 20px; }
-    .hero-title { font-size: clamp(1.4rem, 3vw, 3.8rem); font-weight: 800; color: #2d5a27; line-height: 1.05; margin-bottom: 20px; }
-    .hero-title span { color: #ff9900; }
 
-    /* --- 2. SLIDER LOGIC --- */
+<style>
+    /* --- 1. HERO CAROUSEL --- */
+    .banner-carousel { position: relative; margin: 20px 40px; overflow: hidden; border-radius: 10px; }
+    .carousel-inner { position: relative; width: 100%; height: 420px; }
+    .carousel-item { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 0.6s ease-in-out; }
+    .carousel-item.active { opacity: 1; position: relative; }
+    .carousel-image { object-fit: cover; height: 100%; width: 100%; image-rendering: -webkit-optimize-contrast; }
+    .carousel-control { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.4); color: #fff; border: none; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; cursor: pointer; z-index: 5; }
+    .carousel-control.prev { left: 16px; }
+    .carousel-control.next { right: 16px; }
+
+    .hero-section { 
+        
+        background-size: cover; background-position: center; background-repeat: no-repeat;
+        min-height: 400px; display: flex; align-items: center; position: relative; border-radius: 16px; overflow: hidden;
+    }
+
+    /* --- 2. SHOP BY AGE PILLS --- */
+    .shop-by-age-section { text-align: center; margin: 35px 0 25px; }
+    .shop-by-age-title { font-size: 1.4rem; font-weight: 800; color: #111; margin-bottom: 16px; }
+    .age-pills-container { display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .age-pill { 
+        padding: 9px 24px; border-radius: 25px; font-size: 0.85rem; font-weight: 800; 
+        color: #fff; text-transform: uppercase; text-decoration: none; display: inline-block;
+        transition: transform 0.2s ease;
+    }
+    .age-pill:hover { transform: translateY(-2px); color: #fff; }
+
+    /* --- 3. SLIDERS & CARDS ALIGNMENT --- */
     .slider-container-go {
-        display: flex;
-        flex-wrap: nowrap;
-        overflow-x: auto;
-        gap: 12px;
-        padding: 12px 2px 16px;
-        scrollbar-width: none;
-        scroll-snap-type: x mandatory;
-        -webkit-overflow-scrolling: touch;
-        align-items: stretch;
+        display: flex; flex-wrap: nowrap; overflow-x: auto; gap: 16px;
+        padding: 10px 4px 20px; scrollbar-width: none; scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch; align-items: stretch;
     }
     .slider-container-go::-webkit-scrollbar { display: none; }
 
-    .item-5-fixed {
-        flex: 0 0 calc(50% - 10px);
-        min-width: calc(50% - 10px);
-        scroll-snap-align: start;
+    /* Card Sizing to match reference (5 visible items per row with generous width) */
+    .item-5-fixed { 
+        flex: 0 0 calc((100% - (16px * 4)) / 5);
+        min-width: 220px;
+        scroll-snap-align: start; 
+        display: flex; 
+    }
+
+    .category-card-go {
+        background: #fff; border: 1px solid #eaeaea; border-radius: 16px;
+        padding: 14px 10px; font-size: 1.5rem; display: flex; justify-content: center; align-items: center; 
+        flex-direction: column; align-items: center; justify-content: center; min-height: 140px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    }
+    .cat-circle-container { width: 200px; height: 200px; margin: 0 auto 10px auto; border-radius: 50%; overflow: hidden; }
+    .cat-circle-container img { width: 100%; height: 100%; object-fit: contain; }
+
+    /* --- REDESIGNED ATTRACTIVE PRODUCT CARD (MATCHING REFERENCE IMAGES) --- */
+    .go-mini-card {
+        background: #ffffff;
+        border: 5px solid #ebebeb;
+        border-radius: 16px;
+        padding: 16px;
+        text-align: left;
         display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        width: 100%;
+        height: 380px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+        box-sizing: border-box;
+        transition: all 0.25s ease;
+        position: relative;
+    }
+    .go-mini-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 24px rgba(0,0,0,0.08);
+        border-color: #e0e0e0;
     }
     
-
-    /* --- 3. CATEGORY CARDS --- */
-    .category-card-go {
-        background: #fff; border: 1px solid #eaeaea; border-radius: 12px;
-        padding: 20px 10px; text-align: center; width: 100%; transition: 0.3s;
-        display: flex; flex-direction: column; align-items: center; justify-content: center;
-        min-height: 220px;
+    /* Image Area with Floating Wishlist Button */
+    .img-wrap-go { 
+        height: 220px; /* Spacious image height */
+        width: 100%; 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        margin-bottom: 12px; 
+        overflow: hidden; 
+        flex-shrink: 0; 
+        background: #fafafa; 
+        border-radius: 12px;
+        position: relative;
     }
-    .cat-circle-container { width: 96px; height: 96px; margin: 0 auto 12px auto; border-radius: 50%; overflow: hidden; border: 1px solid #eee; }
-    .cat-circle-container img { width: 100%; height: 100%; object-fit: cover; }
-
-    /* --- 4. PRODUCT CARDS --- */
-    .go-mini-card {
-        background: #fff; border: 1px solid #f0f0f0; border-radius: 12px; padding: 15px; text-align: center;
-        display: flex; flex-direction: column; width: 100%; min-height: 360px; height: 100%;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+    .img-wrap-go img { 
+        max-height: 90%; 
+        max-width: 90%; 
+        object-fit: contain; 
+        image-rendering: -webkit-optimize-contrast; 
+        transition: transform 0.3s ease;
     }
-    .img-wrap-go { height: 165px; width: 100%; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; overflow: hidden; }
-    .img-wrap-go img { max-height: 100%; max-width: 100%; object-fit: contain; }
-    .product-name-go { font-size: 1rem; font-weight: 700; min-height: 46px; line-height: 1.25; overflow: hidden; margin-bottom: 8px; color: #333; }
-    .product-price-go { font-size: 1rem; color: #28a745; font-weight: 800; margin-bottom: 5px; }
-    .btn-add-go { font-size: 0.9rem; font-weight: 700; padding: 8px 0; margin-top: auto; }
+    .go-mini-card:hover .img-wrap-go img {
+        transform: scale(120%);
+    }
 
-    /* --- 5. SECTION CONTROLS --- */
-    .category-banner-item, .dynamic-selection-section { display: none; } 
-    .active-item { display: block !important; animation: fadeIn 0.6s ease-in-out; }
+    
+    .product-info-container {
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+        justify-content: space-between;
+    }
+
+    .product-name-go { 
+        font-size: 1.15rem; 
+        font-weight: 700; 
+        line-height: 1.35; 
+        color: #222; 
+        margin-bottom: 8px;
+        height: 2.7em; 
+        display: -webkit-box;
+        -webkit-line-clamp: 2; 
+        -webkit-box-orient: vertical;
+        overflow: hidden; 
+        text-overflow: ellipsis; 
+        word-break: break-word;
+    }
+    .product-price-go { 
+        font-size: 1.15rem; 
+        color: #481616; /* Bold accent color matching the reference */
+        font-weight: 800; 
+        margin-bottom: 10px; 
+    }
+    .btn-add-go { 
+        font-size: 0.8rem; 
+        font-weight: 800; 
+        padding: 10px 0; 
+        background-color: #481616; 
+        border: none;
+        color: #fff; 
+        border-radius: 8px; 
+        text-transform: uppercase; 
+        letter-spacing: 0.5px;
+        width: 100%;
+        transition: background-color 0.2s ease;
+    }
+    .btn-add-go:hover { background-color: #390509; color: #fff; }
+
+    /* --- FEATURED PRODUCTS SECTION --- */
+    .featured-products-wrapper {
+        background-color: #faf7f2; 
+        border-radius: 18px; 
+        padding: 28px 24px; 
+        margin: 35px 0 25px;
+    }
+
+    /* Featured Products Inner Horizontal Scroll Fix */
+    .featured-products-wrapper .slider-container-go {
+        display: flex;
+        overflow-x: auto;
+        scroll-behavior: smooth;
+        gap: 15px;
+        padding-bottom: 10px;
+    }
+
+    /* Hide or customize scrollbar for clean look */
+    .featured-products-wrapper .slider-container-go::-webkit-scrollbar {
+        height: 6px;
+    }
+
+    .featured-products-wrapper .slider-container-go::-webkit-scrollbar-thumb {
+        background: #e0d8cc;
+        border-radius: 10px;
+    }
+    .featured-title { text-align: left; font-weight: 800; color: #111; font-size: 1.4rem; margin-bottom: 20px; }
+
+    /* --- HEADERS & HIGH-RES BANNER STYLES --- */
+    .section-header-go { display: flex; justify-content: space-between; align-items: center; margin-top: 35px; margin-bottom: 14px; }
+    .section-header-go h4 { font-size: 1.4rem; font-weight: 800; color: #111; margin: 0; }
+    .view-all-link { font-size: 0.85rem; font-weight: 700; color: #fff; background: #481616; padding: 6px 18px; border-radius: 20px; text-decoration: none; }
+    .view-all-link:hover { color: #fff; opacity: 0.9; }
+
+    /* HIGH RESOLUTION CATEGORY BANNERS */
+    .between-section-offer { 
+        margin: 40px 0; 
+        border-radius: 16px; 
+        overflow: hidden; 
+        box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+    }
+    .between-section-offer img { 
+        width: 100%; 
+        height: auto; 
+        max-height: 400px; 
+        object-fit: cover; 
+        display: block; 
+        image-rendering: -webkit-optimize-contrast; 
+    }
+
+    .bottom-promo-cards { 
+    display: flex; 
+    gap: 18px; 
+    margin: 30px 0 20px; 
+    }
+
+    .promo-card-item { 
+        flex: 1; 
+        min-height: 220px; /* Banner-inte height ivide flexible aayi kootam */
+        border-radius: 14px; 
+        text-decoration: none; 
+        display: block; 
+        overflow: hidden; 
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        transition: transform 0.2s ease;
+    }
+
+    .promo-card-item:hover {
+        transform: translateY(-3px);
+    }
+
+    .promo-card-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* Image distortion illathe dynamic height-il align aavan */
+        display: block;
+    }
+
+    /* DYNAMIC ROTATING SECTIONS */
+    .rotating-cat-section-1, .rotating-cat-section-2 { display: none; }
+    .active-rotating-item { display: block !important; animation: fadeIn 0.4s ease-in-out; }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    .section-header-go { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 40px; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
 
-    /* --- RESPONSIVENESS UPDATES --- */
-    @media (min-width: 992px) {
-        .item-5-fixed {
-            flex: 0 0 calc(20% - 10px);
-            min-width: calc(20% - 10px);
-        }
+    /* --- RESPONSIVENESS --- */
+    @media (max-width: 1199px) {
+        .item-5-fixed { flex: 0 0 calc(25% - 12px); min-width: 200px; }
     }
-
-    @media (min-width: 768px) and (max-width: 991px) {
-        .hero-section { min-height: 420px; }
-        .item-5-fixed {
-            flex: 0 0 calc(33.33% - 10px);
-            min-width: calc(33.33% - 10px);
-        }
-        .go-mini-card { min-height: 340px; }
+    @media (max-width: 991px) {
+        .item-5-fixed { flex: 0 0 calc(33.33% - 11px); min-width: 180px; }
+        .img-wrap-go { height: 180px; }
     }
-
     @media (max-width: 767px) {
-        .hero-section { 
-            background-image: url('{% static "images/neww.jpg" %}');
-            min-height: 280px;
-            background-size: contain; 
-            background-position: top center;
-            border-radius: 12px;
-        }
-        .hero-title { font-size: 1.2rem; margin-bottom: 5px; }
-        .hero-content { padding: 14px 12px 16px; } 
-
-        .item-5-fixed {
-            flex: 0 0 calc(50% - 10px);
-            min-width: calc(50% - 10px);
-        }
-        /* MOBILE: Force one line and hide the rest */
-        .category-card-go p {
-            display: block;
-            width: 100%;
-            white-space: nowrap;      /* Prevents text from wrapping to a second line */
-            overflow: hidden;         /* Hides the extra text */
-            text-overflow: ellipsis;  /* Adds "..." at the end of the line */
-            font-size: 0.85rem;
-        }
-
-        .go-mini-card { min-height: 320px; padding: 10px; }
-        .img-wrap-go { height: 130px; }
-        .product-name-go { font-size: 0.9rem; height: 40px; }
-        .category-banner-item { margin-bottom: 15px; } 
+        .item-5-fixed { flex: 0 0 calc(50% - 8px); min-width: calc(50% - 8px); }
+        .img-wrap-go { height: 160px; }
+        .carousel-inner, .hero-section { height: 260px; min-height: 260px; }
+        .between-section-offer img { max-height: 160px; }
+        .bottom-promo-cards { flex-direction: column; }
+        .section-header-go h4 { font-size: 1.2rem; }
     }
 </style>
 
-<style>
-/* Carousel specific styles */
-.banner-carousel { position: relative; overflow: hidden; }
-.carousel-inner { position: relative; width: 100%; height: 520px; }
-.carousel-item { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 0.6s ease-in-out; }
-.carousel-item.active { opacity: 1; position: relative; }
-.carousel-image { object-fit: cover; height: 100%; width: 100%; }
-.carousel-caption { position: absolute; left: 40px; bottom: 40px; z-index: 3; color: #fff; text-align: left; max-width: min(60%, 560px); }
-.carousel-caption .hero-title { color: #F5F2EB; font-size: clamp(1.2rem, 2.6vw, 2.4rem); }
-.carousel-caption .hero-sub { color: rgba(245,242,235,0.95); font-size: clamp(0.9rem, 1.2vw, 1.05rem); margin-top: 8px; }
-.carousel-control { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(64,1,22,0.6); color: #F5F2EB; border: none; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; cursor: pointer; z-index: 5; }
-.carousel-control.prev { left: 16px; }
-.carousel-control.next { right: 16px; }
-
-@media (max-width: 991px) {
-    .carousel-inner { height: 400px; }
-}
-
-@media (max-width: 767px) {
-    .carousel-inner { height: 320px; }
-    .carousel-caption { left: 18px; right: 18px; bottom: 20px; max-width: 90%; }
-    .carousel-caption .hero-title { font-size: 1.15rem; }
-    .carousel-control { width: 40px; height: 40px; font-size: 1.15rem; }
-}
-</style>
-
+{# --- 1. HERO / BANNER SECTION --- #}
 {% if banners %}
 <section class="banner-carousel" aria-label="Homepage banners">
     <div class="carousel-inner">
@@ -153,10 +257,6 @@
             <div class="carousel-item{% if forloop.first %} active{% endif %}" data-index="{{ forloop.counter0 }}">
                 {% if banner.link %}<a href="{{ banner.link }}">{% endif %}
                 <img src="{{ banner.image.url }}" alt="{{ banner.title|default:'Banner' }}" class="d-block w-100 carousel-image">
-                <div class="carousel-caption">
-                    {% if banner.title %}<h2 class="hero-title">{{ banner.title }}</h2>{% endif %}
-                    {% if banner.subtitle %}<p class="hero-sub">{{ banner.subtitle }}</p>{% endif %}
-                </div>
                 {% if banner.link %}</a>{% endif %}
             </div>
         {% endfor %}
@@ -165,11 +265,10 @@
     <button class="carousel-control next" aria-label="Next banner">›</button>
 </section>
 {% else %}
-<section class="hero-section" {% if LANGUAGE_CODE == 'ar' %}style="background-position: center left; text-align: right;"{% endif %}>
+<section class="hero-section">
     <div class="container-fluid px-lg-5">
         <div class="row">
             <div class="col-md-7 hero-content">
-                <h1 class="hero-title"><span></span></h1>
                 <a href="{% url 'products_by_category' 'todays-deal' %}" class="btn btn-warning px-3 py-2 text-white font-weight-bold shadow-sm" style="border-radius: 5px; font-size: 0.85rem;">
                     {% trans "SHOP NOW" %}
                 </a>
@@ -179,8 +278,22 @@
 </section>
 {% endif %}
 
-<div class="container-fluid mt-4 px-lg-5">
-    <h3 class="text-center font-weight-bold mb-4" style="color: #333; font-size: 1.75rem;">{% trans "Our Top Category" %}</h3>
+<div class="container-fluid px-lg-5">
+
+    {# --- 2. SHOP BY AGE --- #}
+    <div class="shop-by-age-section">
+        <div class="shop-by-age-title">Shop by Age</div>
+        <div class="age-pills-container">
+            <a href="#" class="age-pill" style="background-color: #f7b05b;">DOLL</a>
+            <a href="#" class="age-pill" style="background-color: #f3807d;">LAMP</a>
+            <a href="{% url 'store' %}?min_age=1&max_age=3" class="age-pill" style="background-color: #4ecdc4;">1-3Y</a>
+            <a href="{% url 'store' %}?min_age=3&max_age=6" class="age-pill" style="background-color: #45b7d1;">3-6Y</a>
+            <a href="#" class="age-pill" style="background-color: #f99846;">SALE</a>
+        </div>
+    </div>
+
+    {# --- 3. OUR TOP CATEGORIES --- #}
+    <h5 class="text-center font-weight-bold mt-4 mb-2" style="color: #333; font-size: 1.25rem;">{% trans "Our Top Categories" %}</h5>
     <div class="slider-container-go">
         {% for category in links %}
             {% if not category.parent %}
@@ -188,9 +301,9 @@
                 <a href="{{ category.get_url }}" style="text-decoration: none; width: 100%;">
                     <div class="category-card-go">
                         <div class="cat-circle-container">
-                            {% if category.image %}<img src="{{ category.image.url }}">{% endif %}
+                            {% if category.image %}<img src="{{ category.image.url }}" alt="{{ category.category_name }}">{% endif %}
                         </div>
-                        <p class="font-weight-bold mb-0" style="color: #333; font-size: 1rem;">{{ category.category_name }}</p>
+                        <p class="font-weight-bold mb-0" style="color: #444; font-size: 0.9rem;">{{ category.category_name }}</p>
                     </div>
                 </a>
             </div>
@@ -198,70 +311,132 @@
         {% endfor %}
     </div>
 
+    {# --- 4. TOP TRENDING PRODUCTS --- #}
     <div class="section-header-go">
-        <h4 class="font-weight-bold" style="font-size: 1.35rem;">{% trans "Top Trending Products" %}</h4>
-        <a href="{% url 'store' %}" class="btn btn-sm btn-outline-success px-3">{% trans "View All" %}</a>
+        <h4>{% trans "Top Trending Products" %}</h4>
+        <a href="{% url 'store' %}" class="view-all-link">{% trans "View All" %}</a>
     </div>
     <div class="slider-container-go">
-        {% for product in products|slice:":15" %}
+        {% for product in products|slice:":10" %}
         <div class="item-5-fixed">
             <div class="go-mini-card">
-                <div class="img-wrap-go"><a href="{{ product.get_url }}"><img src="{{ product.images.url }}"></a></div>
-                <h6 class="product-name-go">{{ product.product_name }}</h6>
-                <div class="mt-auto">
-                    <p class="product-price-go">{{ product.price|floatformat:2 }} {% trans "QAR" %}</p>
-                    <div class="rating-star mb-2" style="font-size: 0.85rem;">
-                        <span>
-                            <i class="fa fa-star{% if product.averageReview < 0.5 %}-o{% elif product.averageReview >= 0.5 and product.averageReview < 1 %}-half-o {% endif %}" aria-hidden="true"></i>
-                            <i class="fa fa-star{% if product.averageReview < 1.5 %}-o{% elif product.averageReview >= 1.5 and product.averageReview < 2 %}-half-o {% endif %}" aria-hidden="true"></i>
-                            <i class="fa fa-star{% if product.averageReview < 2.5 %}-o{% elif product.averageReview >= 2.5 and product.averageReview < 3 %}-half-o {% endif %}" aria-hidden="true"></i>
-                            <i class="fa fa-star{% if product.averageReview < 3.5 %}-o{% elif product.averageReview >= 3.5 and product.averageReview < 4 %}-half-o {% endif %}" aria-hidden="true"></i>
-                            <i class="fa fa-star{% if product.averageReview < 4.5 %}-o{% elif product.averageReview >= 4.5 and product.averageReview < 5 %}-half-o {% endif %}" aria-hidden="true"></i>
-                        </span>
-                    </div>
-                    <a href="{% url 'add_cart' product.id %}" class="btn btn-block btn-success btn-add-go">{% trans "ADD TO CART" %}</a>
+                <div class="img-wrap-go">
+                    <a href="{{ product.get_url }}"><img src="{{ product.images.url }}" alt="{{ product.product_name }}"></a>
+                </div>
+                <div class="product-info-container">
+                    <h6 class="product-name-go">{{ product.product_name }}</h6>
+                    <p class="product-price-go">QAR {{ product.price|floatformat:2 }}</p>
+                    <a href="{% url 'add_cart' product.id %}" class="btn btn-block btn-add-go">{% trans "ADD TO CART" %}</a>
                 </div>
             </div>
         </div>
         {% endfor %}
     </div>
 
-    <div class="row my-4">
-        {% for category in links %}
-            {% if not category.parent %}
-            <div class="col-lg-4 col-md-6 col-12 category-banner-item">
-                <div class="card border-0 rounded-lg p-3 d-flex flex-row align-items-center justify-content-between" 
-                     style="height: 160px; background-color: {% cycle '#fff3cd' '#d4edda' '#fce4ec' %};">
-                    <div style="flex: 1;">
-                        <span class="badge badge-danger mb-2" style="font-size: 0.8rem;">{% trans "Top Offer" %}</span>
-                        <h4 class="font-weight-bold" style="font-size: 1.15rem;">{{ category.category_name }}</h4>
-                        <a href="{{ category.get_url }}" class="btn btn-link p-0 font-weight-bold text-dark">{% trans "Shop Now" %} →</a>
-                    </div>
-                    <div style="width: 90px;">{% if category.image %}<img src="{{ category.image.url }}" class="img-fluid" style="object-fit: contain;">{% endif %}</div>
-                </div>
-            </div>
-            {% endif %}
-        {% endfor %}
-    </div>
-
+    {# --- 5. MAIN STATIC CATEGORIES --- #}
     <div id="selection-wrapper">
-        {% for parent_cat in links %}
-            {% if not parent_cat.parent %}
+        {% for parent_cat in parent_categories %}
             <div class="dynamic-selection-section">
                 <div class="section-header-go">
-                    <h4 class="font-weight-bold" style="font-size: 1.35rem;">{% trans "Selection of" %} {{ parent_cat.category_name }}</h4>
-                    <a href="{{ parent_cat.get_url }}" class="btn btn-sm btn-outline-success px-3">{% trans "View All" %}</a>
+                    <h4>{% trans "Selection of" %} {{ parent_cat.category_name }}</h4>
+                    <a href="{{ parent_cat.get_url }}" class="view-all-link">{% trans "View All" %}</a>
                 </div>
                 <div class="slider-container-go">
                     {% for product in products %}
                         {% if product.category == parent_cat or product.category.parent == parent_cat %}
                             <div class="item-5-fixed">
                                 <div class="go-mini-card">
-                                    <div class="img-wrap-go"><a href="{{ product.get_url }}"><img src="{{ product.images.url }}"></a></div>
-                                    <h6 class="product-name-go">{{ product.product_name }}</h6>
-                                    <div class="mt-auto">
-                                        <p class="product-price-go">{{ product.price|floatformat:2 }} {% trans "QAR" %}</p>
-                                        <a href="{% url 'add_cart' product.id %}" class="btn btn-block btn-success btn-add-go">{% trans "ADD TO CART" %}</a>
+                                    <div class="img-wrap-go">
+                                        <a href="{{ product.get_url }}"><img src="{{ product.images.url }}" alt="{{ product.product_name }}"></a>
+                                    </div>
+                                    <div class="product-info-container">
+                                        <h6 class="product-name-go">{{ product.product_name }}</h6>
+                                        <p class="product-price-go">QAR {{ product.price|floatformat:2 }}</p>
+                                        <a href="{% url 'add_cart' product.id %}" class="btn btn-block btn-add-go">{% trans "ADD TO CART" %}</a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+
+                {% if parent_cat.section_offer_banner %}
+                <div class="between-section-offer">
+                    {% if parent_cat.section_offer_banner.link %}<a href="{{ parent_cat.section_offer_banner.link }}">{% endif %}
+                    <img src="{{ parent_cat.section_offer_banner.image.url }}" alt="Offer Banner">
+                    {% if parent_cat.section_offer_banner.link %}</a>{% endif %}
+                </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+
+    {# --- 6. PROMO CARDS --- #}
+    <div class="bottom-promo-cards">
+        {% for banner in promo_banners %}
+            <a href="{{ banner.link_url|default:'#' }}" class="promo-card-item">
+                <img src="{{ banner.image.url }}" alt="{{ banner.title }}">
+            </a>
+        {% empty %}
+            <!-- Default placeholders if no banner is added in Admin -->
+            <a href="{% url 'store' %}" class="promo-card-item">
+                <img src="/static/images/default-banner-1.jpg" alt="Promo">
+            </a>
+            <a href="{% url 'store' %}" class="promo-card-item">
+                <img src="/static/images/default-banner-2.jpg" alt="Promo">
+            </a>
+        {% endfor %}
+    </div>
+
+    {# --- 7. FEATURED PRODUCTS --- #}
+    <div class="dynamic-selection-section">
+        <!-- Header with View All Link -->
+        <div class="section-header-go">
+            <h4>{% trans "Featured Products" %}</h4>
+            <a href="{% url 'store' %}" class="view-all-link">{% trans "View All" %}</a>
+        </div>
+
+        <!-- Horizontal Scroll Slider Container -->
+        <div class="slider-container-go">
+            {% for product in featured_products|default:products %}
+                <div class="item-5-fixed">
+                    <div class="go-mini-card">
+                        <div class="img-wrap-go">
+                            <a href="{{ product.get_url }}">
+                                <img src="{{ product.images.url }}" alt="{{ product.product_name }}">
+                            </a>
+                        </div>
+                        <div class="product-info-container">
+                            <h6 class="product-name-go">{{ product.product_name }}</h6>
+                            <p class="product-price-go">QAR {{ product.price|floatformat:2 }}</p>
+                            <a href="{% url 'add_cart' product.id %}" class="btn btn-block btn-add-go">{% trans "ADD TO CART" %}</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    {# --- 8. EXTRA ROTATING CATEGORY SECTION 1 --- #}
+    <div id="rotating-cat-wrapper-1">
+        {% for parent_cat in parent_categories %}
+            <div class="rotating-cat-section-1">
+                <div class="section-header-go">
+                    <h4>{% trans "Selection of" %} {{ parent_cat.category_name }}</h4>
+                    <a href="{{ parent_cat.get_url }}" class="view-all-link">{% trans "View All" %}</a>
+                </div>
+                <div class="slider-container-go">
+                    {% for product in products %}
+                        {% if product.category == parent_cat or product.category.parent == parent_cat %}
+                            <div class="item-5-fixed">
+                                <div class="go-mini-card">
+                                    <div class="img-wrap-go">
+                                        <a href="{{ product.get_url }}"><img src="{{ product.images.url }}" alt="{{ product.product_name }}"></a>
+                                    </div>
+                                    <div class="product-info-container">
+                                        <h6 class="product-name-go">{{ product.product_name }}</h6>
+                                        <p class="product-price-go">QAR {{ product.price|floatformat:2 }}</p>
+                                        <a href="{% url 'add_cart' product.id %}" class="btn btn-block btn-add-go">{% trans "ADD TO CART" %}</a>
                                     </div>
                                 </div>
                             </div>
@@ -269,40 +444,69 @@
                     {% endfor %}
                 </div>
             </div>
-            {% endif %}
         {% endfor %}
     </div>
+
+    {# --- 9. EXTRA ROTATING CATEGORY SECTION 2 --- #}
+    <div id="rotating-cat-wrapper-2" class="mb-5">
+        {% for parent_cat in parent_categories %}
+            <div class="rotating-cat-section-2">
+                <div class="section-header-go">
+                    <h4>{% trans "Selection of" %} {{ parent_cat.category_name }}</h4>
+                    <a href="{{ parent_cat.get_url }}" class="view-all-link">{% trans "View All" %}</a>
+                </div>
+                <div class="slider-container-go">
+                    {% for product in products %}
+                        {% if product.category == parent_cat or product.category.parent == parent_cat %}
+                            <div class="item-5-fixed">
+                                <div class="go-mini-card">
+                                    <div class="img-wrap-go">
+                                        <a href="{{ product.get_url }}"><img src="{{ product.images.url }}" alt="{{ product.product_name }}"></a>
+                                    </div>
+                                    <div class="product-info-container">
+                                        <h6 class="product-name-go">{{ product.product_name }}</h6>
+                                        <p class="product-price-go">QAR {{ product.price|floatformat:2 }}</p>
+                                        <a href="{% url 'add_cart' product.id %}" class="btn btn-block btn-add-go">{% trans "ADD TO CART" %}</a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
 </div>
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        function setupRotation(className, displayCount, intervalTime) {
-            const items = document.querySelectorAll('.' + className);
-            if (items.length === 0) return;
-
-            let startIndex = 0;
-            function update() {
-                items.forEach(item => item.classList.remove('active-item'));
-                let count = window.innerWidth < 768 ? 1 : displayCount; 
-                for (let i = 0; i < count; i++) {
-                    let index = (startIndex + i) % items.length;
-                    items[index].classList.add('active-item');
-                }
-                startIndex = (startIndex + 1) % items.length;
+        // --- ROTATING CATEGORIES ---
+        const rotSecs1 = document.querySelectorAll('.rotating-cat-section-1');
+        if (rotSecs1.length > 0) {
+            let idx1 = 0;
+            function rotateSec1() {
+                rotSecs1.forEach(s => s.classList.remove('active-rotating-item'));
+                rotSecs1[idx1].classList.add('active-rotating-item');
+                idx1 = (idx1 + 1) % rotSecs1.length;
             }
-            update(); 
-            setInterval(update, intervalTime);
+            rotateSec1();
+            setInterval(rotateSec1, 3000);
         }
 
-        setupRotation('category-banner-item', 3, 6000); 
-
-        const productSections = document.querySelectorAll('.dynamic-selection-section');
-        if (window.innerWidth < 768) {
-            productSections.forEach(section => section.classList.add('active-item'));
-        } else {
-            setupRotation('dynamic-selection-section', 3, 8000);
+        const rotSecs2 = document.querySelectorAll('.rotating-cat-section-2');
+        if (rotSecs2.length > 0) {
+            let idx2 = rotSecs2.length > 1 ? 1 : 0;
+            function rotateSec2() {
+                rotSecs2.forEach(s => s.classList.remove('active-rotating-item'));
+                rotSecs2[idx2].classList.add('active-rotating-item');
+                idx2 = (idx2 + 1) % rotSecs2.length;
+            }
+            rotateSec2();
+            setInterval(rotateSec2, 3000);
         }
 
+        // --- SLIDERS ---
         const sliders = document.querySelectorAll('.slider-container-go');
         sliders.forEach(slider => {
             let isPaused = false;
@@ -310,53 +514,34 @@
             slider.addEventListener('mouseleave', () => isPaused = false);
             setInterval(() => {
                 if (!isPaused) {
-                    const isRTL = document.dir === 'rtl' || document.documentElement.dir === 'rtl';
                     const maxScroll = slider.scrollWidth - slider.clientWidth;
-                    const scrollAmount = window.innerWidth < 768 ? 200 : 250;
-                    if (isRTL) {
-                        if (Math.abs(slider.scrollLeft) >= maxScroll - 1) {
-                            slider.scrollTo({ left: 0, behavior: 'smooth' });
-                        } else { slider.scrollBy({ left: -scrollAmount, behavior: 'smooth' }); }
-                    } else {
-                        if (slider.scrollLeft >= maxScroll - 1) {
-                            slider.scrollTo({ left: 0, behavior: 'smooth' });
-                        } else { slider.scrollBy({ left: scrollAmount, behavior: 'smooth' }); }
+                    if (slider.scrollLeft >= maxScroll - 1) {
+                        slider.scrollTo({ left: 0, behavior: 'smooth' });
+                    } else { 
+                        slider.scrollBy({ left: 240, behavior: 'smooth' }); 
                     }
                 }
-            }, 3500);
+            }, 4000);
         });
-    });
-</script>
 
-<script>
-    // Separate carousel script for admin-managed banners (auto 3s, manual arrows)
-    document.addEventListener('DOMContentLoaded', function(){
+        // --- BANNER CAROUSEL ---
         const track = document.querySelector('.carousel-inner');
-        if(!track) return;
-        const items = Array.from(track.querySelectorAll('.carousel-item'));
-        const prevBtn = document.querySelector('.carousel-control.prev');
-        const nextBtn = document.querySelector('.carousel-control.next');
-        let current = items.findIndex(i=>i.classList.contains('active'));
-        if(current < 0) current = 0;
-        let interval = null;
-        const AUTO_MS = 3000;
+        if (track) {
+            const items = Array.from(track.querySelectorAll('.carousel-item'));
+            const prevBtn = document.querySelector('.carousel-control.prev');
+            const nextBtn = document.querySelector('.carousel-control.next');
+            let current = 0;
 
-        function show(index){
-            items.forEach(it=>it.classList.remove('active'));
-            items[(index+items.length)%items.length].classList.add('active');
-            current = (index+items.length)%items.length;
+            function show(index) {
+                items.forEach(it => it.classList.remove('active'));
+                current = (index + items.length) % items.length;
+                items[current].classList.add('active');
+            }
+
+            if (nextBtn) nextBtn.addEventListener('click', () => show(current + 1));
+            if (prevBtn) prevBtn.addEventListener('click', () => show(current - 1));
+            setInterval(() => show(current + 1), 3500);
         }
-
-        function start(){ if(interval) clearInterval(interval); interval = setInterval(()=>show(current+1), AUTO_MS); }
-        function stop(){ if(interval){ clearInterval(interval); interval=null; } }
-
-        if(nextBtn) nextBtn.addEventListener('click', ()=>{ stop(); show(current+1); start(); });
-        if(prevBtn) prevBtn.addEventListener('click', ()=>{ stop(); show(current-1); start(); });
-
-        track.addEventListener('mouseenter', stop);
-        track.addEventListener('mouseleave', start);
-
-        if(items.length>1) start();
     });
 </script>
 {% endblock %}

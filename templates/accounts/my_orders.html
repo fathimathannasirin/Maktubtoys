@@ -3,60 +3,298 @@
 
 {% block content %}
 
-</header> <!-- section-header.// -->
+<style>
+    /* --- ENHANCED MY ORDERS STYLES --- */
+    .orders-card {
+        border: 1px solid #e9ecef;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        background: #fff;
+        overflow: hidden;
+    }
 
+    .orders-header-banner {
+        background: linear-gradient(135deg, #481616 0%, #2a0b0b 100%);
+        color: #ffffff;
+        padding: 20px 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
 
+    .custom-table {
+        margin-bottom: 0;
+    }
 
-<!-- ========================= SECTION CONTENT ========================= -->
-<section class="section-conten padding-y bg" {% if request.LANGUAGE_CODE == 'ar' %}dir="rtl" style="text-align: right;"{% endif %}>
+    .custom-table thead th {
+        background-color: #fafafa;
+        border-bottom: 2px solid #eee;
+        color: #555;
+        font-size: 0.82rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 700;
+        padding: 14px 16px;
+        vertical-align: middle;
+    }
+
+    .custom-table tbody td, .custom-table tbody th {
+        padding: 16px;
+        vertical-align: middle;
+        font-size: 0.9rem;
+        border-top: 1px solid #f0f0f0;
+    }
+
+    .custom-table tbody tr:hover {
+        background-color: #fcf9f9;
+    }
+
+    /* PRODUCT THUMBNAILS & ITEMS DISPLAY */
+    .order-items-preview {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .item-thumb-group {
+        display: flex;
+        align-items: center;
+    }
+
+    .product-thumb-img {
+        width: 48px;
+        height: 48px;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 1px solid #e0e0e0;
+        background-color: #fff;
+    }
+
+    .more-items-count {
+        width: 48px;
+        height: 48px;
+        border-radius: 8px;
+        background-color: rgba(72, 22, 22, 0.08);
+        color: #481616;
+        font-weight: 700;
+        font-size: 0.78rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px dashed #481616;
+    }
+
+    .order-num-link {
+        color: #481616;
+        font-weight: 700;
+        font-size: 0.95rem;
+        text-decoration: none;
+    }
+    .order-num-link:hover {
+        color: #2a0b0b;
+        text-decoration: underline;
+    }
+
+    /* BADGES */
+    .status-badge {
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        display: inline-block;
+        text-transform: uppercase;
+    }
+    .badge-status-new { background-color: #e3f2fd; color: #0d47a1; }
+    .badge-status-accepted { background-color: #fff3cd; color: #856404; }
+    .badge-status-completed { background-color: #d4edda; color: #155724; }
+    .badge-status-cancelled { background-color: #f8d7da; color: #721c24; }
+    .badge-status-default { background-color: #e2e3e5; color: #383d41; }
+
+    /* BUTTONS */
+    .btn-view-order {
+        background-color: #481616;
+        color: #fff;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 0.8rem;
+        padding: 6px 14px;
+        transition: all 0.2s ease;
+        white-space: nowrap;
+    }
+    .btn-view-order:hover {
+        background-color: #2a0b0b;
+        color: #fff;
+    }
+
+    .btn-return-order {
+        border-color: #dc3545;
+        color: #dc3545;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 0.8rem;
+        padding: 5px 12px;
+        white-space: nowrap;
+    }
+    .btn-return-order:hover {
+        background-color: #dc3545;
+        color: #fff;
+    }
+
+    .empty-orders-box {
+        padding: 50px 20px;
+        text-align: center;
+    }
+</style>
+
+<section class="section-content padding-y bg-light" {% if request.LANGUAGE_CODE == 'ar' %}dir="rtl" style="text-align: right;"{% endif %}>
 
 {% include "includes/alerts.html" %}
-<div class="container">
+<div class="container my-3">
 	<div class="row">
-	{% include 'includes/dashboard_sidebar.html' %}
-	<main class="col-md-9">
-		<article class="card">
-		<header class="card-header">
-			<strong class="d-inline-block mr-3">{% trans "Your order history" %}</strong>
-		</header>
-		<div class="card-body">
-			<div class="row">
-				<div class="col-md-12">
-					<table class="table table-striped">
-                        <thead>
-                            <tr>
-                            <th scope="col">{% trans "Order #" %}</th>
-                            <th scope="col">{% trans "Billing Name" %}</th>
-                            <th scope="col">{% trans "Phone" %}</th>
-                            <th scope="col">{% trans "Order Total" %}</th>
-                            <th scope="col">{% trans "Date" %}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for order in orders%}
-                            <tr>
-                            <th scope="row"><a href="{% url 'order_detail' order.order_number %}">{{order.order_number}}</a></th>
-                            <td>{{order.full_name}}</td>
-                            <td>{{order.phone}}</td>
-                            <td>{{order.order_total}}</td>
-                            <td>{{order.created_at}}</td>
-                            </tr>
-                            {% endfor %}
-                            
-                        </tbody>
-                    </table>
-				</div>
-				
-			</div> <!-- row.// -->
-		</div> <!-- card-body .// -->
-		
-		</article> <!-- order-group.// --> 
-	</main>
-</div> <!-- row.// -->
+        <!-- SIDEBAR -->
+        {% include 'includes/dashboard_sidebar.html' %}
+        
+        <!-- MAIN CONTENT -->
+        <main class="col-md-9">
+            <article class="orders-card">
+                <!-- HEADER BANNER -->
+                <div class="orders-header-banner">
+                    <div>
+                        <h5 class="mb-0 font-weight-bold text-white"><i class="fa fa-shopping-bag mr-2"></i> {% trans "Your Order History" %}</h5>
+                        <p class="mb-0 text-white-50 small">{% trans "Track and manage your past purchases" %}</p>
+                    </div>
+                    <span class="badge badge-pill badge-light font-weight-bold px-3 py-2" style="color: #481616;">
+                        {{ orders|length }} {% trans "Orders" %}
+                    </span>
+                </div>
+
+                <div class="card-body p-0">
+                    {% if orders %}
+                    <div class="table-responsive">
+                        <table class="table custom-table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">{% trans "Order Details" %}</th>
+                                    <th scope="col">{% trans "Items Purchased" %}</th>
+                                    <th scope="col">{% trans "Status" %}</th>
+                                    <th scope="col">{% trans "Total Amount" %}</th>
+                                    <th scope="col">{% trans "Return Status" %}</th>
+                                    <th scope="col" class="text-right">{% trans "Action" %}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for order in orders %}
+                                <tr>
+                                    <!-- ORDER NO & DATE -->
+                                    <th scope="row">
+                                        <a href="{% url 'order_detail' order.order_number %}" class="order-num-link">
+                                            #{{ order.order_number }}
+                                        </a>
+                                        <div class="text-muted small mt-1 font-weight-normal">
+                                            <i class="fa fa-calendar-alt mr-1"></i> {{ order.created_at|date:"d M Y" }}
+                                        </div>
+                                    </th>
+
+                                    <!-- PRODUCT THUMBNAILS & NAMES -->
+                                    <td>
+                                        <div class="order-items-preview">
+                                            {% with items=order.orderproduct_set.all %}
+                                                {% if items %}
+                                                    <div class="item-thumb-group">
+                                                        <!-- First Product Image -->
+                                                        {% if items.0.product.images %}
+                                                            <img src="{{ items.0.product.images.url }}" alt="{{ items.0.product.product_name }}" class="product-thumb-img" title="{{ items.0.product.product_name }}">
+                                                        {% else %}
+                                                            <img src="{% static 'images/default-product.png' %}" class="product-thumb-img">
+                                                        {% endif %}
+                                                    </div>
+
+                                                    <div class="ml-2">
+                                                        <span class="font-weight-600 text-dark d-block" style="font-size: 0.85rem;">
+                                                            {{ items.0.product.product_name|truncatechars:22 }}
+                                                        </span>
+                                                        <small class="text-muted">
+                                                            Qty: {{ items.0.quantity }}
+                                                            {% if items.count > 1 %}
+                                                                <b class="text-primary ml-1">+{{ items.count|add:"-1" }} more item(s)</b>
+                                                            {% endif %}
+                                                        </small>
+                                                    </div>
+                                                {% else %}
+                                                    <span class="text-muted small">No items preview</span>
+                                                {% endif %}
+                                            {% endwith %}
+                                        </div>
+                                    </td>
+
+                                    <!-- STATUS -->
+                                    <td>
+                                        {% if order.status == 'New' %}
+                                            <span class="status-badge badge-status-new">{% trans "New" %}</span>
+                                        {% elif order.status == 'Accepted' %}
+                                            <span class="status-badge badge-status-accepted">{% trans "Accepted" %}</span>
+                                        {% elif order.status == 'Completed' %}
+                                            <span class="status-badge badge-status-completed">{% trans "Completed" %}</span>
+                                        {% elif order.status == 'Cancelled' %}
+                                            <span class="status-badge badge-status-cancelled">{% trans "Cancelled" %}</span>
+                                        {% else %}
+                                            <span class="status-badge badge-status-default">{{ order.status }}</span>
+                                        {% endif %}
+                                    </td>
+
+                                    <!-- ORDER TOTAL -->
+                                    <td>
+                                        <strong style="color: #481616; font-size: 0.95rem;">{{ order.order_total }} QAR</strong>
+                                    </td>
+
+                                    <!-- RETURN ELIGIBILITY -->
+                                    <td>
+                                        {% if order.return_request_obj %}
+                                            <span class="badge badge-info d-block mb-1">{{ order.return_request_obj.status }}</span>
+                                            <small class="text-muted d-block" style="font-size: 0.75rem;">{% trans "ID" %}: {{ order.return_request_obj.return_request_id }}</small>
+                                        {% elif order.can_show_return_button %}
+                                            <span class="badge badge-success font-weight-bold">{% trans "Eligible" %}</span>
+                                        {% elif order.return_info_message %}
+                                            <small class="text-muted" style="font-size: 0.8rem;">{{ order.return_info_message }}</small>
+                                        {% else %}
+                                            <small class="text-muted">-</small>
+                                        {% endif %}
+                                    </td>
+
+                                    <!-- ACTION BUTTONS -->
+                                    <td class="text-right">
+                                        <div class="d-flex justify-content-end align-items-center gap-2">
+                                            <a href="{% url 'order_detail' order.order_number %}" class="btn btn-view-order mr-1">
+                                                <i class="fa fa-eye mr-1"></i> {% trans "View Details" %}
+                                            </a>
+                                            {% if order.can_show_return_button %}
+                                                <a href="{% url 'return_request' order.id %}" class="btn btn-sm btn-outline-danger btn-return-order">
+                                                    {% trans "Return" %}
+                                                </a>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <!-- EMPTY ORDERS STATE -->
+                    <div class="empty-orders-box">
+                        <i class="fa fa-shopping-basket fa-3x mb-3 text-muted" style="opacity: 0.5;"></i>
+                        <h5 class="font-weight-bold text-dark">{% trans "No orders found" %}</h5>
+                        <p class="text-muted small mb-4">{% trans "You haven't placed any orders yet." %}</p>
+                        <a href="{% url 'store' %}" class="btn text-white px-4 py-2" style="background-color: #481616; border-radius: 8px; font-weight: 600;">
+                            {% trans "Start Shopping" %}
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </article> 
+        </main>
+    </div>
 </div>
-
-
 </section>
-
 
 {% endblock %}

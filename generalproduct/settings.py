@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 from pathlib import Path
 from decouple import config
 import os
+import sys
+from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import gettext_lazy as _
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -22,18 +24,30 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config('SECRET_KEY')
+def _split_csv(value):
+    return [item.strip() for item in value.split(',') if item.strip()]
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=False, cast=bool)
+RUNNING_TESTS = 'test' in sys.argv
 
-ALLOWED_HOSTS = [
-    "*",
-    'localhost',
-    '127.0.0.1',
-    '.loca.lt',
-]
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = config('SECRET_KEY', default='')
+if not SECRET_KEY:
+    raise ImproperlyConfigured('SECRET_KEY environment variable is required.')
+
+if not DEBUG and (
+    len(SECRET_KEY) < 50
+    or len(set(SECRET_KEY)) < 5
+    or SECRET_KEY.startswith('django-insecure-')
+):
+    raise ImproperlyConfigured('A strong production SECRET_KEY is required when DEBUG is False.')
+
+default_hosts = 'localhost,127.0.0.1,.loca.lt'
+ALLOWED_HOSTS = _split_csv(config('ALLOWED_HOSTS', default=default_hosts if DEBUG else ''))
+if not DEBUG and not ALLOWED_HOSTS:
+    raise ImproperlyConfigured('Set ALLOWED_HOSTS for production deployment.')
 
 
 # Application definition
@@ -68,6 +82,7 @@ INSTALLED_APPS = [
     'social_django',
     'rangefilter',
     'orders',
+    'warehousing',
     'home',
     'category',
     'Accounts',
@@ -75,7 +90,7 @@ INSTALLED_APPS = [
     'carts',
 ]
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'en'
 
 # Add the languages you want to support
 LANGUAGES = [
@@ -162,7 +177,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'en'
 
 TIME_ZONE = 'UTC'
 
@@ -221,9 +236,13 @@ CSRF_TRUSTED_ORIGINS = [
     'https://*.trycloudflare.com',
 ]
 
-# Ensure these are False while you are developing locally
-CSRF_COOKIE_SECURE = False
-SESSION_COOKIE_SECURE = False
+SECURE_SSL_REDIRECT = config('SECURE_SSL_REDIRECT', default=(not DEBUG and not RUNNING_TESTS), cast=bool)
+SESSION_COOKIE_SECURE = config('SESSION_COOKIE_SECURE', default=not DEBUG, cast=bool)
+CSRF_COOKIE_SECURE = config('CSRF_COOKIE_SECURE', default=not DEBUG, cast=bool)
+SECURE_HSTS_SECONDS = config('SECURE_HSTS_SECONDS', default=31536000 if not DEBUG else 0, cast=int)
+SECURE_HSTS_INCLUDE_SUBDOMAINS = config('SECURE_HSTS_INCLUDE_SUBDOMAINS', default=not DEBUG, cast=bool)
+SECURE_HSTS_PRELOAD = config('SECURE_HSTS_PRELOAD', default=not DEBUG, cast=bool)
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -243,9 +262,7 @@ SESSION_TIMEOUT_REDIRECT = 'en/accounts/login'
 # Django redirects them to /en/store/ instead of a 404
 PREFIX_DEFAULT_LANGUAGE = True
 
-X_FRAME_OPTIONS = 'SAMEORIGIN'
-SILENCED_SYSTEM_CHECKS = ['security.W019']
-
+X_FRAME_OPTIONS = config('X_FRAME_OPTIONS', default='SAMEORIGIN' if DEBUG else 'DENY')
 SILENCED_SYSTEM_CHECKS = ['admin_tools.W001']
 
 # Change this temporarily to see the email in your VS Code terminal

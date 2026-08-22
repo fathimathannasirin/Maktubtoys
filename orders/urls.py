@@ -5,5 +5,6 @@ urlpatterns =[
     path('place_order', views.place_order, name='place_order'),
     path('order_complete/', views.order_complete, name='order_complete'),
     path('track_order/',views.track_order,name='track_order'),
+    path('return-request/<int:order_id>/', views.return_request, name='return_request'),
    
 ]

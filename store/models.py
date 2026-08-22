@@ -4,8 +4,6 @@ from django.urls import reverse
 from Accounts.models import Account
 from django.db.models import Avg,Count
 
-# Create your models here.
-
 class Product(models.Model):
     product_name = models.CharField(max_length=200,unique=True)
     slug = models.SlugField(max_length=200,unique=True)
@@ -15,6 +13,9 @@ class Product(models.Model):
     stock = models.IntegerField()
     is_available = models.BooleanField(default=True)
     category = models.ForeignKey(Category,on_delete=models.CASCADE)
+    age = models.PositiveIntegerField(null=True, blank=True)
+    supplier = models.ForeignKey('warehousing.Supplier', on_delete=models.SET_NULL, null=True, blank=True, related_name='products')
+    warehouse = models.ForeignKey('warehousing.Warehouse', on_delete=models.SET_NULL, null=True, blank=True, related_name='products')
     created_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now_add=True)
     product_code = models.CharField(max_length=20, unique=True, blank=True)

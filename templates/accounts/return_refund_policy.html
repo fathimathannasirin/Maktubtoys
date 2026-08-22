@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+<style>
+    .policy-page-header {
+        background: linear-gradient(135deg, #6D001F 0%, #400116 45%, #8D2140 100%);
+        color: #ffffff;
+        padding: 40px 0;
+        margin-bottom: 40px;
+        text-align: center;
+    }
+    .policy-content {
+        line-height: 1.8;
+        color: #444;
+    }
+    .policy-content h3 {
+        color: #831362;
+        margin-top: 30px;
+        margin-bottom: 15px;
+        font-size: 1.25rem;
+        font-weight: 600;
+    }
+    .definitions-list dt {
+        color: #831362;
+        font-weight: 600;
+    }
+</style>
+
+<div class="policy-page-header">
+    <div class="container">
+        <h1 class="policy-page-title">{% trans "Return & Refund Policy" %}</h1>
+        <p class="mb-0">{% trans "Last updated:" %} 2026-08-04</p>
+    </div>
+</div>
+
+<div class="container my-5 policy-content">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+
+            <h3>1. {% trans "Definitions and Key Terms" %}</h3>
+            <p>{% trans "To help explain things as clearly as possible in this Return & Refund Policy, every time any of these terms are referenced, they are strictly defined as:" %}</p>
+            <dl class="definitions-list ms-3">
+                <dt>{% trans "Company:" %}</dt>
+                <dd>{% trans "When this policy mentions Company, we, us, or our, it refers to Maktub Trading, which is responsible for your information under this Return & Refund Policy." %}</dd>
+
+                <dt>{% trans "Customer:" %}</dt>
+                <dd>{% trans "Refers to the company, organization, or person that signs up to use the Maktub Service to manage relationships with consumers or service users." %}</dd>
+
+                <dt>{% trans "Device:" %}</dt>
+                <dd>{% trans "Any internet-connected device such as a phone, tablet, computer, or any other device that can be used to visit Maktub and use the services." %}</dd>
+
+                <dt>{% trans "Service:" %}</dt>
+                <dd>{% trans "Refers to the service provided by Maktub as described in the relative terms (if available) and on this platform." %}</dd>
+
+                <dt>{% trans "You:" %}</dt>
+                <dd>{% trans "A person or entity registered with Maktub to use the Services." %}</dd>
+            </dl>
+
+            <h3>2. {% trans "Return & Refund Overview" %}</h3>
+            <p>{% trans "Thanks for shopping at Maktub. We appreciate your business and want to ensure you have a rewarding experience while exploring, evaluating, and purchasing our products." %}</p>
+            <p>{% trans "By placing an order or making a purchase at Maktub, you agree to the terms set forth below along with Maktub's Privacy Policy." %}</p>
+            <p>{% trans "If there is something wrong with the product or service you bought, or if you are not satisfied with it, you have 2 weeks from the date of purchase to request a return and refund." %}</p>
+
+            <h3>3. {% trans "Guidelines for Returns" %}</h3>
+            <p>{% trans "The product must be returned in its original packaging as delivered." %}</p>
+
+            <h3>4. {% trans "Refunds" %}</h3>
+            <p>{% trans "At Maktub, every product is thoroughly inspected, checked for defects, and packaged with utmost care." %}</p>
+            <ul>
+                <li><strong>{% trans "Inventory & Order Cancellation:" %}</strong> {% trans "If a product is out of stock or fails quality checks, we may need to cancel your order. You will be notified in advance. If you paid online (not Cash on Delivery), a full refund will be processed once our team confirms the cancellation." %}</li>
+                <li><strong>{% trans "Transit Damage:" %}</strong> {% trans "We ensure secure packaging to prevent damage during shipping. Please note that Maktub is not liable for damages caused during transit or transportation." %}</li>
+                <li><strong>{% trans "Processing Time:" %}</strong> {% trans "Once we receive and inspect your returned product to ensure it meets our guidelines, we will proceed with the refund. Refunds may take up to 7 working days to process." %}</li>
+            </ul>
+
+            <h3>5. {% trans "Shipping Costs for Returns" %}</h3>
+            <ul>
+                <li>{% trans "Maktub is not responsible for return shipping costs." %}</li>
+                <li>{% trans "The customer must cover all return shipping fees, even if the item originally qualified for free shipping." %}</li>
+            </ul>
+
+            <h3>6. {% trans "Your Consent" %}</h3>
+            <p>{% trans "By using our website or app, registering an account, or making a purchase, you hereby consent to our Return & Refund Policy and agree to its terms." %}</p>
+
+            <h3>7. {% trans "Changes to Our Policy" %}</h3>
+            <p>{% trans "Should we update or amend this document, changes will be prominently posted on this page. Continued use of the Service indicates agreement to the updated policy. If you do not agree to any updated terms, you may delete your account." %}</p>
+
+            <h3>8. {% trans "Contact Us" %}</h3>
+            <p>{% trans "If you have any questions or are not completely satisfied with a product or service, please contact us:" %}</p>
+            <p>
+                <strong>{% trans "Email:" %}</strong> <a href="mailto:info@maktubqatar.com" style="color: #831362;">info@maktubqatar.com</a><br>
+                <strong>{% trans "Phone / WhatsApp:" %}</strong> +974-71292725
+            </p>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

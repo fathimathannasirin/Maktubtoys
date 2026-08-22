@@ -1,0 +1,18 @@
+Hello {{ supplier.name }},
+
+A customer placed a new order that includes your products.
+
+Order Number: {{ order.order_number }}
+Customer: {{ order.first_name }} {{ order.last_name }}
+Phone: {{ order.phone }}
+Delivery Address: {{ order.address_line_1 }} {{ order.address_line_2 }}
+Street/Building/Zone: {{ order.street_number }} / {{ order.building_number }} / {{ order.zone_number }}
+
+Items to prepare:
+{% for item in items %}
+- {{ item.product_name }} ({{ item.product_code }}) | Qty: {{ item.quantity }} | Warehouse: {{ item.warehouse }}
+{% endfor %}
+
+Please pack and prepare these items for dispatch.
+
+Admin order view: {{ admin_order_url }}

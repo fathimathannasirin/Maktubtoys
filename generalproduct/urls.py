@@ -20,6 +20,15 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.conf.urls.i18n import i18n_patterns 
 
+admin.site.site_header = "Maktub Trading "  # Admin Header
+admin.site.site_title = "Maktub Trading Admin Portal"     # Browser Tab
+admin.site.index_title = "Welcome to Maktub Trading Admin Dashboard" # Admin Home
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    
+]
+
 # 1. Non-translatable URLs (Keep these outside i18n_patterns)
 urlpatterns = [
     path('admin_tools/', include('admin_tools.urls')),

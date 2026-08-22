@@ -1,0 +1,1117 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block content %}
+<div class="parcel-board-page">
+    <header class="parcel-hero">
+        <div class="parcel-hero-copy">
+            <h1>Parcel Board</h1>
+        </div>
+
+        <div class="parcel-actions">
+            <button type="button" class="parcel-icon-button" data-search-toggle aria-label="{% trans 'Search parcels' %}">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.5 4a6.5 6.5 0 104.02 11.6l4.44 4.44 1.41-1.41-4.44-4.44A6.5 6.5 0 0010.5 4zm0 2a4.5 4.5 0 110 9 4.5 4.5 0 010-9z"/></svg>
+            </button>
+            <button type="button" class="parcel-icon-button" data-filter-toggle aria-label="{% trans 'Filter parcels' %}">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18v2l-7 7v5l-4 2v-7L3 7V5z"/></svg>
+            </button>
+            <button type="button" class="parcel-icon-button" data-refresh-button aria-label="{% trans 'Refresh board' %}">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.65 6.35A7.95 7.95 0 0012 4a8 8 0 107.75 10h-2.1a6 6 0 11-1.5-5.25L14 11h7V4l-3.35 2.35z"/></svg>
+            </button>
+        </div>
+    </header>
+
+    <section class="parcel-controls" data-controls>
+        <form method="get" class="parcel-search-form{% if search_term %} is-open{% endif %}" data-search-form>
+            <input type="hidden" name="status" value="{{ status_filter }}">
+            <input type="hidden" name="warehouse" value="{{ warehouse_filter }}">
+            <label class="sr-only" for="parcel-search-input">{% trans "Search parcels" %}</label>
+            <div class="parcel-search-field">
+                <input
+                    id="parcel-search-input"
+                    type="search"
+                    name="q"
+                    value="{{ search_term }}"
+                    placeholder="{% trans 'Search parcels, customers, phone, or order #' %}"
+                >
+                <button type="submit" class="parcel-search-submit">{% trans "Search" %}</button>
+            </div>
+        </form>
+
+        <div class="parcel-filter-panel{% if status_filter or warehouse_filter %} is-open{% endif %}" data-filter-panel>
+            <form method="get" class="parcel-filter-form">
+                <input type="hidden" name="q" value="{{ search_term }}">
+                <div class="parcel-filter-grid">
+                    <label>
+                        <span>{% trans "Status" %}</span>
+                        <select name="status">
+                            <option value="">{% trans "All statuses" %}</option>
+                            {% for column in columns %}
+                            <option value="{{ column.value }}" {% if status_filter == column.value %}selected{% endif %}>{{ column.title }}</option>
+                            {% endfor %}
+                        </select>
+                    </label>
+
+                    <label>
+                        <span>{% trans "Warehouse" %}</span>
+                        <select name="warehouse">
+                            <option value="">{% trans "All warehouses" %}</option>
+                            {% for warehouse in warehouse_choices %}
+                            <option value="{{ warehouse.id }}" {% if warehouse_filter == warehouse.id|stringformat:'s' %}selected{% endif %}>{{ warehouse.name }}{% if warehouse.code %} ({{ warehouse.code }}){% endif %}</option>
+                            {% empty %}
+                            <option value="" disabled>{% trans "No warehouses found" %}</option>
+                            {% endfor %}
+                        </select>
+                    </label>
+                </div>
+
+                <div class="parcel-filter-actions">
+                    <button type="submit" class="button default">{% trans "Apply filters" %}</button>
+                    <a class="button" href="{% url 'admin:orders_parcel_changelist' %}">{% trans "Clear" %}</a>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <div class="parcel-board-shell">
+        <div class="parcel-board" data-board>
+            {% for column in columns %}
+            <section class="parcel-column" data-column data-column-value="{{ column.value }}">
+                <header class="parcel-column-header" style="--column-tone: {{ column.tone }};">
+                    <div>
+                        <h2>{{ column.title }}</h2>
+                    </div>
+                    <span class="parcel-count-badge">{{ column.count }}</span>
+                </header>
+
+                <div class="parcel-column-body" data-dropzone aria-label="{{ column.title }}">
+                    {% for card in column.cards %}
+                    <article
+                        class="parcel-card"
+                        data-card
+                        draggable="true"
+                        data-card-id="{{ card.id }}"
+                        data-card-status="{{ card.status }}"
+                        data-update-url="{% url 'admin:orders_parcel_set_status' card.id %}"
+                        data-detail-url="{{ card.detail_url }}"
+                        style="--card-tone: {{ card.status_tone }};"
+                    >
+                        <div class="parcel-card-top">
+                            <a href="{{ card.detail_url }}" class="parcel-card-number-link">
+                                <div class="parcel-card-number">{{ card.parcel_id|default:card.order_number }}</div>
+                            </a>
+                            <div class="parcel-card-top-right">
+                                <div class="parcel-card-since">{{ card.since_label }} {% trans "ago" %}</div>
+                                <div class="parcel-status-menu" data-status-menu>
+                                    <button type="button" class="parcel-status-menu-trigger" data-status-menu-toggle aria-label="{% trans 'Change status' %}">⋮</button>
+                                    <div class="parcel-status-dropdown" data-status-menu-list>
+                                        {% for status_option in status_choice_pairs %}
+                                        <button
+                                            type="button"
+                                            class="parcel-status-option"
+                                            data-status-option
+                                            data-next-status="{{ status_option.value }}"
+                                            {% if status_option.value == card.status %}disabled{% endif %}
+                                        >
+                                            {{ status_option.title }}
+                                        </button>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="parcel-card-meta">
+                            <div class="parcel-card-row">
+                                <span>{% trans "Delivery Date:" %}</span>
+                                <strong>{{ card.delivery_date_label }}</strong>
+                            </div>
+                            <div class="parcel-card-row">
+                                <span>{% trans "Order:" %}</span>
+                                <strong>{{ card.order_number }}</strong>
+                            </div>
+                            <div class="parcel-card-row">
+                                <span>{% trans "Warehouse:" %}</span>
+                                <strong>{{ card.warehouse_name }}</strong>
+                            </div>
+                            <div class="parcel-card-row">
+                                <span>{% trans "Item Count:" %}</span>
+                                <strong>{{ card.item_count }}</strong>
+                            </div>
+                            <div class="parcel-card-row">
+                                <span>{% trans "Status:" %}</span>
+                                <strong data-card-status-label>{{ card.status }}</strong>
+                            </div>
+                            <div class="parcel-card-row">
+                                <span>{% trans "Updated by:" %}</span>
+                                <strong data-card-updated-by>{{ card.updated_by_label }}</strong>
+                            </div>
+                            <div class="parcel-card-row">
+                                <span>{% trans "Since:" %}</span>
+                                <strong>{{ card.since_label }} {% trans "ago" %}</strong>
+                            </div>
+                        </div>
+                    </article>
+                    {% empty %}
+                    <div class="parcel-empty-card">
+                        <div class="parcel-empty-title">{% trans "No parcels here" %}</div>
+                        <div class="parcel-empty-copy">{% trans "Use search or filters to find parcels, or wait for items to enter this stage." %}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </section>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="parcel-skeleton" data-skeleton hidden aria-hidden="true">
+        <section class="parcel-column skeleton-column">
+            <div class="skeleton-header shimmer"></div>
+            <div class="skeleton-card shimmer"></div>
+            <div class="skeleton-card shimmer"></div>
+            <div class="skeleton-card shimmer"></div>
+        </section>
+        <section class="parcel-column skeleton-column">
+            <div class="skeleton-header shimmer"></div>
+            <div class="skeleton-card shimmer"></div>
+            <div class="skeleton-card shimmer"></div>
+            <div class="skeleton-card shimmer"></div>
+        </section>
+        <section class="parcel-column skeleton-column">
+            <div class="skeleton-header shimmer"></div>
+            <div class="skeleton-card shimmer"></div>
+            <div class="skeleton-card shimmer"></div>
+            <div class="skeleton-card shimmer"></div>
+        </section>
+        <section class="parcel-column skeleton-column">
+            <div class="skeleton-header shimmer"></div>
+            <div class="skeleton-card shimmer"></div>
+            <div class="skeleton-card shimmer"></div>
+            <div class="skeleton-card shimmer"></div>
+        </section>
+        <section class="parcel-column skeleton-column">
+            <div class="skeleton-header shimmer"></div>
+            <div class="skeleton-card shimmer"></div>
+            <div class="skeleton-card shimmer"></div>
+            <div class="skeleton-card shimmer"></div>
+        </section>
+        <section class="parcel-column skeleton-column">
+            <div class="skeleton-header shimmer"></div>
+            <div class="skeleton-card shimmer"></div>
+            <div class="skeleton-card shimmer"></div>
+            <div class="skeleton-card shimmer"></div>
+        </section>
+        <section class="parcel-column skeleton-column">
+            <div class="skeleton-header shimmer"></div>
+            <div class="skeleton-card shimmer"></div>
+            <div class="skeleton-card shimmer"></div>
+            <div class="skeleton-card shimmer"></div>
+        </section>
+        <section class="parcel-column skeleton-column">
+            <div class="skeleton-header shimmer"></div>
+            <div class="skeleton-card shimmer"></div>
+            <div class="skeleton-card shimmer"></div>
+            <div class="skeleton-card shimmer"></div>
+        </section>
+        <section class="parcel-column skeleton-column">
+            <div class="skeleton-header shimmer"></div>
+            <div class="skeleton-card shimmer"></div>
+            <div class="skeleton-card shimmer"></div>
+            <div class="skeleton-card shimmer"></div>
+        </section>
+    </div>
+
+    <div class="parcel-pagination">
+        <div class="parcel-pagination-summary">
+            {% blocktrans with visible=visible_parcels total=total_parcels %}Showing {{ visible }} of {{ total }} parcels{% endblocktrans %}
+        </div>
+
+        {% if page_obj.paginator.num_pages > 1 %}
+        <nav class="parcel-pagination-nav" aria-label="{% trans 'Parcel pagination' %}">
+            {% if page_obj.has_previous %}
+            <a href="?p=0{% if pagination_query %}&amp;{{ pagination_query }}{% endif %}">{% trans "First" %}</a>
+            <a href="?p={{ page_obj.previous_page_number|add:'-1' }}{% if pagination_query %}&amp;{{ pagination_query }}{% endif %}">{% trans "Previous" %}</a>
+            {% endif %}
+
+            {% for page_number in page_range %}
+                {% if page_number == '…' %}
+                <span class="ellipsis">{{ page_number }}</span>
+                {% elif page_number == page_obj.number %}
+                <span class="active">{{ page_number }}</span>
+                {% else %}
+                <a href="?p={{ page_number|add:'-1' }}{% if pagination_query %}&amp;{{ pagination_query }}{% endif %}">{{ page_number }}</a>
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+            <a href="?p={{ page_obj.next_page_number|add:'-1' }}{% if pagination_query %}&amp;{{ pagination_query }}{% endif %}">{% trans "Next" %}</a>
+            <a href="?p={{ page_obj.paginator.num_pages|add:'-1' }}{% if pagination_query %}&amp;{{ pagination_query }}{% endif %}">{% trans "Last" %}</a>
+            {% endif %}
+        </nav>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    .parcel-board-page {
+        padding: 14px 14px 24px;
+        background: linear-gradient(180deg, #f4f5f7 0%, #eef0f3 100%);
+        min-height: calc(100vh - 120px);
+    }
+
+    .parcel-hero {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        align-items: flex-start;
+        margin-bottom: 12px;
+        padding: 10px 4px 8px;
+        background: transparent;
+        border: none;
+        box-shadow: none;
+        position: sticky;
+        top: 8px;
+        z-index: 10;
+        backdrop-filter: none;
+    }
+
+    .parcel-hero h1 {
+        margin: 0;
+        font-size: 24px;
+        line-height: 1.1;
+        color: #111827;
+        font-weight: 800;
+    }
+
+    .parcel-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+    }
+
+    .parcel-icon-button {
+        width: 42px;
+        height: 42px;
+        border-radius: 10px;
+        border: 1px solid #d2d7df;
+        background: #fff;
+        box-shadow: 0 4px 10px rgba(15, 23, 42, 0.04);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+    }
+
+    .parcel-icon-button:hover {
+        transform: translateY(-1px);
+        border-color: #c4cad7;
+        box-shadow: 0 12px 20px rgba(15, 23, 42, 0.08);
+    }
+
+    .parcel-icon-button svg {
+        width: 18px;
+        height: 18px;
+        fill: #344054;
+    }
+
+    .parcel-controls {
+        margin-bottom: 16px;
+    }
+
+    .parcel-search-form,
+    .parcel-filter-panel {
+        background: rgba(255, 255, 255, 0.97);
+        border: 1px solid #d8dee7;
+        border-radius: 14px;
+        box-shadow: 0 10px 24px rgba(16, 24, 40, 0.04);
+    }
+
+    .parcel-search-form {
+        padding: 14px;
+        margin-bottom: 12px;
+        display: none;
+    }
+
+    .parcel-search-form.is-open {
+        display: block;
+    }
+
+    .parcel-search-field {
+        display: flex;
+        gap: 10px;
+    }
+
+    .parcel-search-field input {
+        flex: 1;
+        min-width: 0;
+        border: 1px solid #d6dbe5;
+        border-radius: 12px;
+        padding: 12px 14px;
+        font-size: 14px;
+        color: #101828;
+        background: #fff;
+    }
+
+    .parcel-search-field input:focus {
+        outline: none;
+        border-color: #8fb2ff;
+        box-shadow: 0 0 0 3px rgba(79, 119, 255, 0.12);
+    }
+
+    .parcel-search-submit {
+        border: none;
+        border-radius: 12px;
+        padding: 0 18px;
+        background: #0f172a;
+        color: #fff;
+        font-weight: 700;
+        cursor: pointer;
+        transition: transform 160ms ease, opacity 160ms ease;
+    }
+
+    .parcel-search-submit:hover {
+        transform: translateY(-1px);
+        opacity: 0.94;
+    }
+
+    .parcel-filter-panel {
+        padding: 14px;
+        display: none;
+    }
+
+    .parcel-filter-panel.is-open {
+        display: block;
+        animation: fadeInUp 180ms ease;
+    }
+
+    .parcel-filter-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .parcel-filter-grid label {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        color: #344054;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .parcel-filter-grid select {
+        min-height: 44px;
+        border-radius: 12px;
+        border: 1px solid #d6dbe5;
+        padding: 10px 12px;
+        background: #fff;
+        color: #101828;
+    }
+
+    .parcel-filter-actions {
+        margin-top: 12px;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .parcel-board-shell {
+        overflow: hidden;
+    }
+
+    .parcel-board {
+        display: grid;
+        grid-auto-flow: column;
+        grid-auto-columns: minmax(246px, 246px);
+        gap: 14px;
+        overflow-x: auto;
+        padding-bottom: 14px;
+        scroll-snap-type: x proximity;
+    }
+
+    .parcel-column {
+        min-width: 246px;
+        background: #f3f4f6;
+        border: 1px solid #dde2ea;
+        border-radius: 14px;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 8px 18px rgba(16, 24, 40, 0.04);
+        scroll-snap-align: start;
+        max-height: min(74vh, 700px);
+    }
+
+    .parcel-column.is-droppable {
+        transform: translateY(-1px);
+        box-shadow: 0 18px 34px rgba(16, 24, 40, 0.08);
+    }
+
+    .parcel-column-header {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        align-items: flex-start;
+        padding: 10px 10px 8px;
+        border-bottom: 1px solid #dde2ea;
+        border-top: 4px solid var(--column-tone);
+        border-radius: 14px 14px 0 0;
+        background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(246,248,250,0.96));
+    }
+
+    .parcel-column-header h2 {
+        margin: 0;
+        font-size: 13px;
+        line-height: 1.2;
+        color: #111827;
+        font-weight: 800;
+    }
+
+    .parcel-count-badge {
+        min-width: 22px;
+        height: 22px;
+        border-radius: 4px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 6px;
+        background: #111827;
+        color: #fff;
+        font-size: 11px;
+        font-weight: 700;
+        flex-shrink: 0;
+    }
+
+    .parcel-column-body {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding: 10px;
+        min-height: 220px;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+    }
+
+    .parcel-card,
+    .parcel-empty-card {
+        border-radius: 12px;
+        border: 1px solid #d8dee7;
+        background: #fff;
+        box-shadow: 0 6px 14px rgba(15, 23, 42, 0.04);
+        transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+    }
+
+    .parcel-card {
+        display: block;
+        color: inherit;
+        text-decoration: none;
+        border-top: 3px solid var(--card-tone);
+        padding: 10px 10px 9px;
+        cursor: grab;
+    }
+
+    .parcel-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 16px 28px rgba(15, 23, 42, 0.08);
+        border-color: #cfd6e4;
+    }
+
+    .parcel-card.is-dragging {
+        opacity: 0.55;
+        transform: scale(0.98);
+        cursor: grabbing;
+    }
+
+    .parcel-card-top {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        align-items: flex-start;
+        margin-bottom: 8px;
+    }
+
+    .parcel-card-number-link {
+        color: inherit;
+        text-decoration: none;
+    }
+
+    .parcel-card-number-link:hover {
+        text-decoration: underline;
+    }
+
+    .parcel-card-top-right {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .parcel-card-number {
+        font-size: 12px;
+        font-weight: 800;
+        color: #101828;
+        word-break: break-word;
+    }
+
+    .parcel-card-since {
+        font-size: 10px;
+        color: #667085;
+        white-space: nowrap;
+    }
+
+    .parcel-status-menu {
+        position: relative;
+    }
+
+    .parcel-status-menu-trigger {
+        width: 24px;
+        height: 24px;
+        border-radius: 8px;
+        border: 1px solid #d6dbe5;
+        background: #fff;
+        color: #344054;
+        font-weight: 700;
+        line-height: 1;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+
+    .parcel-status-menu-trigger:hover {
+        background: #f8fafc;
+        border-color: #c6ccd8;
+    }
+
+    .parcel-status-dropdown {
+        position: absolute;
+        top: 28px;
+        right: 0;
+        min-width: 170px;
+        background: #fff;
+        border: 1px solid #d8dee7;
+        border-radius: 10px;
+        box-shadow: 0 14px 30px rgba(16, 24, 40, 0.14);
+        padding: 6px;
+        display: none;
+        z-index: 30;
+    }
+
+    .parcel-status-menu.is-open .parcel-status-dropdown {
+        display: block;
+    }
+
+    .parcel-status-option {
+        width: 100%;
+        border: none;
+        background: transparent;
+        padding: 8px 10px;
+        border-radius: 8px;
+        text-align: left;
+        font-size: 12px;
+        color: #101828;
+        cursor: pointer;
+    }
+
+    .parcel-status-option:hover {
+        background: #f2f4f7;
+    }
+
+    .parcel-status-option:disabled {
+        opacity: 0.55;
+        cursor: default;
+    }
+
+    .parcel-card-meta {
+        display: grid;
+        gap: 6px;
+    }
+
+    .parcel-card-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        font-size: 11px;
+        line-height: 1.3;
+    }
+
+    .parcel-card-row span {
+        color: #667085;
+        flex-shrink: 0;
+    }
+
+    .parcel-card-row strong {
+        color: #101828;
+        text-align: right;
+        font-weight: 700;
+    }
+
+    .parcel-empty-card {
+        padding: 14px;
+        min-height: 108px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        text-align: center;
+        border-style: dashed;
+        background: linear-gradient(180deg, rgba(255,255,255,0.8), rgba(248,250,252,0.9));
+    }
+
+    .parcel-empty-title {
+        font-weight: 800;
+        color: #344054;
+        margin-bottom: 6px;
+    }
+
+    .parcel-empty-copy {
+        font-size: 12px;
+        color: #667085;
+        line-height: 1.45;
+    }
+
+    .parcel-pagination {
+        margin-top: 16px;
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .parcel-pagination-summary {
+        color: #667085;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .parcel-pagination-nav {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .parcel-pagination-nav a,
+    .parcel-pagination-nav span {
+        min-width: 36px;
+        height: 36px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+        border: 1px solid #d8dee7;
+        background: #fff;
+        color: #344054;
+        text-decoration: none;
+        padding: 0 10px;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .parcel-pagination-nav .active {
+        background: #101828;
+        color: #fff;
+        border-color: #101828;
+    }
+
+    .parcel-pagination-nav .ellipsis {
+        border-style: dashed;
+    }
+
+    .parcel-skeleton {
+        display: none;
+        grid-auto-flow: column;
+        grid-auto-columns: minmax(300px, 1fr);
+        gap: 14px;
+        overflow-x: auto;
+        padding-bottom: 14px;
+        margin-top: 2px;
+    }
+
+    .parcel-skeleton.is-visible {
+        display: grid;
+    }
+
+    .skeleton-column {
+        min-width: 300px;
+        background: #f3f4f6;
+        border: 1px solid #dde2ea;
+        border-radius: 18px;
+        padding: 12px;
+    }
+
+    .skeleton-header,
+    .skeleton-card {
+        border-radius: 14px;
+        background: linear-gradient(90deg, #e9edf4 0%, #f4f6fa 50%, #e9edf4 100%);
+        background-size: 200% 100%;
+        animation: shimmerMove 1.2s ease-in-out infinite;
+    }
+
+    .skeleton-header {
+        height: 54px;
+        margin-bottom: 12px;
+    }
+
+    .skeleton-card {
+        height: 168px;
+        margin-bottom: 10px;
+    }
+
+    .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+    }
+
+    .button.default {
+        background: #101828;
+        border-color: #101828;
+        color: #fff;
+    }
+
+    @keyframes shimmerMove {
+        0% { background-position: 200% 0; }
+        100% { background-position: -200% 0; }
+    }
+
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(6px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 1200px) {
+        .parcel-board,
+        .parcel-skeleton {
+            grid-auto-columns: minmax(246px, 246px);
+        }
+
+        .parcel-column,
+        .skeleton-column {
+            min-width: 246px;
+        }
+    }
+
+    @media (max-width: 900px) {
+        .parcel-hero {
+            flex-direction: column;
+            align-items: stretch;
+            position: static;
+        }
+
+        .parcel-actions {
+            justify-content: flex-start;
+        }
+
+        .parcel-metrics,
+        .parcel-filter-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .parcel-column-header {
+            top: 0;
+        }
+    }
+
+    @media (max-width: 640px) {
+        .parcel-board-page {
+            padding: 12px 10px 20px;
+        }
+
+        .parcel-search-field {
+            flex-direction: column;
+        }
+
+        .parcel-search-submit {
+            min-height: 44px;
+        }
+
+        .parcel-card-row {
+            font-size: 11px;
+        }
+
+        .parcel-pagination {
+            align-items: flex-start;
+        }
+    }
+</style>
+
+<script>
+(function () {
+    const searchToggle = document.querySelector('[data-search-toggle]');
+    const filterToggle = document.querySelector('[data-filter-toggle]');
+    const refreshButton = document.querySelector('[data-refresh-button]');
+    const searchForm = document.querySelector('[data-search-form]');
+    const filterPanel = document.querySelector('[data-filter-panel]');
+    const searchInput = document.getElementById('parcel-search-input');
+    const skeleton = document.querySelector('[data-skeleton]');
+    const cards = Array.from(document.querySelectorAll('[data-card]'));
+    const columns = Array.from(document.querySelectorAll('[data-column]'));
+    const statusMenus = Array.from(document.querySelectorAll('[data-status-menu]'));
+
+    const csrfToken = (() => {
+        const match = document.cookie.match(/(?:^|; )csrftoken=([^;]+)/);
+        return match ? decodeURIComponent(match[1]) : '';
+    })();
+
+    const showSkeleton = () => {
+        if (!skeleton) {
+            return;
+        }
+        skeleton.hidden = false;
+        skeleton.classList.add('is-visible');
+    };
+
+    const hideSkeleton = () => {
+        if (!skeleton) {
+            return;
+        }
+        skeleton.classList.remove('is-visible');
+        skeleton.hidden = true;
+    };
+
+    if (searchToggle && searchForm && searchInput) {
+        searchToggle.addEventListener('click', () => {
+            searchForm.classList.toggle('is-open');
+            searchInput.focus();
+            searchInput.select();
+        });
+
+        searchForm.addEventListener('submit', () => {
+            showSkeleton();
+        });
+    }
+
+    if (filterToggle && filterPanel) {
+        filterToggle.addEventListener('click', () => {
+            filterPanel.classList.toggle('is-open');
+        });
+    }
+
+    if (refreshButton) {
+        refreshButton.addEventListener('click', () => {
+            showSkeleton();
+            window.location.reload();
+        });
+    }
+
+    const statusTitleMap = {
+        {% for status_option in status_choice_pairs %}
+        '{{ status_option.value|escapejs }}': '{{ status_option.title|escapejs }}',
+        {% endfor %}
+    };
+
+    const closeAllStatusMenus = () => {
+        statusMenus.forEach((menu) => menu.classList.remove('is-open'));
+    };
+
+    const cardCountInColumn = (column) => {
+        const body = column.querySelector('[data-dropzone]');
+        return body ? body.querySelectorAll('[data-card]').length : 0;
+    };
+
+    const refreshColumnCounts = () => {
+        columns.forEach((column) => {
+            const badge = column.querySelector('.parcel-count-badge');
+            if (!badge) {
+                return;
+            }
+            badge.textContent = String(cardCountInColumn(column));
+        });
+    };
+
+    const updateCardStatusLabel = (card, nextStatus) => {
+        card.dataset.cardStatus = nextStatus;
+        const statusLabel = card.querySelector('[data-card-status-label]');
+        if (statusLabel) {
+            statusLabel.textContent = statusTitleMap[nextStatus] || nextStatus;
+        }
+
+        card.querySelectorAll('[data-status-option]').forEach((option) => {
+            option.disabled = option.dataset.nextStatus === nextStatus;
+        });
+    };
+
+    const moveCardToColumn = (card, nextStatus) => {
+        const targetColumn = columns.find((column) => column.dataset.columnValue === nextStatus);
+        if (!targetColumn) {
+            return;
+        }
+
+        const targetBody = targetColumn.querySelector('[data-dropzone]');
+        if (!targetBody) {
+            return;
+        }
+
+        const sourceBody = card.parentElement;
+        const targetEmptyCard = targetBody.querySelector('.parcel-empty-card');
+        if (targetEmptyCard) {
+            targetEmptyCard.remove();
+        }
+        targetBody.prepend(card);
+
+        if (sourceBody && sourceBody !== targetBody && !sourceBody.querySelector('[data-card]')) {
+            sourceBody.insertAdjacentHTML('beforeend', `
+                <div class="parcel-empty-card">
+                    <div class="parcel-empty-title">{% trans "No parcels here" %}</div>
+                    <div class="parcel-empty-copy">{% trans "Use search or filters to find parcels, or wait for items to enter this stage." %}</div>
+                </div>
+            `);
+            }
+
+        refreshColumnCounts();
+    };
+
+    const updateCardStatus = async (card, nextStatus) => {
+        const currentStatus = card.dataset.cardStatus;
+        if (!nextStatus || nextStatus === currentStatus) {
+            return;
+        }
+
+        const response = await fetch(card.dataset.updateUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': csrfToken,
+            },
+            body: new URLSearchParams({ status: nextStatus }).toString(),
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to update parcel status');
+        }
+
+        return response.json();
+    };
+
+    statusMenus.forEach((menu) => {
+        const toggle = menu.querySelector('[data-status-menu-toggle]');
+        if (!toggle) {
+            return;
+        }
+
+        toggle.addEventListener('click', (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            const isOpen = menu.classList.contains('is-open');
+            closeAllStatusMenus();
+            if (!isOpen) {
+                menu.classList.add('is-open');
+            }
+        });
+
+        menu.querySelectorAll('[data-status-option]').forEach((option) => {
+            option.addEventListener('click', async (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                const card = option.closest('[data-card]');
+                if (!card) {
+                    return;
+                }
+
+                const nextStatus = option.dataset.nextStatus;
+                if (!nextStatus || nextStatus === card.dataset.cardStatus) {
+                    return;
+                }
+
+                option.disabled = true;
+
+                try {
+                    const payload = await updateCardStatus(card, nextStatus);
+                    updateCardStatusLabel(card, payload.status || nextStatus);
+                    moveCardToColumn(card, payload.status || nextStatus);
+
+                    const updatedBy = card.querySelector('[data-card-updated-by]');
+                    if (updatedBy && payload.updated_by_label) {
+                        updatedBy.textContent = payload.updated_by_label;
+                    }
+                } catch (error) {
+                    console.error(error);
+                } finally {
+                    closeAllStatusMenus();
+                    option.disabled = option.dataset.nextStatus === card.dataset.cardStatus;
+                }
+            });
+        });
+    });
+
+    document.addEventListener('click', () => {
+        closeAllStatusMenus();
+    });
+
+    cards.forEach((card) => {
+        card.addEventListener('click', (event) => {
+            if (event.target.closest('[data-status-menu]')) {
+                return;
+            }
+            const detailUrl = card.dataset.detailUrl;
+            if (detailUrl) {
+                window.location.href = detailUrl;
+            }
+        });
+
+        card.addEventListener('dragstart', (event) => {
+            card.classList.add('is-dragging');
+            event.dataTransfer.effectAllowed = 'move';
+            event.dataTransfer.setData('text/plain', card.dataset.cardId);
+            showSkeleton();
+        });
+
+        card.addEventListener('dragend', () => {
+            card.classList.remove('is-dragging');
+            hideSkeleton();
+        });
+    });
+
+    columns.forEach((column) => {
+        const dropzone = column.querySelector('[data-dropzone]');
+        if (!dropzone) {
+            return;
+        }
+
+        dropzone.addEventListener('dragover', (event) => {
+            event.preventDefault();
+            column.classList.add('is-droppable');
+        });
+
+        dropzone.addEventListener('dragleave', () => {
+            column.classList.remove('is-droppable');
+        });
+
+        dropzone.addEventListener('drop', async (event) => {
+            event.preventDefault();
+            column.classList.remove('is-droppable');
+            hideSkeleton();
+
+            const cardId = event.dataTransfer.getData('text/plain');
+            const card = document.querySelector('[data-card-id="' + cardId + '"]');
+            if (!card) {
+                return;
+            }
+
+            try {
+                const payload = await updateCardStatus(card, column.dataset.columnValue);
+                updateCardStatusLabel(card, payload.status || column.dataset.columnValue);
+                moveCardToColumn(card, payload.status || column.dataset.columnValue);
+
+                const updatedBy = card.querySelector('[data-card-updated-by]');
+                if (updatedBy && payload.updated_by_label) {
+                    updatedBy.textContent = payload.updated_by_label;
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        });
+    });
+
+    refreshColumnCounts();
+})();
+</script>
+{% endblock %}

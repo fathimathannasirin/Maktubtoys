@@ -2,9 +2,6 @@
 {% load i18n %}{% load static %}
 
 {% block content %}
-{% if not is_admin_view %}
-    {% include 'includes/navbar.html' %} 
-{% endif %}
 <section class="section-content padding-y bg-white" {% if request.LANGUAGE_CODE == 'ar' %}dir="rtl" style="text-align: right;"{% endif %}>
     <div class="container">
         <div class="invoice-wrapper mx-auto" style="max-width: 850px; border: 1px solid #eee; padding: 40px; color: #333;">
@@ -36,6 +33,75 @@
                 </div>
             </div>
 
+            {% if not is_admin_view %}
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center" style="gap: 10px;">
+                        <h6 class="mb-0">{% trans "Return & Refund" %}</h6>
+                        {% if can_show_return_button %}
+                            <a href="{% url 'return_request' order.id %}" class="btn btn-outline-danger btn-sm">{% trans "Return Item" %}</a>
+                        {% endif %}
+                    </div>
+
+                    {% if return_expired %}
+                        <div class="alert alert-warning mt-3 mb-0">{% trans "The return period for this order has expired." %}</div>
+                    {% elif return_info_message %}
+                        <p class="text-muted mt-3 mb-0">{{ return_info_message }}</p>
+                    {% endif %}
+
+                    {% if return_request_obj %}
+                        <div class="row mt-3">
+                            <div class="col-md-6 mb-3">
+                                <div><strong>{% trans "Return Request ID" %}:</strong> {{ return_request_obj.return_request_id }}</div>
+                                <div><strong>{% trans "Return Status" %}:</strong> {{ return_request_obj.status }}</div>
+                                <div><strong>{% trans "Return Reason" %}:</strong> {{ return_request_obj.reason }}</div>
+                                <div><strong>{% trans "Request Date" %}:</strong> {{ return_request_obj.created_at|date:"d M Y, H:i" }}</div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div><strong>{% trans "Refund Status" %}:</strong> {{ return_request_obj.refund_status }}</div>
+                                <div><strong>{% trans "Refund Date" %}:</strong> {{ return_request_obj.refund_completed_at|date:"d M Y, H:i"|default:"-" }}</div>
+                                <div><strong>{% trans "Refund Amount" %}:</strong> {{ return_request_obj.refund_amount|default:"-" }}</div>
+                                <div><strong>{% trans "Admin Remarks" %}:</strong> {{ return_request_obj.admin_notes|default:"-" }}</div>
+                            </div>
+                        </div>
+
+                        {% if return_request_obj.description %}
+                            <p class="mb-3"><strong>{% trans "Description" %}:</strong> {{ return_request_obj.description }}</p>
+                        {% endif %}
+
+                        {% if return_images %}
+                            <div class="mb-3">
+                                <strong class="d-block mb-2">{% trans "Uploaded Images" %}</strong>
+                                <div class="d-flex flex-wrap" style="gap: 8px;">
+                                    {% for item in return_images %}
+                                        <a href="{{ item.image.url }}" target="_blank" rel="noopener">
+                                            <img src="{{ item.image.url }}" alt="return-image" style="width:72px; height:72px; object-fit:cover; border-radius:6px; border:1px solid #ddd;">
+                                        </a>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        {% if return_timeline %}
+                            <strong class="d-block mb-2">{% trans "Return Timeline" %}</strong>
+                            <div class="return-timeline">
+                                {% for event in return_timeline %}
+                                    <div class="return-timeline-item">
+                                        <div class="return-dot"></div>
+                                        <div>
+                                            <div class="font-weight-bold">{{ event.status }}</div>
+                                            {% if event.note %}<div class="text-muted small">{{ event.note }}</div>{% endif %}
+                                            <div class="text-muted small">{{ event.created_at|date:"d M Y, H:i" }}</div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+
             <table class="table table-bordered mb-4">
                 <thead style="background-color: #f9f9f9;">
                     <tr>
@@ -61,7 +127,7 @@
                         <td class="text-center py-3">{{ item.product_price }} QAR</td>
                         <td class="text-center py-3">{{ item.quantity }}</td>
                         <td class="text-right py-3 font-weight-bold">
-                            {{ item.product_price }} QAR
+                            {{ item.line_total }} QAR
                         </td>
                     </tr>
                     {% empty %}
@@ -76,7 +142,7 @@
                 <div class="col-md-5">
                     <div class="d-flex justify-content-between mb-2">
                         <span>{% trans "Subtotal:" %}</span>
-                        <span>{{ order.order_total }} QAR</span>
+                        <span>{{ subtotal }} QAR</span>
                     </div>
                     <div class="d-flex justify-content-between mb-2">
                         <span>{% trans "Tax:" %}</span>
@@ -98,10 +164,6 @@
         </div>
     </div>
 </section>
-{% if not is_admin_view %}
-    <a href="{% url 'my_orders' %}" class="btn btn-light border px-5">{% trans "Back" %}</a>
-    {% include 'includes/footer.html' %}
-{% endif %}
 
 <style>
     /* Professional Print Settings */
@@ -132,6 +194,27 @@
     
     .table-bordered th, .table-bordered td { 
         border: 1px solid #dee2e6 !important; 
+    }
+
+    .return-timeline {
+        border-left: 2px solid #d8dce5;
+        margin-left: 7px;
+        padding-left: 16px;
+    }
+
+    .return-timeline-item {
+        position: relative;
+        margin-bottom: 14px;
+    }
+
+    .return-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #007bff;
+        position: absolute;
+        left: -22px;
+        top: 5px;
     }
 </style>
 {% endblock %}

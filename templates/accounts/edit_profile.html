@@ -43,6 +43,25 @@
                     height: 100%;
                     object-fit: cover; /* Prevents image stretching */
                 }
+
+                .qa-phone-group .input-group-text {
+                    border-radius: 10px 0 0 10px;
+                    border: 1px solid #ced4da;
+                    background: #f6f6f6;
+                    font-weight: 700;
+                    color: #6D001F;
+                    min-width: 92px;
+                    justify-content: center;
+                }
+
+                .qa-phone-group .form-control {
+                    border-radius: 0 10px 10px 0;
+                }
+
+                .qa-phone-group .form-control.is-invalid,
+                .qa-phone-group .input-group-text.is-invalid {
+                    border-color: #dc3545;
+                }
             </style>
             <div class="row">
                 <div class="col-md-12">
@@ -63,7 +82,24 @@
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label>{% trans "Phone Number" %}</label>
-                                {{ user_form.phone_number }}
+                                <div class="input-group qa-phone-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text {% if user_form.phone_number.errors %}is-invalid{% endif %}">🇶🇦 +974</span>
+                                    </div>
+                                    <input
+                                        type="text"
+                                        name="phone_number"
+                                        id="id_phone_number"
+                                        class="form-control {% if user_form.phone_number.errors %}is-invalid{% endif %}"
+                                        placeholder="12345678"
+                                        inputmode="numeric"
+                                        maxlength="8"
+                                        value="{{ user_form.phone_number.value|default_if_none:'' }}"
+                                    >
+                                </div>
+                                {% if user_form.phone_number.errors %}
+                                    <div class="text-danger small mt-1">{{ user_form.phone_number.errors|striptags }}</div>
+                                {% endif %}
                             </div>
                             <div class="form-group col-md-6">
                                 <label>{% trans "Profile Picture" %}</label>

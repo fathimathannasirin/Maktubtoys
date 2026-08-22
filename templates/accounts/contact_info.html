@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block content %}
+<style>
+    .policy-page-header {
+        background: linear-gradient(135deg, #6D001F 0%, #400116 45%, #8D2140 100%);
+        color: #ffffff;
+        padding: 40px 0;
+        margin-bottom: 40px;
+        text-align: center;
+    }
+    .policy-page-title {
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+    .contact-card {
+        background: #f8f9fa;
+        border-radius: 12px;
+        padding: 25px;
+        height: 100%;
+        border: 1px solid #e9ecef;
+        transition: transform 0.2s ease;
+    }
+    .contact-card:hover {
+        transform: translateY(-3px);
+    }
+    .contact-icon {
+        font-size: 1.8rem;
+        color: #831362;
+        margin-bottom: 15px;
+    }
+</style>
+
+<div class="policy-page-header">
+    <div class="container">
+        <h1 class="policy-page-title">{% trans "Contact Information" %}</h1>
+        <p class="mb-0">{% trans "We are here to help! Reach out to us through any of the channels below." %}</p>
+    </div>
+</div>
+
+<div class="container my-5">
+    <div class="row g-4">
+        <!-- Location / Address -->
+        <div class="col-md-4">
+            <div class="contact-card text-center">
+                <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
+                <h4>{% trans "Location" %}</h4>
+                <p class="text-muted mb-0">
+                    Building 30, Street 882 (Al Sana St),<br>
+                    Zone 26, Najma,<br>
+                    Al Doha Municipality, Qatar
+                </p>
+            </div>
+        </div>
+
+        <!-- Phone / WhatsApp -->
+        <div class="col-md-4">
+            <div class="contact-card text-center">
+                <div class="contact-icon"><i class="fas fa-phone-alt"></i></div>
+                <h4>{% trans "Call or WhatsApp" %}</h4>
+                <p class="text-muted mb-0">
+                    +974-71292725<br>
+                    {% trans "Available Saturday – Saturday" %}<br>
+                    9:00 AM – 9:00 PM (AST)
+                </p>
+            </div>
+        </div>
+
+        <!-- Email -->
+        <div class="col-md-4">
+            <div class="contact-card text-center">
+                <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+                <h4>{% trans "Email Us" %}</h4>
+                <p class="text-muted mb-0">
+                    info@maktubqatar.com<br>
+                    {% trans "We aim to respond to all inquiries within 24 hours." %}
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Operating Company Info -->
+    <div class="row mt-5">
+        <div class="col-12 text-center">
+            <hr>
+            <p class="text-muted mt-4">
+                <strong>{% trans "Legal Business Name:" %}</strong> Maktub Trading<br>
+                <strong>{% trans "Registered In:" %}</strong> Doha, State of Qatar
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

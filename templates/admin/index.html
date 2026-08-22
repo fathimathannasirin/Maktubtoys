@@ -125,6 +125,9 @@
                                 {% if order.status == 'New' %}#28a745
                                 {% elif order.status == 'Accepted' %}#17a2b8
                                 {% elif order.status == 'Packed' %}#6f42c1
+                                {% elif order.status == 'Ready for Preparing' %}#9c7b3e
+                                {% elif order.status == 'Preparing' %}#8f63c7
+                                {% elif order.status == 'Ready for Delivery' %}#4f86c6
                                 {% elif order.status == 'On The Way' %}#fd7e14
                                 {% elif order.status == 'Completed' %}#007bff
                                 {% else %}#6c757d{% endif %};">

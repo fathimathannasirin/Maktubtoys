@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+<style>
+    .policy-page-header {
+        background: linear-gradient(135deg, #6D001F 0%, #400116 45%, #8D2140 100%);
+        color: #ffffff;
+        padding: 40px 0;
+        margin-bottom: 40px;
+        text-align: center;
+    }
+    .policy-content {
+        line-height: 1.8;
+        color: #444;
+    }
+    .policy-content h3 {
+        color: #831362;
+        margin-top: 30px;
+        margin-bottom: 15px;
+        font-size: 1.25rem;
+        font-weight: 600;
+    }
+</style>
+
+<div class="policy-page-header">
+    <div class="container">
+        <h1 class="policy-page-title">{% trans "Shipping & Delivery Policy" %}</h1>
+        <p class="mb-0">{% trans "Fast and reliable delivery across the State of Qatar." %}</p>
+    </div>
+</div>
+
+<div class="container my-5 policy-content">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+
+            <h3>1. {% trans "Delivery Coverage" %}</h3>
+            <p>{% trans "We currently offer fast delivery service across all areas in Qatar (Doha, Al Rayyan, Al Wakra, Lusail, Al Khor, and surrounding regions)." %}</p>
+
+            <h3>2. {% trans "Processing & Delivery Times" %}</h3>
+            <ul>
+                <li><strong>{% trans "Standard Delivery:" %}</strong> {% trans "Delivered within 24 to 48 hours from order confirmation." %}</li>
+                <li><strong>{% trans "Same-Day Delivery:" %}</strong> {% trans "Available for select orders placed before 12:00 PM." %}</li>
+            </ul>
+
+            <h3>3. {% trans "Delivery Fees" %}</h3>
+            <p>{% trans "Standard shipping fees apply at checkout based on your delivery area. Free shipping offers may apply during special promotional periods or for orders above a specified threshold." %}</p>
+
+            <h3>4. {% trans "Address Accuracy" %}</h3>
+            <p>{% trans "To ensure smooth delivery, please provide accurate address details including Zone, Street, and Building numbers (Blue Plate details)." %}</p>
+
+            <h3>5. {% trans "Order Tracking & Support" %}</h3>
+            <p>{% trans "Once your order is dispatched, our delivery representative or customer support team will contact you via phone or WhatsApp. For shipping updates, contact us at +974-71292725 or email Sales@maktubqatar.com." %}</p>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

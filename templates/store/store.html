@@ -3,78 +3,15 @@
 
 {% block content %}
 {% get_current_language as LANGUAGE_CODE %}
+
 <style>
-    /* 1. Optimized Product Image Box */
-    .card-product-grid .img-wrap {
-        height: 250px; /* Adjusted to balance desktop grid and mobile view */
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        overflow: hidden;
-        background-color: #fff;
-    }
-
-    .card-product-grid .img-wrap img {
-        max-height: 100%;
-        max-width: 100%;
-        object-fit: contain;
-        padding: 10px; 
-    }
-
-    /* 2. Text Protection - Prevents cutting off on mobile */
-    .card-product-grid .title {
-        display: -webkit-box !important;
-        -webkit-line-clamp: 2; /* Increased to 2 lines for better readability on mobile */
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        
-        color: #212529 !important;
-        font-size: 0.9rem;
-        font-weight: 600;
-        line-height: 1.3;
-        min-height: 2.6em; /* Reserves space for two lines to keep grid aligned */
-        margin: 8px 0 4px 0;
-        text-align: center;
-    }
-
-    /* 3. Bottom Section Styling */
-    .card-product-grid .info-wrap {
-        padding: 15px;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between; 
-        background-color: #fff;
-        border-top: 1px solid #eee;
-    }
-
-    .price-wrap {
-        margin-bottom: 10px;
-    }
-
-    /* 4. Grid Logic: Restoring 4 items on laptop, 2 on mobile */
-    .item-column {
-        flex: 0 0 50%;
-        max-width: 50%;
-        padding: 8px;
-    }
-
-    @media (min-width: 768px) {
-        .item-column { flex: 0 0 33.33%; max-width: 33.33%; }
-    }
-
-    @media (min-width: 992px) {
-        .item-column { flex: 0 0 25%; max-width: 25%; } /* Forces 4 items on laptop */
-    }
-
-    /* Banner Styling */
+    /* --- 1. STORE BANNER STYLES --- */
     .store-banner {
         position: relative;
         overflow: hidden;
-        padding: 70px 0;
+        padding: 60px 0;
         background:
-            linear-gradient(135deg, #6D001F 0%, #400116 45%, #8D2140 100%),
-            url("{% static 'images/banners/store-bg.jpg' %}") no-repeat center center;
+            linear-gradient(135deg, #6D001F 0%, #400116 45%, #8D2140 100%), no-repeat center center;
         background-size: cover;
     }
     .store-banner::before,
@@ -106,8 +43,8 @@
         align-items: center;
         justify-content: space-between;
         gap: 24px;
-        padding: 36px 38px;
-        border-radius: 28px;
+        padding: 32px 36px;
+        border-radius: 24px;
         background: rgba(245, 242, 235, 0.14);
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
@@ -131,7 +68,7 @@
     .store-title {
         margin: 0 0 10px 0;
         color: #fff;
-        font-size: clamp(2rem, 3vw, 3rem);
+        font-size: clamp(2rem, 3vw, 2.8rem);
         font-weight: 800;
         line-height: 1.1;
         text-shadow: 0 8px 24px rgba(0,0,0,0.18);
@@ -140,8 +77,8 @@
         margin: 0;
         max-width: 640px;
         color: rgba(255,255,255,0.95);
-        font-size: 1rem;
-        line-height: 1.7;
+        font-size: 0.95rem;
+        line-height: 1.6;
     }
     .store-banner-highlights {
         display: flex;
@@ -150,53 +87,188 @@
         justify-content: flex-end;
     }
     .store-highlight-pill {
-        padding: 10px 14px;
+        padding: 10px 16px;
         border-radius: 999px;
         background: rgba(245, 242, 235, 0.16);
         border: 1px solid rgba(245, 242, 235, 0.24);
         color: #F5F2EB;
-        font-size: 0.9rem;
-        font-weight: 600;
+        font-size: 0.85rem;
+        font-weight: 700;
         white-space: nowrap;
     }
-    .sidebar-parent-text { font-size: 1rem; font-weight: 700; color: #333; text-decoration: none !important; }
-    .side-child-img { width: 24px; height: 24px; border-radius: 4px; object-fit: cover; margin-right: 10px; }
+
+    /* --- 2. SIDEBAR CATEGORY FILTER --- */
+    .sidebar-parent-text { 
+        font-size: 0.95rem; 
+        font-weight: 700; 
+        color: #222; 
+        text-decoration: none !important; 
+        transition: color 0.2s;
+    }
+    .sidebar-parent-text:hover { color: #481616; }
+    .side-child-img { width: 24px; height: 24px; border-radius: 6px; object-fit: cover; margin-right: 10px; }
+
+    /* Active filter highlight style */
+    .sidebar-parent-text.active-filter {
+        color: #6D001F !important;
+        font-weight: 800 !important;
+    }
+
+    /* --- 3. HIGH-RESOLUTION MATCHING PRODUCT CARDS --- */
+    .item-column {
+        flex: 0 0 50%;
+        max-width: 50%;
+        padding: 10px;
+        display: flex;
+    }
+
+    @media (min-width: 768px) {
+        .item-column { flex: 0 0 33.333%; max-width: 33.333%; }
+    }
+
+    @media (min-width: 992px) {
+        .item-column { flex: 0 0 25%; max-width: 25%; } /* 4 Items per row on desktops */
+    }
+
+    /* Redesigned Store Card */
+    .card-product-grid {
+        background: #ffffff;
+        border: 2px solid #ebebeb;
+        border-radius: 16px;
+        padding: 14px;
+        text-align: left;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        width: 100%;
+        min-height: 380px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+        box-sizing: border-box;
+        transition: all 0.25s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .card-product-grid:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 24px rgba(0,0,0,0.08);
+        border-color: #d6d6d6;
+    }
+
+    /* High-Resolution Image Wrap */
+    .card-product-grid .img-wrap { 
+        height: 210px;
+        width: 100%; 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        margin-bottom: 12px; 
+        overflow: hidden; 
+        flex-shrink: 0; 
+        background: #fafafa; 
+        border-radius: 12px;
+        position: relative;
+    }
+
+    .card-product-grid .img-wrap img { 
+        max-height: 90%; 
+        max-width: 90%; 
+        object-fit: contain; 
+        image-rendering: -webkit-optimize-contrast;
+        transition: transform 0.3s ease;
+    }
+
+    .card-product-grid:hover .img-wrap img {
+        transform: scale(1.08);
+    }
+
+    /* Card Content Info */
+    .card-product-grid .info-wrap {
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+        justify-content: space-between;
+        padding: 0;
+        background: transparent;
+        border: none;
+    }
+
+    .card-product-grid .title { 
+        font-size: 1.05rem !important; 
+        font-weight: 700 !important; 
+        line-height: 1.35 !important; 
+        color: #222 !important; 
+        margin-bottom: 8px !important;
+        height: 2.7em; 
+        display: -webkit-box !important;
+        -webkit-line-clamp: 2 !important; 
+        -webkit-box-orient: vertical !important;
+        overflow: hidden !important; 
+        text-overflow: ellipsis !important; 
+        word-break: break-word;
+        text-align: left;
+    }
+
+    .price-wrap {
+        margin-bottom: 10px;
+        text-align: left;
+    }
+
+    .card-product-grid .price { 
+        font-size: 1.15rem; 
+        color: #481616 !important; 
+        font-weight: 800; 
+    }
+
+    /* Buttons Styling */
+    .btn-add-store { 
+        font-size: 0.8rem; 
+        font-weight: 800; 
+        padding: 10px 0; 
+        background-color: #481616; 
+        border: none;
+        color: #fff; 
+        border-radius: 8px; 
+        text-transform: uppercase; 
+        letter-spacing: 0.5px;
+        width: 100%;
+        transition: background-color 0.2s ease;
+        display: block;
+        text-align: center;
+    }
+
+    .btn-add-store:hover { background-color: #390509; color: #fff; }
+
+    /* RTL / Arabic Enhancements */
+    {% if LANGUAGE_CODE == 'ar' %}
+    .card-product-grid, .card-product-grid .title, .price-wrap {
+        text-align: right !important;
+    }
+    .mr-md-auto { margin-left: auto !important; margin-right: 0 !important; }
+    .side-child-img { margin-left: 10px !important; margin-right: 0 !important; }
+
+    @media (max-width: 991px) {
+        .card-product-grid .title {
+            line-height: 1.5 !important; 
+            min-height: 3em !important;
+            font-size: 0.95rem !important;
+        }
+    }
+    {% endif %}
 
     @media (max-width: 767px) {
         .store-banner-card {
             flex-direction: column;
             align-items: flex-start;
-            padding: 28px 24px;
+            padding: 24px 20px;
         }
-        .store-banner-highlights {
-            justify-content: flex-start;
-        }
+        .store-banner-highlights { justify-content: flex-start; }
+        .card-product-grid .img-wrap { height: 160px; }
+        .card-product-grid { min-height: 330px; padding: 10px; }
     }
-    
-    {% if LANGUAGE_CODE == 'ar' %}
-    .mr-md-auto { margin-left: auto !important; margin-right: 0 !important; }
-    .side-child-img { margin-left: 10px !important; margin-right: 0 !important; }
-    {% endif %}
-    /* --- Specific Fix for Arabic Phone & Tablet View --- */
-    {% if LANGUAGE_CODE == 'ar' %}
-    @media (max-width: 991px) {
-        .card-product-grid .title {
-            /* Force exactly 2 lines for Arabic on small screens */
-            display: -webkit-box !important;
-            -webkit-line-clamp: 2 !important;
-            -webkit-box-orient: vertical !important;
-            overflow: hidden !important;
-            text-overflow: ellipsis !important;
-
-            /* Adjustments for Arabic mobile script height */
-            line-height: 1.5 !important; 
-            min-height: 3em !important;   /* Keeps the grid aligned on mobile */
-            font-size: 0.95rem !important;
-        }
-    }
-    {% endif %}
 </style>
 
+<!-- Banner Section -->
 <section class="store-banner">
     <div class="container-fluid px-lg-5">
         <div class="store-banner-card">
@@ -205,7 +277,7 @@
                     <i class="fa fa-star"></i>
                     {% trans "Curated Collection" %}
                 </div>
-                {% if 'search' in request.path %}
+                {% if 'search' in request.path or request.GET.search %}
                     <h2 class="store-title">{% trans "Search Result" %}</h2>
                 {% else %}
                     <h2 class="store-title">{% trans "Our Products" %}</h2>
@@ -221,27 +293,43 @@
     </div>
 </section>
 
+<!-- Store Content Section -->
 <section class="section-content padding-y" {% if request.LANGUAGE_CODE == 'ar' %}dir="rtl" style="text-align: right;"{% endif %}>
 <div class="container-fluid px-lg-5">
     <div class="row">
+        <!-- Sidebar Filter -->
         <aside class="col-lg-3 col-md-4">
-            <div class="card shadow-sm mb-3">
-                <header class="card-header bg-white"><h6 class="title font-weight-bold">{% trans "Filter Categories" %}</h6></header>
+            
+            <!-- 1. PRODUCT CATEGORIES FILTER -->
+            <div class="card shadow-sm mb-4" style="border-radius: 14px; border: 1px solid #ebebeb;">
+                <header class="card-header bg-white" style="border-bottom: 1px solid #eee; border-radius: 14px 14px 0 0;">
+                    <h6 class="title font-weight-bold mb-0" style="color: #111; font-size: 1rem;">{% trans "Filter Categories" %}</h6>
+                </header>
                 <div class="filter-content px-3 py-3">
-                    <ul class="list-menu list-unstyled">
-                    {% for category in links %}
+                    <ul class="list-menu list-unstyled mb-0">
+                        <!-- Option to view all categories -->
+                        <li class="mb-2 category-item" style="list-style: none;">
+                                     <a href="{% url 'store' %}{% if request.GET.age or request.GET.age_mode or request.GET.age_value or request.GET.min_age or request.GET.max_age or request.GET.inner_keyword or request.GET.search %}?{% endif %}{% if request.GET.age %}age={{ request.GET.age }}{% endif %}{% if request.GET.age_mode %}{% if request.GET.age %}&{% endif %}age_mode={{ request.GET.age_mode }}{% endif %}{% if request.GET.age_value %}{% if request.GET.age or request.GET.age_mode %}&{% endif %}age_value={{ request.GET.age_value }}{% endif %}{% if request.GET.min_age %}{% if request.GET.age or request.GET.age_mode or request.GET.age_value %}&{% endif %}min_age={{ request.GET.min_age }}{% endif %}{% if request.GET.max_age %}{% if request.GET.age or request.GET.age_mode or request.GET.age_value or request.GET.min_age %}&{% endif %}max_age={{ request.GET.max_age }}{% endif %}{% if request.GET.inner_keyword %}{% if request.GET.age or request.GET.age_mode or request.GET.age_value or request.GET.min_age or request.GET.max_age %}&{% endif %}inner_keyword={{ request.GET.inner_keyword|urlencode }}{% endif %}{% if request.GET.search %}{% if request.GET.age or request.GET.age_mode or request.GET.age_value or request.GET.min_age or request.GET.max_age or request.GET.inner_keyword %}&{% endif %}search={{ request.GET.search }}{% endif %}" 
+                               class="sidebar-parent-text {% if not request.GET.category %}text-muted{% endif %}">
+                                <i class="fa fa-th-large mr-2"></i>{% trans "All Categories" %}
+                            </a>
+                        </li>
+                        <hr class="my-2">
+
+                        {% for category in links %}
                         <li class="mb-3 category-item" style="list-style: none;">
                             <div class="d-flex align-items-center justify-content-between">
-                                <a href="{{ category.get_url }}" class="sidebar-parent-text">
+                                          <a href="{% url 'store' %}?category={{ category.slug }}{% if request.GET.age %}&age={{ request.GET.age }}{% endif %}{% if request.GET.age_mode %}&age_mode={{ request.GET.age_mode }}{% endif %}{% if request.GET.age_value %}&age_value={{ request.GET.age_value }}{% endif %}{% if request.GET.min_age %}&min_age={{ request.GET.min_age }}{% endif %}{% if request.GET.max_age %}&max_age={{ request.GET.max_age }}{% endif %}{% if request.GET.inner_keyword %}&inner_keyword={{ request.GET.inner_keyword|urlencode }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}" 
+                                   class="sidebar-parent-text {% if request.GET.category == category.slug %}active-filter{% endif %}">
                                     {% if category.image %}
-                                        <img src="{{ category.image.url }}" class="side-child-img">
+                                        <img src="{{ category.image.url }}" class="side-child-img" alt="{{ category.category_name }}">
                                     {% endif %}
                                     {% if request.LANGUAGE_CODE == 'ar' %}{{ category.category_name_ar }}{% else %}{{ category.category_name }}{% endif %}
                                 </a>
 
                                 {% if category.children.all %}
-                                    <span class="category-toggle" onclick="toggleAccordion(this)" style="cursor: pointer;">
-                                        <i class="fa fa-chevron-down" style="transition: 0.3s;"></i>
+                                    <span class="category-toggle" onclick="toggleAccordion(this)" style="cursor: pointer; padding: 2px 6px;">
+                                        <i class="fa fa-chevron-down" style="transition: transform 0.3s ease; color: #888;"></i>
                                     </span>
                                 {% endif %}
                             </div>
@@ -250,7 +338,9 @@
                                 <ul class="submenu" style="display: none; list-style: none; padding-left: 28px; margin-top: 10px;">
                                     {% for child in category.children.all %}
                                         <li class="mb-2">
-                                            <a href="{{ child.get_url }}" class="sidebar-parent-text" style="font-weight: 500; color: #666;">
+                                                          <a href="{% url 'store' %}?category={{ child.slug }}{% if request.GET.age %}&age={{ request.GET.age }}{% endif %}{% if request.GET.age_mode %}&age_mode={{ request.GET.age_mode }}{% endif %}{% if request.GET.age_value %}&age_value={{ request.GET.age_value }}{% endif %}{% if request.GET.min_age %}&min_age={{ request.GET.min_age }}{% endif %}{% if request.GET.max_age %}&max_age={{ request.GET.max_age }}{% endif %}{% if request.GET.inner_keyword %}&inner_keyword={{ request.GET.inner_keyword|urlencode }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}" 
+                                               class="sidebar-parent-text {% if request.GET.category == child.slug %}active-filter{% endif %}" 
+                                               style="font-weight: 500; color: #666; font-size: 0.88rem;">
                                                 {% if request.LANGUAGE_CODE == 'ar' %}{{ child.category_name_ar }}{% else %}{{ child.category_name }}{% endif %}
                                             </a>
                                         </li>
@@ -258,36 +348,88 @@
                                 </ul>
                             {% endif %}
                         </li>
-                    {% endfor %}
+                        {% endfor %}
                     </ul>
                 </div>
             </div> 
+
+            <!-- 2. AGE CATEGORIES FILTER (NEW) -->
+            <div class="card shadow-sm mb-4" style="border-radius: 14px; border: 1px solid #ebebeb;">
+                <header class="card-header bg-white" style="border-bottom: 1px solid #eee; border-radius: 14px 14px 0 0;">
+                    <h6 class="title font-weight-bold mb-0" style="color: #111; font-size: 1rem;">{% trans "Filter by Age" %}</h6>
+                </header>
+                <div class="filter-content px-3 py-3">
+                    <ul class="list-menu list-unstyled mb-0">
+                        <!-- Option to view all ages -->
+                        <li class="mb-2" style="list-style: none;">
+                                     <a href="{% url 'store' %}{% if request.GET.category or request.GET.inner_keyword or request.GET.search %}?{% endif %}{% if request.GET.category %}category={{ request.GET.category }}{% endif %}{% if request.GET.inner_keyword %}{% if request.GET.category %}&{% endif %}inner_keyword={{ request.GET.inner_keyword|urlencode }}{% endif %}{% if request.GET.search %}{% if request.GET.category or request.GET.inner_keyword %}&{% endif %}search={{ request.GET.search }}{% endif %}" 
+                                         class="sidebar-parent-text {% if not request.GET.age and not request.GET.age_mode and not request.GET.min_age and not request.GET.max_age %}text-muted{% endif %}">
+                                <i class="fa fa-child mr-2"></i>{% trans "All Ages" %}
+                            </a>
+                        </li>
+                        <hr class="my-2">
+
+                        {% for age in age_links %}
+                        <li class="mb-2" style="list-style: none;">
+                                     <a href="{% url 'store' %}?age={{ age }}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.inner_keyword %}&inner_keyword={{ request.GET.inner_keyword|urlencode }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}" 
+                                         class="sidebar-parent-text {% if request.GET.age == age|stringformat:'s' and not request.GET.age_mode %}active-filter{% endif %}">
+                                <i class="fa fa-angle-right mr-2 text-muted"></i>
+                                {{ age }}+
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <!-- CLEAR ALL FILTERS BUTTON -->
+            {% if request.GET.category or request.GET.age or request.GET.age_mode or request.GET.min_age or request.GET.max_age or request.GET.inner_keyword %}
+            <div class="mb-4 text-center">
+                <a href="{% url 'store' %}" class="btn btn-outline-danger btn-block" style="border-radius: 10px; font-weight: 700; font-size: 0.88rem;">
+                    <i class="fa fa-times-circle mr-1"></i> {% trans "Clear All Filters" %}
+                </a>
+            </div>
+            {% endif %}
+
         </aside> 
 
+        <!-- Product Grid Main Area -->
         <main class="col-lg-9 col-md-8">
             <header class="border-bottom mb-4 pb-3">
                 <div class="form-inline d-flex justify-content-between align-items-center">
-                    <span class="mr-md-auto"><b>{{ product_count }}</b> {% trans "Items found" %}</span>
+                    <span class="mr-md-auto" style="font-size: 0.95rem; color: #555;"><b>{{ product_count }}</b> {% trans "Items found" %}</span>
                     
                     <div class="dropdown">
-                        <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
+                        <button class="btn btn-outline-secondary dropdown-toggle px-3" type="button" id="dropdownMenuButton" data-toggle="dropdown" style="border-radius: 8px; font-weight: 600; font-size: 0.88rem;">
                             {% trans "Sort by" %}
                         </button>
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <a class="dropdown-item" href="?sort=latest">{% trans "Latest Items" %}</a>
-                            <a class="dropdown-item" href="?sort=price_low">{% trans "Price: Low to High" %}</a>
-                            <a class="dropdown-item" href="?sort=price_high">{% trans "Price: High to Low" %}</a>
+                        <div class="dropdown-menu dropdown-menu-right" style="border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.08);">
+                            <a class="dropdown-item" href="?sort=latest{% if sort_querystring %}&{{ sort_querystring }}{% endif %}">{% trans "Latest Items" %}</a>
+                            <a class="dropdown-item" href="?sort=price_low{% if sort_querystring %}&{{ sort_querystring }}{% endif %}">{% trans "Price: Low to High" %}</a>
+                            <a class="dropdown-item" href="?sort=price_high{% if sort_querystring %}&{{ sort_querystring }}{% endif %}">{% trans "Price: High to Low" %}</a>
                         </div>
                     </div>
                 </div>
             </header>
 
+            {% if selected_age_mode == 'under' and selected_age %}
+            <p class="text-muted mb-3">{% blocktrans %}Showing products for ages under {{ selected_age }}{% endblocktrans %}</p>
+            {% elif selected_age_mode == 'above' and selected_age %}
+            <p class="text-muted mb-3">{% blocktrans %}Showing products for ages above {{ selected_age }}{% endblocktrans %}</p>
+            {% elif selected_age_mode == 'range' and selected_age %}
+            <p class="text-muted mb-3">{% blocktrans with min_age=selected_age.0 max_age=selected_age.1 %}Showing products for ages {{ min_age }} to {{ max_age }}{% endblocktrans %}</p>
+            {% elif selected_age_mode == 'exact' and selected_age %}
+            <p class="text-muted mb-3">{% blocktrans %}Showing products for age {{ selected_age }}{% endblocktrans %}</p>
+            {% endif %}
+
             <div class="row">
                 {% for product in products %}
-                <div class="item-column">
-                    <figure class="card card-product-grid shadow-sm">
+                <div class="item-column mb-3">
+                    <figure class="card-product-grid">
                         <div class="img-wrap"> 
-                            <a href="{{ product.get_url }}"><img src="{{ product.images.url }}"></a>
+                            <a href="{{ product.get_url }}">
+                                <img src="{{ product.images.url }}" alt="{{ product.product_name }}">
+                            </a>
                         </div>
                         <figcaption class="info-wrap">
                             <a href="{{ product.get_url }}" class="title">
@@ -297,20 +439,22 @@
                                     {{ product.product_name_en|default:product.product_name }}
                                 {% endif %}
                             </a>
-                            <div class="price-wrap text-center">
-                                <span class="price" style="color: #3167eb; font-weight: 700;">{{ product.price|floatformat:2 }} {% trans "QAR" %}</span>
+                            <div class="price-wrap">
+                                <span class="price">QAR {{ product.price|floatformat:2 }}</span>
                             </div>
                             <div class="action-wrap">
                                 {% if product.stock <= 0 %}
-                                    <button class="btn btn-block btn-danger disabled"> {% trans "Out of Stock" %} </button>
+                                    <button class="btn btn-block btn-danger disabled" style="border-radius: 8px; font-weight: 700; font-size: 0.8rem;"> 
+                                        {% trans "Out of Stock" %} 
+                                    </button>
                                 {% else %}
                                     {% if product.variation_set.all %}
-                                        <a href="{{ product.get_url }}" class="btn btn-block btn-primary">
-                                            <i class="fa fa-list"></i> {% trans "Select Options" %} 
+                                        <a href="{{ product.get_url }}" class="btn-add-store">
+                                            <i class="fa fa-list mr-1"></i> {% trans "Select Options" %} 
                                         </a>
                                     {% else %}
-                                        <a href="{% url 'add_cart' product.id %}" class="btn btn-block btn-primary">
-                                            <i class="fa fa-shopping-cart"></i> {% trans "Add to Cart" %}
+                                        <a href="{% url 'add_cart' product.id %}" class="btn-add-store">
+                                            <i class="fa fa-shopping-cart mr-1"></i> {% trans "Add to Cart" %}
                                         </a>
                                     {% endif %}
                                 {% endif %}
@@ -320,28 +464,34 @@
                 </div> 
                 {% empty %}
                     <div class="col-12 text-center py-5">
-                        <i class="fa fa-search text-muted mb-3" style="font-size: 60px;"></i>
-                        <h2 class="font-weight-bold">{% trans "No results found" %}</h2>
-                        <a href="{% url 'store' %}" class="btn btn-primary">{% trans "Back to Store" %}</a>
+                        <i class="fa fa-search text-muted mb-3" style="font-size: 50px;"></i>
+                        <h3 class="font-weight-bold">{% trans "No results found" %}</h3>
+                        <p class="text-muted">{% trans "Try adjusting your search, age group, or category filter to find what you are looking for." %}</p>
+                        <a href="{% url 'store' %}" class="btn btn-add-store d-inline-block px-4 py-2 mt-2" style="width: auto;">{% trans "Back to Store" %}</a>
                     </div>
                 {% endfor %}
             </div>
 
+            <!-- Pagination -->
             <nav class="mt-4">
                 {% if products.has_other_pages %}
-                <ul class="pagination">
+                <ul class="pagination justify-content-center">
                     {% if products.has_previous %}
-                    <li class="page-item"><a class="page-link" href="?page={{products.previous_page_number}}">{% trans "Previous" %}</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{products.previous_page_number}}{% if page_querystring %}&{{ page_querystring }}{% endif %}">{% trans "Previous" %}</a>
+                    </li>
                     {% endif %}
 
                     {% for i in products.paginator.page_range %}
                         <li class="page-item {% if products.number == i %}active{% endif %}">
-                            <a class="page-link" href="?page={{i}}">{{i}}</a>
+                            <a class="page-link" href="?page={{i}}{% if page_querystring %}&{{ page_querystring }}{% endif %}">{{i}}</a>
                         </li>
                     {% endfor %}
 
                     {% if products.has_next %}
-                    <li class="page-item"><a class="page-link" href="?page={{products.next_page_number}}">{% trans "Next" %}</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{products.next_page_number}}{% if page_querystring %}&{{ page_querystring }}{% endif %}">{% trans "Next" %}</a>
+                    </li>
                     {% endif %}
                 </ul>
                 {% endif %}

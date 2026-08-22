@@ -1,0 +1,159 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block content %}
+<div class="parcel-detail-page">
+    <div class="parcel-detail-shell">
+        <header class="parcel-detail-topbar">
+            <div>
+                <div class="parcel-detail-title">Parcel #{{ order.parcel_id|default:order.order_number }}</div>
+            </div>
+            <div class="parcel-detail-actions">
+                <a class="parcel-detail-btn" href="{% url 'admin:orders_parcel_changelist' %}">{% trans "Back" %}</a>
+                <a class="parcel-detail-btn" href="{{ detail_invoice_url }}" target="_blank">{% trans "Download" %}</a>
+            </div>
+        </header>
+
+        <div class="parcel-detail-layout">
+            <main class="parcel-detail-main">
+                <section class="parcel-panel parcel-info-panel">
+                    <div class="parcel-panel-header">
+                        <h2>{% trans "Info" %}</h2>
+                    </div>
+
+                    <div class="parcel-info-grid">
+                        <div class="parcel-info-row"><span>ID</span><strong>{{ order.parcel_id|default:order.order_number }}</strong></div>
+                        <div class="parcel-info-row"><span>Status</span><strong><span class="status-pill">{{ detail_status_label }}</span></strong></div>
+                        <div class="parcel-info-row"><span>Warehouse</span><strong>{{ warehouse_label }}</strong></div>
+                        <div class="parcel-info-row"><span>Delivery Date</span><strong>{{ order.created_at|date:"d/m/Y" }}</strong></div>
+                        <div class="parcel-info-row"><span>Order</span><strong>{{ order.order_number }}</strong></div>
+                        <div class="parcel-info-row"><span>Order Code</span><strong>{{ order.order_number }}</strong></div>
+                        <div class="parcel-info-row"><span>User</span><strong>{{ order.full_name }}{% if order.user %} | {{ order.user.email }}{% endif %}</strong></div>
+                        <div class="parcel-info-row parcel-info-wide"><span>Address</span><strong>{{ order.address_line_1 }} - {{ order.address_line_2 }} - {{ order.street_number }} - {{ order.zone_number }} - {{ order.building_number }}</strong></div>
+                        <div class="parcel-info-row"><span>Admin Comment</span><strong>-</strong></div>
+                        <div class="parcel-info-row"><span>Cash Status</span><strong>{% if order.payment_method == 'COD' %}Not Collected{% else %}Collected{% endif %}</strong></div>
+                    </div>
+                </section>
+
+                <section class="parcel-panel parcel-sku-panel">
+                    <div class="parcel-panel-header">
+                        <h2>{% trans "Sku" %}</h2>
+                    </div>
+
+                    <div class="parcel-sku-table-wrap">
+                        <table class="parcel-sku-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>{% trans "Image" %}</th>
+                                    <th>{% trans "Name" %}</th>
+                                    <th>{% trans "Item Code" %}</th>
+                                    <th>{% trans "Qty" %}</th>
+                                    <th>{% trans "Weight" %}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for row in sku_rows %}
+                                <tr>
+                                    <td>{{ order.parcel_id|default:order.order_number }}-{{ forloop.counter }}</td>
+                                    <td>
+                                        {% if row.image %}
+                                        <img src="{{ row.image.url }}" alt="{{ row.name }}">
+                                        {% else %}
+                                        <div class="sku-thumb sku-thumb-empty"></div>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ row.name }}</td>
+                                    <td>{{ row.item_code }}</td>
+                                    <td>{{ row.qty }}</td>
+                                    <td>{{ row.weight }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr><td colspan="6" class="parcel-empty-table">{% trans "No items found." %}</td></tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </main>
+
+            <aside class="parcel-detail-sidebar">
+                <section class="parcel-panel side-panel">
+                    <div class="parcel-panel-header">
+                        <h2>{% trans "History" %}</h2>
+                    </div>
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <span class="timeline-icon"></span>
+                            <div>
+                                <strong>{% trans "Created By System" %}</strong>
+                                <div class="timeline-sub">{{ detail_created_age }} {% trans "ago" %}</div>
+                            </div>
+                        </div>
+                        {% for entry in history_rows %}
+                        <div class="timeline-item">
+                            <span class="timeline-icon"></span>
+                            <div>
+                                <strong>{{ entry.label }}</strong>
+                                <div class="timeline-sub">{{ entry.age }} {% trans "ago" %}</div>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="timeline-empty">{% trans "No admin history yet." %}</div>
+                        {% endfor %}
+                    </div>
+                </section>
+
+                <section class="parcel-panel side-panel">
+                    <div class="parcel-panel-header">
+                        <h2>{% trans "Related Talabats" %}</h2>
+                    </div>
+                    <div class="related-list">
+                        {% for warehouse in related_warehouses %}
+                        <div class="related-item">{{ warehouse }}</div>
+                        {% empty %}
+                        <div class="related-empty">-</div>
+                        {% endfor %}
+                    </div>
+                </section>
+            </aside>
+        </div>
+    </div>
+</div>
+
+<style>
+    .parcel-detail-page { padding: 14px; background: #e9ebf0; min-height: calc(100vh - 120px); }
+    .parcel-detail-shell { background: #eef0f4; border-radius: 28px; overflow: hidden; }
+    .parcel-detail-topbar { background: #0f1320; color: #fff; display: flex; justify-content: space-between; align-items: center; padding: 18px 22px; }
+    .parcel-detail-title { font-size: 20px; font-weight: 800; }
+    .parcel-detail-actions { display: flex; gap: 8px; }
+    .parcel-detail-btn { background: #f2f2f2; color: #222; border-radius: 6px; padding: 8px 14px; text-decoration: none; font-weight: 700; box-shadow: inset 0 1px 0 rgba(255,255,255,.4); }
+    .parcel-detail-layout { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(280px, 0.8fr); gap: 14px; padding: 18px; }
+    .parcel-panel { background: #fff; border-radius: 6px; border: 1px solid #e1e4ea; box-shadow: 0 1px 0 rgba(0,0,0,.03); }
+    .parcel-panel-header { padding: 14px 16px; border-bottom: 1px solid #eceff4; }
+    .parcel-panel-header h2 { margin: 0; font-size: 16px; font-weight: 800; color: #333; }
+    .parcel-info-panel { padding-bottom: 8px; }
+    .parcel-info-grid { padding: 18px 18px 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px 28px; }
+    .parcel-info-row { display: flex; gap: 12px; align-items: flex-start; font-size: 13px; color: #333; }
+    .parcel-info-row span { min-width: 120px; color: #666; font-weight: 700; text-align: right; }
+    .parcel-info-row strong { font-weight: 700; }
+    .parcel-info-wide { grid-column: 1 / -1; }
+    .status-pill { background: #2d9cdb; color: #fff; border-radius: 4px; padding: 4px 10px; font-size: 12px; }
+    .parcel-detail-main { display: grid; gap: 14px; }
+    .parcel-sku-table-wrap { padding: 0 0 8px; overflow-x: auto; }
+    .parcel-sku-table { width: 100%; border-collapse: collapse; }
+    .parcel-sku-table thead th { text-align: left; padding: 16px 14px; border-bottom: 1px solid #e8ebf0; color: #666; font-size: 12px; font-weight: 700; text-transform: uppercase; }
+    .parcel-sku-table td { padding: 16px 14px; border-bottom: 1px solid #eef1f5; font-size: 13px; vertical-align: middle; }
+    .parcel-sku-table img, .sku-thumb { width: 46px; height: 46px; border-radius: 6px; object-fit: cover; background: #f1f3f7; border: 1px solid #e0e4eb; }
+    .sku-thumb-empty { display: inline-block; }
+    .parcel-detail-sidebar { display: grid; gap: 14px; }
+    .timeline, .related-list { padding: 8px 0; }
+    .timeline-item { display: flex; gap: 10px; align-items: flex-start; padding: 12px 16px; border-bottom: 1px solid #f1f3f6; }
+    .timeline-icon { width: 18px; height: 18px; border-radius: 50%; background: #0f1320; display: inline-block; margin-top: 2px; }
+    .timeline-sub { color: #8b8f96; font-size: 12px; margin-top: 2px; }
+    .timeline-empty, .related-empty, .related-item { padding: 12px 16px; color: #666; }
+    .related-item { border-bottom: 1px solid #f1f3f6; }
+    @media (max-width: 1100px) { .parcel-detail-layout { grid-template-columns: 1fr; } }
+    @media (max-width: 760px) { .parcel-info-grid { grid-template-columns: 1fr; } .parcel-info-row span { min-width: 100px; } }
+</style>
+{% endblock %}

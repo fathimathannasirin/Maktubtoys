@@ -1,4 +1,28 @@
 {% load i18n %}
+<style>
+  /* Sidebar Links Default Style */
+  .list-group-item {
+    color: #370808 !important; /* Normal text color */
+    font-weight: 500;
+    transition: all 0.2s ease;
+    border-color: #f0f0f0;
+  }
+
+  /* Hover Effect */
+  .list-group-item:hover {
+    color: #481616 !important; /* Theme Burgundy color on hover */
+    background-color: #fcf5f5 !important;
+    padding-left: 24px; /* Slight slide animation */
+  }
+
+  /* Active Menu Item  */
+  .list-group-item.active {
+    background-color: #481616 !important;
+    border-color: #481616 !important;
+    color: #ffffff !important;
+    font-weight: 600;
+  }
+</style>
 <aside class="col-md-3" {% if request.LANGUAGE_CODE == 'ar' %}dir="rtl" style="text-align: right;"{% endif %}>
 		<!--   SIDEBAR   -->
 		<ul class="list-group">

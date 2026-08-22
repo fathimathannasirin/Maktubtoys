@@ -24,6 +24,25 @@
         border-radius: 4px;
     }
 
+    .qa-phone-group .input-group-text {
+        border-radius: 10px 0 0 10px;
+        border: 1px solid #ced4da;
+        background: #f6f6f6;
+        font-weight: 700;
+        color: #6D001F;
+        min-width: 92px;
+        justify-content: center;
+    }
+
+    .qa-phone-group .form-control {
+        border-radius: 0 10px 10px 0;
+    }
+
+    .qa-phone-group .form-control.is-invalid,
+    .qa-phone-group .input-group-text.is-invalid {
+        border-color: #dc3545;
+    }
+
     /* Mobile View: Triggered only for screens smaller than 768px */
     @media (max-width: 768px) {
         .table-checkout thead { 
@@ -88,6 +107,21 @@
                     <h4 class="card-title mb-4">{% trans "Billing Address" %}</h4>
                     <form action="{% url 'place_order' %}" method="POST">
                         {% csrf_token %}
+                        {% if form.errors %}
+                            <div class="alert alert-danger">
+                                <strong>{% trans "Please fix the following:" %}</strong>
+                                <ul class="mb-0 mt-2">
+                                    {% for field in form %}
+                                        {% for error in field.errors %}
+                                            <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+                                        {% endfor %}
+                                    {% endfor %}
+                                    {% for error in form.non_field_errors %}
+                                        <li>{{ error }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
                         <div class="form-row">
                             <div class="col-6 form-group">
                                 <label>{% trans "First Name" %}</label>
@@ -105,13 +139,59 @@
                             </div>
                             <div class="col-12 col-md-6 form-group">
                                 <label>{% trans "Phone Number" %}</label>
-                                <input type="text" name="phone" class="form-control" required>
+                                <div class="input-group qa-phone-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text {% if form and form.phone.errors %}is-invalid{% endif %}">🇶🇦 +974</span>
+                                    </div>
+                                    <input
+                                        type="text"
+                                        name="phone"
+                                        id="id_phone"
+                                        class="form-control {% if form and form.phone.errors %}is-invalid{% endif %}"
+                                        placeholder="12345678"
+                                        inputmode="numeric"
+                                        maxlength="8"
+                                        value="{{ request.POST.phone|default_if_none:'' }}"
+                                        required
+                                    >
+                                </div>
+                                {% if form and form.phone.errors %}
+                                    <div class="text-danger small mt-1">{{ form.phone.errors|striptags }}</div>
+                                {% endif %}
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="col-12 form-group">
                                 <label>{% trans "Address Line 1" %}</label>
-                                <input type="text" name="address_line_1" class="form-control" required>
+                                <select
+                                    name="address_line_1"
+                                    id="id_address_line_1"
+                                    class="form-control"
+                                    required
+                                >
+                                    <option value="" disabled {% if not request.POST.address_line_1 %}selected{% endif %}>{% trans "Choose your area in Qatar" %}</option>
+                                    <option value="Al Wukair" {% if request.POST.address_line_1 == 'Al Wukair' %}selected{% endif %}>Al Wukair</option>
+                                    <option value="Al Wakra" {% if request.POST.address_line_1 == 'Al Wakra' %}selected{% endif %}>Al Wakra</option>
+                                    <option value="Al Thumama" {% if request.POST.address_line_1 == 'Al Thumama' %}selected{% endif %}>Al Thumama</option>
+                                    <option value="Doha" {% if request.POST.address_line_1 == 'Doha' %}selected{% endif %}>Doha</option>
+                                    <option value="Lusail" {% if request.POST.address_line_1 == 'Lusail' %}selected{% endif %}>Lusail</option>
+                                    <option value="Al Rayyan" {% if request.POST.address_line_1 == 'Al Rayyan' %}selected{% endif %}>Al Rayyan</option>
+                                    <option value="Umm Salal Ali" {% if request.POST.address_line_1 == 'Umm Salal Ali' %}selected{% endif %}>Umm Salal Ali</option>
+                                    <option value="Al Khor" {% if request.POST.address_line_1 == 'Al Khor' %}selected{% endif %}>Al Khor</option>
+                                    <option value="Mesaieed" {% if request.POST.address_line_1 == 'Mesaieed' %}selected{% endif %}>Mesaieed</option>
+                                    <option value="Muaither" {% if request.POST.address_line_1 == 'Muaither' %}selected{% endif %}>Muaither</option>
+                                    <option value="Al Gharrafa" {% if request.POST.address_line_1 == 'Al Gharrafa' %}selected{% endif %}>Al Gharrafa</option>
+                                    <option value="Al Sadd" {% if request.POST.address_line_1 == 'Al Sadd' %}selected{% endif %}>Al Sadd</option>
+                                    <option value="West Bay" {% if request.POST.address_line_1 == 'West Bay' %}selected{% endif %}>West Bay</option>
+                                    <option value="The Pearl" {% if request.POST.address_line_1 == 'The Pearl' %}selected{% endif %}>The Pearl</option>
+                                    <option value="Madinat Khalifa" {% if request.POST.address_line_1 == 'Madinat Khalifa' %}selected{% endif %}>Madinat Khalifa</option>
+                                    <option value="Industrial Area" {% if request.POST.address_line_1 == 'Industrial Area' %}selected{% endif %}>Industrial Area</option>
+                                    <option value="Najma" {% if request.POST.address_line_1 == 'Najma' %}selected{% endif %}>Najma</option>
+                                    <option value="Abu Hamour" {% if request.POST.address_line_1 == 'Abu Hamour' %}selected{% endif %}>Abu Hamour</option>
+                                    <option value="Old Airport" {% if request.POST.address_line_1 == 'Old Airport' %}selected{% endif %}>Old Airport</option>
+                                    <option value="Al Dafna" {% if request.POST.address_line_1 == 'Al Dafna' %}selected{% endif %}>Al Dafna</option>
+                                </select>
+                                <small class="text-muted d-block mt-1">{% trans "Select the area closest to your delivery location." %}</small>
                             </div>
                         </div>
                         <div class="form-row">

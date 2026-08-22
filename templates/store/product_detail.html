@@ -4,55 +4,361 @@
 {% block content %}
 
 <style>
-    /* Centers the small thumbnails and removes default list padding */
+    /* --- HIGH RESOLUTION & CRISP GALLERY STYLES --- */
+    .gallery-wrap {
+        position: relative;
+        border-radius: 12px;
+        overflow: hidden;
+        background-color: #fafafa;
+        border: 1px solid #eee;
+    }
+
+    .img-big-wrap {
+        width: 100%;
+        height: 420px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #ffffff;
+        overflow: hidden;
+        padding: 15px;
+    }
+
+    .img-big-wrap img {
+        max-height: 100%;
+        max-width: 100%;
+        width: auto;
+        height: auto;
+        object-fit: contain;
+        image-rendering: -webkit-optimize-contrast;
+        transition: transform 0.35s ease, filter 0.3s ease;
+    }
+
+    .img-big-wrap:hover img {
+        transform: scale(1.06);
+    }
+
+    /* Thumbnail List Styling */
     .thumb {
         display: flex;
         justify-content: center;
+        align-items: center;
         padding: 0;
-        margin-top: 10px;
+        margin-top: 15px;
         list-style: none;
+        gap: 10px;
+        flex-wrap: wrap;
     }
+
     .thumb li {
-        margin: 0 5px;
+        margin: 0;
     }
+
     .thumb img {
-        width: 60px;
-        height: 60px;
+        width: 68px;
+        height: 68px;
         object-fit: cover;
         cursor: pointer;
-        border: 1px solid #ddd;
-        border-radius: 4px;
+        border: 2px solid #eaeaea;
+        border-radius: 8px;
+        background: #fff;
+        image-rendering: -webkit-optimize-contrast;
+        transition: all 0.2s ease-in-out;
     }
-    .thumb img:hover {
-        border-color: #3167eb;
+
+    .thumb img:hover,
+    .thumb img.active-thumb {
+        border-color: #d4bfbf;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(163, 136, 136, 0.1);
     }
+
+    /* --- BULLETPROOF SVG STAR RATING SYSTEM --- */
+    .svg-star-rating {
+        display: flex !important;
+        flex-direction: row-reverse !important;
+        justify-content: center !important;
+        align-items: center !important;
+        gap: 6px !important;
+    }
+
+    .svg-star-rating input[type="radio"] {
+        position: absolute !important;
+        opacity: 0 !important;
+        width: 0 !important;
+        height: 0 !important;
+        pointer-events: none !important;
+    }
+
+    .svg-star-rating label {
+        cursor: pointer !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: none !important;
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+        display: inline-block !important;
+    }
+
+    .svg-star-rating label svg {
+        width: 32px;
+        height: 32px;
+        fill: #e0e0e0;
+        transition: fill 0.2s ease, transform 0.1s ease;
+    }
+
+    .svg-star-rating label:hover svg,
+    .svg-star-rating label:hover ~ label svg,
+    .svg-star-rating input[type="radio"]:checked ~ label svg {
+        fill: #ffc700 !important;
+    }
+
+    .svg-star-rating label:hover svg {
+        transform: scale(1.15);
+    }
+
+    /* Existing Review Display Stars */
+    .rating-star i {
+        color: #ffc700 !important;
+    }
+
+    /* --- REVIEW MODAL STYLES --- */
+    .modal-content {
+        border-radius: 16px;
+        border: none;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+    .modal-header {
+        border-bottom: 1px solid #eee;
+        background-color: #fafafa;
+        border-radius: 16px 16px 0 0;
+    }
+
+    /* --- INDEX PAGE PRODUCT CARDS & SLIDER STYLES --- */
+    .section-header-go { 
+        display: flex; 
+        justify-content: space-between; 
+        align-items: center; 
+        margin-top: 10px; 
+        margin-bottom: 16px; 
+    }
+    .section-header-go h4 { 
+        font-size: 1.4rem; 
+        font-weight: 800; 
+        color: #111; 
+        margin: 0; 
+    }
+    .view-all-link { 
+        font-size: 0.85rem; 
+        font-weight: 700; 
+        color: #fff; 
+        background: #481616; 
+        padding: 6px 18px; 
+        border-radius: 20px; 
+        text-decoration: none; 
+    }
+    .view-all-link:hover { 
+        color: #fff; 
+        opacity: 0.9; 
+    }
+
+    .slider-container-go {
+        display: flex; flex-wrap: nowrap; overflow-x: auto; gap: 16px;
+        padding: 10px 4px 20px; scrollbar-width: none; scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch; align-items: stretch;
+    }
+    .slider-container-go::-webkit-scrollbar { display: none; }
+
+    .item-5-fixed { 
+        flex: 0 0 calc((100% - (16px * 3)) / 4);
+        min-width: 220px;
+        scroll-snap-align: start; 
+        display: flex; 
+    }
+
+    .go-mini-card {
+        background: #ffffff;
+        border: 2px solid #ebebeb;
+        border-radius: 16px;
+        padding: 16px;
+        text-align: left;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        width: 100%;
+        height: 380px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+        box-sizing: border-box;
+        transition: all 0.25s ease;
+        position: relative;
+    }
+    .go-mini-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 24px rgba(0,0,0,0.08);
+        border-color: #e0e0e0;
+    }
+    
+    .img-wrap-go { 
+        height: 200px;
+        width: 100%; 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        margin-bottom: 12px; 
+        overflow: hidden; 
+        flex-shrink: 0; 
+        background: #fafafa; 
+        border-radius: 12px;
+        position: relative;
+    }
+    .img-wrap-go img { 
+        max-height: 90%; 
+        max-width: 90%; 
+        object-fit: contain; 
+        image-rendering: -webkit-optimize-contrast; 
+        transition: transform 0.3s ease;
+    }
+    .go-mini-card:hover .img-wrap-go img {
+        transform: scale(1.08);
+    }
+
+    .product-info-container {
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+        justify-content: space-between;
+    }
+
+    .product-name-go { 
+        font-size: 1rem; 
+        font-weight: 700; 
+        line-height: 1.35; 
+        color: #222; 
+        margin-bottom: 8px;
+        height: 2.7em; 
+        display: -webkit-box;
+        -webkit-line-clamp: 2; 
+        -webkit-box-orient: vertical;
+        overflow: hidden; 
+        text-overflow: ellipsis; 
+        word-break: break-word;
+    }
+    .product-price-go { 
+        font-size: 1.1rem; 
+        color: #481616; 
+        font-weight: 800; 
+        margin-bottom: 10px; 
+    }
+    .btn-add-go { 
+        font-size: 0.8rem; 
+        font-weight: 800; 
+        padding: 10px 0; 
+        background-color: #481616; 
+        border: none;
+        color: #fff; 
+        border-radius: 8px; 
+        text-transform: uppercase; 
+        letter-spacing: 0.5px;
+        width: 100%;
+        text-align: center;
+        transition: background-color 0.2s ease;
+    }
+    .btn-add-go:hover { background-color: #390509; color: #fff; text-decoration: none; }
+
+    @media (max-width: 991px) {
+        .item-5-fixed { flex: 0 0 calc(33.33% - 11px); min-width: 180px; }
+        .img-wrap-go { height: 160px; }
+    }
+    @media (max-width: 767px) {
+        .img-big-wrap { height: 300px; }
+        .thumb img { width: 55px; height: 55px; }
+        .item-5-fixed { flex: 0 0 calc(50% - 8px); min-width: calc(50% - 8px); }
+        .go-mini-card { height: 350px; }
+        .img-wrap-go { height: 140px; }
+        .section-header-go h4 { font-size: 1.2rem; }
+    }
+    /* Horizontal Scroll Section with Navigation Arrows */
+    .slider-wrapper-go {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    .slider-container-go {
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        gap: 16px;
+        padding: 12px 4px 20px;
+        scroll-behavior: smooth;
+        -webkit-overflow-scrolling: touch;
+        width: 100%;
+    }
+
+    .slider-container-go::-webkit-scrollbar {
+        height: 6px;
+    }
+    .slider-container-go::-webkit-scrollbar-thumb {
+        background: #ccc;
+        border-radius: 10px;
+    }
+
+    .slider-btn {
+        position: absolute;
+        top: 45%;
+        transform: translateY(-50%);
+        width: 38px;
+        height: 38px;
+        background-color: #481616;
+        color: #fff;
+        border: none;
+        border-radius: 50%;
+        z-index: 10;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        transition: all 0.2s ease;
+    }
+    .slider-btn:hover { background-color: #222; }
+    .slider-btn.prev-btn { left: -15px; }
+    .slider-btn.next-btn { right: -15px; }
 </style>
+
 
 <section class="section-content padding-y bg" {% if request.LANGUAGE_CODE == 'ar' %}dir="rtl" style="text-align: right;"{% endif %}>
 <div class="container">
 
-<div class="card">
+<div class="card shadow-sm" style="border-radius: 16px; border: 1px solid #eaeaea; overflow: hidden;">
     <div class="row no-gutters">
-        <aside class="col-md-6 border-right-0">
+        <aside class="col-md-6 border-right-0 p-3">
             <article class="gallery-wrap"> 
                 <div class="img-big-wrap mainImage">
-                    <img src="{{ single_product.images.url }}" id="mainImage">
+                    <img src="{{ single_product.images.url }}" id="mainImage" alt="{{ single_product.product_name }}">
                 </div> 
             </article> 
-            <!-- Updated Thumbnail list with centering -->
+            
             <ul class="thumb">
                 <li>
-                    <img src="{{ single_product.images.url }}" alt="{% trans 'Product Image' %}" onclick="document.getElementById('mainImage').src='{{ single_product.images.url }}'">
+                    <img src="{{ single_product.images.url }}" 
+                         class="active-thumb"
+                         alt="{% trans 'Product Image' %}" 
+                         onclick="updateMainImage(this, '{{ single_product.images.url }}')">
                 </li>
                 {% for i in product_gallery %}
                 <li>
-                    <img src="{{ i.image.url }}" alt="{% trans 'Product Image' %}" onclick="document.getElementById('mainImage').src='{{ i.image.url }}'">
+                    <img src="{{ i.image.url }}" 
+                         alt="{% trans 'Product Image' %}" 
+                         onclick="updateMainImage(this, '{{ i.image.url }}')">
                 </li>
                 {% endfor %}
             </ul>
         </aside>
+
     <main class="col-md-6"> 
-        <form id="add-to-cart-form" action="{% url 'add_cart' single_product.id %}" method="POST" >
+        <form id="add-to-cart-form" action="{% url 'add_cart' single_product.id %}" method="POST">
         {% csrf_token %}
         <article class="content-body p-4"> 
             <span class="text-uppercase font-weight-bold text-muted small" style="letter-spacing: 1px; color: #888;"> 
@@ -62,17 +368,17 @@
             <h2 class="title mt-1 mb-3" style="font-weight: 700; color: #212529;">{{ single_product.product_name }}</h2>
              <div class="rating-star">
                 <span>
-                    <i class="fa fa-star{% if single_product.averageReview < 0.5 %}-o{% elif single_product.averageReview >= 0.5 and single_product.averageReview < 1 %}-half-o {% endif %}" aria-hidden="true"></i>
-                    <i class="fa fa-star{% if single_product.averageReview < 1.5 %}-o{% elif single_product.averageReview >= 1.5 and single_product.averageReview < 2 %}-half-o {% endif %}" aria-hidden="true"></i>
-                    <i class="fa fa-star{% if single_product.averageReview < 2.5 %}-o{% elif single_product.averageReview >= 2.5 and single_product.averageReview < 3 %}-half-o {% endif %}" aria-hidden="true"></i>
-                    <i class="fa fa-star{% if single_product.averageReview < 3.5 %}-o{% elif single_product.averageReview >= 3.5 and single_product.averageReview < 4 %}-half-o {% endif %}" aria-hidden="true"></i>
-                    <i class="fa fa-star{% if single_product.averageReview < 4.5 %}-o{% elif single_product.averageReview >= 4.5 and single_product.averageReview < 5 %}-half-o {% endif %}" aria-hidden="true"></i>
+                    <i class="{% if single_product.averageReview < 0.5 %}far fa-star{% elif single_product.averageReview >= 0.5 and single_product.averageReview < 1 %}fas fa-star-half-alt{% else %}fas fa-star{% endif %}" aria-hidden="true"></i>
+                    <i class="{% if single_product.averageReview < 1.5 %}far fa-star{% elif single_product.averageReview >= 1.5 and single_product.averageReview < 2 %}fas fa-star-half-alt{% else %}fas fa-star{% endif %}" aria-hidden="true"></i>
+                    <i class="{% if single_product.averageReview < 2.5 %}far fa-star{% elif single_product.averageReview >= 2.5 and single_product.averageReview < 3 %}fas fa-star-half-alt{% else %}fas fa-star{% endif %}" aria-hidden="true"></i>
+                    <i class="{% if single_product.averageReview < 3.5 %}far fa-star{% elif single_product.averageReview >= 3.5 and single_product.averageReview < 4 %}fas fa-star-half-alt{% else %}fas fa-star{% endif %}" aria-hidden="true"></i>
+                    <i class="{% if single_product.averageReview < 4.5 %}far fa-star{% elif single_product.averageReview >= 4.5 and single_product.averageReview < 5 %}fas fa-star-half-alt{% else %}fas fa-star{% endif %}" aria-hidden="true"></i>
                     <span>{{ single_product.countReview }} {% trans "reviews" %}</span>
                 </span>
             </div>
             
-            <div class="mb-4"> 
-                <var class="price h3" style="color: #3167eb; font-weight: 700;">{{ single_product.price|floatformat:2 }} <span style="font-size: 1rem;">{% trans "QAR" %}</span></var>
+            <div class="mb-4 mt-2"> 
+                <var class="price h3" style="color: #481616; font-weight: 800;">{{ single_product.price|floatformat:2 }} <span style="font-size: 1rem;">{% trans "QAR" %}</span></var>
                 <span class="text-success ml-2 small"><i class="fa fa-check-circle"></i> {% trans "In Stock" %}</span>
             </div> 
 
@@ -94,7 +400,7 @@
                         
                         <div class="dropdown">
                             <button class="btn btn-light border dropdown-toggle w-100 text-left d-flex justify-content-between align-items-center" 
-                                    type="button" data-toggle="dropdown" style="background: #fff; padding: 10px 15px;">
+                                    type="button" data-toggle="dropdown" style="background: #fff; padding: 10px 15px; border-radius: 8px;">
                                 <span>{% trans "Choose up to" %} {{ category.list.0.selection_limit }}</span>
                             </button>
 
@@ -126,11 +432,11 @@
 
             <div class="mt-4">
                 {% if single_product.stock <= 0 %}
-                    <button class="btn btn-light btn-lg btn-block disabled" style="border: 2px dashed #ccc;">
+                    <button class="btn btn-light btn-lg btn-block disabled" style="border: 2px dashed #ccc; border-radius: 8px;">
                         <i class="fa fa-bell"></i> {% trans "Notify Me When Available" %}
                     </button>
                 {% else %}
-                    <button type="submit" class="btn btn-primary btn-lg btn-block shadow" style="border-radius: 8px; font-weight: 600; padding: 12px;">
+                    <button type="submit" class="btn btn-primary btn-lg btn-block shadow" style="border-radius: 8px; font-weight: 700; padding: 12px; background-color: #481616; border: none;">
                         <i class="fas fa-shopping-cart mr-2"></i> {% trans "ADD TO CART" %}
                     </button>
                 {% endif %}
@@ -151,75 +457,119 @@
 </div> 
 <br>
 
+<!-- REVIEWS SECTION -->
 <div class="row">
-    <div class="col-md-9">
-        <br>
-        <form action="{% url 'submit_review' single_product.id %}" method="POST">
-            {% csrf_token %}
-            <h5>{% trans "Write Your Review" %}</h5>
+    <div class="col-md-12">
+        {% include 'includes/alerts.html' %}
+        
+        <header class="section-heading d-flex justify-content-between align-items-center mb-4">
             <div>
-                <label>{% trans "How do you rate this product?" %}</label>
-                <br>
-                <div class="rate">
-                    <input type="radio" name="rating" id="rating10" value="5" required /><label for="rating10" title="5"></label>
-                    <input type="radio" name="rating" id="rating9" value="4.5" required /><label for="rating9" title="4.5" class="half"></label>
-                    <input type="radio" name="rating" id="rating8" value="4" required /><label for="rating8" title="4"></label>
-                    <input type="radio" name="rating" id="rating7" value="3.5" required /><label for="rating7" title="3.5" class="half"></label>
-                    <input type="radio" name="rating" id="rating6" value="3" required /><label for="rating6" title="3"></label>
-                    <input type="radio" name="rating" id="rating5" value="2.5" required /><label for="rating5" title="2.5" class="half"></label>
-                    <input type="radio" name="rating" id="rating4" value="2" required /><label for="rating4" title="2"></label>
-                    <input type="radio" name="rating" id="rating3" value="1.5" required /><label for="rating3" title="1.5" class="half"></label>
-                    <input type="radio" name="rating" id="rating2" value="1" required /><label for="rating2" title="1"></label>
-                    <input type="radio" name="rating" id="rating1" value="0.5" required /><label for="rating1" title="0.5" class="half"></label>
+                <h3 class="mb-1">{% trans "Customer Reviews" %}</h3>
+                <div class="rating-star">
+                    <span>
+                        <i class="{% if single_product.averageReview < 0.5 %}far fa-star{% elif single_product.averageReview >= 0.5 and single_product.averageReview < 1 %}fas fa-star-half-alt{% else %}fas fa-star{% endif %}" aria-hidden="true"></i>
+                        <i class="{% if single_product.averageReview < 1.5 %}far fa-star{% elif single_product.averageReview >= 1.5 and single_product.averageReview < 2 %}fas fa-star-half-alt{% else %}fas fa-star{% endif %}" aria-hidden="true"></i>
+                        <i class="{% if single_product.averageReview < 2.5 %}far fa-star{% elif single_product.averageReview >= 2.5 and single_product.averageReview < 3 %}fas fa-star-half-alt{% else %}fas fa-star{% endif %}" aria-hidden="true"></i>
+                        <i class="{% if single_product.averageReview < 3.5 %}far fa-star{% elif single_product.averageReview >= 3.5 and single_product.averageReview < 4 %}fas fa-star-half-alt{% else %}fas fa-star{% endif %}" aria-hidden="true"></i>
+                        <i class="{% if single_product.averageReview < 4.5 %}far fa-star{% elif single_product.averageReview >= 4.5 and single_product.averageReview < 5 %}fas fa-star-half-alt{% else %}fas fa-star{% endif %}" aria-hidden="true"></i>
+                        <span>{{ single_product.countReview }} {% trans "reviews" %}</span>
+                    </span>
                 </div>
-                <br>
-                {% trans "Review Title:" %}
-                <input type="text" class="form-control" name="subject" required>
-                <br>
-                {% trans "Review:" %}
-                <textarea name="review" rows="4" class="form-control" required></textarea>
-                <br>
-                {% if user.is_authenticated %}
-                    {% if orderproduct %}
-                        <input type="submit" value="{% trans 'Submit Review' %}" class="btn btn-primary">
-                    {% else %}
-                        <p>{% trans "You must purchase this to post a review." %}</p>
-                    {% endif %}
-                {% else %}
-                <p>{% trans "You must be logged in to post a review." %} <span><a href="{% url 'login' %}">{% trans "Login now" %}</a></span></p>
-                {% endif %}
             </div>
-            {% include 'includes/alerts.html' %}
-        </form>
-        <br>
 
-        <header class="section-heading">
-            <h3>{% trans "Customer Reviews" %} </h3>
-            <div class="rating-star">
-                <span>
-                    <i class="fa fa-star{% if single_product.averageReview < 0.5 %}-o{% elif single_product.averageReview >= 0.5 and single_product.averageReview < 1 %}-half-o {% endif %}" aria-hidden="true"></i>
-                    <i class="fa fa-star{% if single_product.averageReview < 1.5 %}-o{% elif single_product.averageReview >= 1.5 and single_product.averageReview < 2 %}-half-o {% endif %}" aria-hidden="true"></i>
-                    <i class="fa fa-star{% if single_product.averageReview < 2.5 %}-o{% elif single_product.averageReview >= 2.5 and single_product.averageReview < 3 %}-half-o {% endif %}" aria-hidden="true"></i>
-                    <i class="fa fa-star{% if single_product.averageReview < 3.5 %}-o{% elif single_product.averageReview >= 3.5 and single_product.averageReview < 4 %}-half-o {% endif %}" aria-hidden="true"></i>
-                    <i class="fa fa-star{% if single_product.averageReview < 4.5 %}-o{% elif single_product.averageReview >= 4.5 and single_product.averageReview < 5 %}-half-o {% endif %}" aria-hidden="true"></i>
-                    <span>{{ single_product.countReview }} {% trans "reviews" %}</span>
-                </span>
-            </div>
+            {% if user.is_authenticated %}
+                {% if orderproduct %}
+                    <button type="button" class="btn text-white px-4 py-2" data-toggle="modal" data-target="#reviewModal" style="background-color: #481616; border-radius: 8px; font-weight: 600;">
+                        <i class="fa fa-pencil mr-1"></i> {% trans "Write a Review" %}
+                    </button>
+                {% else %}
+                    <p class="text-muted small mb-0">{% trans "Purchased this item? You can review it after buying!" %}</p>
+                {% endif %}
+            {% else %}
+                <a href="{% url 'login' %}" class="btn btn-outline-primary" style="border-radius: 8px; border-color: #481616; color: #481616;">
+                    {% trans "Login to Review" %}
+                </a>
+            {% endif %}
         </header>
 
+        {% if user.is_authenticated and orderproduct %}
+        <div class="modal fade" id="reviewModal" tabindex="-1" role="dialog" aria-labelledby="reviewModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title font-weight-bold" id="reviewModalLabel">{% trans "Write Your Review" %}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form action="{% url 'submit_review' single_product.id %}" method="POST">
+                        {% csrf_token %}
+                        <div class="modal-body p-4">
+                            <div class="form-group mb-3 text-center">
+                                <label class="d-block font-weight-bold mb-2">{% trans "How do you rate this product?" %}</label>
+                                
+                                <div class="svg-star-rating">
+                                    <input type="radio" name="rating" id="rating10" value="5" required />
+                                    <label for="rating10" title="5 Stars">
+                                        <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                                    </label>
+
+                                    <input type="radio" name="rating" id="rating8" value="4" required />
+                                    <label for="rating8" title="4 Stars">
+                                        <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                                    </label>
+
+                                    <input type="radio" name="rating" id="rating6" value="3" required />
+                                    <label for="rating6" title="3 Stars">
+                                        <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                                    </label>
+
+                                    <input type="radio" name="rating" id="rating4" value="2" required />
+                                    <label for="rating4" title="2 Stars">
+                                        <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                                    </label>
+
+                                    <input type="radio" name="rating" id="rating2" value="1" required />
+                                    <label for="rating2" title="1 Star">
+                                        <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                                    </label>
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+                            
+                            <div class="form-group mb-3">
+                                <label class="font-weight-600">{% trans "Review Title:" %}</label>
+                                <input type="text" class="form-control" name="subject" required style="border-radius: 6px;" placeholder="{% trans 'e.g. Amazing quality!' %}">
+                            </div>
+
+                            <div class="form-group mb-2">
+                                <label class="font-weight-600">{% trans "Review:" %}</label>
+                                <textarea name="review" rows="4" class="form-control" required style="border-radius: 6px;" placeholder="{% trans 'Write your experience here...' %}"></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer border-top-0 pt-0">
+                            <button type="button" class="btn btn-light" data-dismiss="modal" style="border-radius: 6px;">{% trans "Cancel" %}</button>
+                            <input type="submit" value="{% trans 'Submit Review' %}" class="btn text-white px-4" style="background-color: #481616; border-radius: 6px; font-weight: 600;">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
         {% for review in reviews %}
-        <article class="box mb-3">
+        <article class="box mb-3" style="border-radius: 8px;">
             <div class="icontext w-100">
                 <div class="text">
                     <span class="date text-muted float-md-right">{{ review.updated_at }}</span>  
                     <h6 class="mb-1">{{ review.user.full_name }}</h6>
                     <div class="rating-star">
                         <span>
-                            <i class="fa fa-star{% if review.rating == 0.5 %}-half-o{% elif review.rating < 1 %}-o {% endif %}" aria-hidden="true"></i>
-                            <i class="fa fa-star{% if review.rating == 1.5 %}-half-o{% elif review.rating < 2 %}-o {% endif %}" aria-hidden="true"></i>
-                            <i class="fa fa-star{% if review.rating == 2.5 %}-half-o{% elif review.rating < 3 %}-o {% endif %}" aria-hidden="true"></i>
-                            <i class="fa fa-star{% if review.rating == 3.5 %}-half-o{% elif review.rating < 4 %}-o {% endif %}" aria-hidden="true"></i>
-                            <i class="fa fa-star{% if review.rating == 4.5 %}-half-o{% elif review.rating < 5 %}-o {% endif %}" aria-hidden="true"></i>
+                            <i class="{% if review.rating == 0.5 %}fas fa-star-half-alt{% elif review.rating < 1 %}far fa-star{% else %}fas fa-star{% endif %}" aria-hidden="true"></i>
+                            <i class="{% if review.rating == 1.5 %}fas fa-star-half-alt{% elif review.rating < 2 %}far fa-star{% else %}fas fa-star{% endif %}" aria-hidden="true"></i>
+                            <i class="{% if review.rating == 2.5 %}fas fa-star-half-alt{% elif review.rating < 3 %}far fa-star{% else %}fas fa-star{% endif %}" aria-hidden="true"></i>
+                            <i class="{% if review.rating == 3.5 %}fas fa-star-half-alt{% elif review.rating < 4 %}far fa-star{% else %}fas fa-star{% endif %}" aria-hidden="true"></i>
+                            <i class="{% if review.rating == 4.5 %}fas fa-star-half-alt{% elif review.rating < 5 %}far fa-star{% else %}fas fa-star{% endif %}" aria-hidden="true"></i>
                         </span>
                     </div>
                 </div>
@@ -231,35 +581,128 @@
         </article>
         {% endfor %}
 
-    </div> </div> </div> </section>
+    </div> 
+</div> 
+
+<hr class="my-5">
+
+<hr class="my-5">
+
+<!-- SECTION 1: SAME CATEGORY PRODUCTS -->
+{% if related_products %}
+<div class="dynamic-selection-section mb-5">
+    <div class="section-header-go">
+        <h4>{% trans "More from" %} {{ single_product.category.category_name }}</h4>
+        <a href="{{ single_product.category.get_url }}" class="view-all-link">{% trans "View All" %}</a>
+    </div>
+    
+    <div class="slider-wrapper-go">
+        <button class="slider-btn prev-btn" onclick="scrollSlider('cat-slider', -280)"><i class="fa fa-chevron-left"></i></button>
+        <div class="slider-container-go" id="cat-slider">
+            {% for product in related_products %}
+            <div class="item-5-fixed">
+                <div class="go-mini-card">
+                    <div class="img-wrap-go">
+                        <a href="{{ product.get_url }}">
+                            <img src="{{ product.images.url }}" alt="{{ product.product_name }}">
+                        </a>
+                    </div>
+                    <div class="product-info-container">
+                        <h6 class="product-name-go">{{ product.product_name }}</h6>
+                        <p class="product-price-go">QAR {{ product.price|floatformat:2 }}</p>
+                        <a href="{% url 'add_cart' product.id %}" class="btn btn-block btn-add-go">{% trans "ADD TO CART" %}</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <button class="slider-btn next-btn" onclick="scrollSlider('cat-slider', 280)"><i class="fa fa-chevron-right"></i></button>
+    </div>
+</div>
+{% endif %}
+
+<!-- SECTION 2: FEATURED PRODUCTS -->
+{% if recommended_products %}
+<div class="dynamic-selection-section mb-4">
+    <div class="section-header-go">
+        <h4>{% trans "Featured Products" %}</h4>
+        <a href="{% url 'store' %}" class="view-all-link">{% trans "View All" %}</a>
+    </div>
+    
+    <div class="slider-wrapper-go">
+        <button class="slider-btn prev-btn" onclick="scrollSlider('featured-slider', -280)"><i class="fa fa-chevron-left"></i></button>
+        <div class="slider-container-go" id="featured-slider">
+            {% for product in recommended_products %}
+            <div class="item-5-fixed">
+                <div class="go-mini-card">
+                    <div class="img-wrap-go">
+                        <a href="{{ product.get_url }}">
+                            <img src="{{ product.images.url }}" alt="{{ product.product_name }}">
+                        </a>
+                    </div>
+                    <div class="product-info-container">
+                        <h6 class="product-name-go">{{ product.product_name }}</h6>
+                        <p class="product-price-go">QAR {{ product.price|floatformat:2 }}</p>
+                        <a href="{% url 'add_cart' product.id %}" class="btn btn-block btn-add-go">{% trans "ADD TO CART" %}</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <button class="slider-btn next-btn" onclick="scrollSlider('featured-slider', 280)"><i class="fa fa-chevron-right"></i></button>
+    </div>
+</div>
+{% endif %}
+</div> 
+</section>
 
 <script>
-document.getElementById('add-to-cart-form').addEventListener('submit', function(e) {
-    const checkboxes = document.querySelectorAll('.variation-checkbox');
-    const categories = [...new Set([...checkboxes].map(c => c.name))];
-    
-    let allValid = true;
-    let errorMessages = [];
+// --- 1. SLIDER MANUAL SCROLL BUTTON FUNCTION ---
+function scrollSlider(sliderId, distance) {
+    const slider = document.getElementById(sliderId);
+    if (slider) {
+        slider.scrollBy({ left: distance, behavior: 'smooth' });
+    }
+}
 
-    categories.forEach(name => {
-        const checkedOptions = document.querySelectorAll(`input[name="${name}"]:checked`);
-        const firstInCat = document.querySelector(`input[name="${name}"]`);
-        const limit = parseInt(firstInCat.getAttribute('data-limit'));
+// --- 2. GALLERY IMAGE UPDATE ---
+function updateMainImage(element, imageUrl) {
+    const mainImage = document.getElementById('mainImage');
+    mainImage.src = imageUrl;
+    document.querySelectorAll('.thumb img').forEach(img => img.classList.remove('active-thumb'));
+    element.classList.add('active-thumb');
+}
 
-        if (checkedOptions.length === 0) {
-            allValid = false;
-            errorMessages.push("{% trans 'Please select' %} " + limit + " {% trans 'option for' %} " + name.toUpperCase() + ".");
-        } else if (checkedOptions.length !== limit) {
-            allValid = false;
-            errorMessages.push("{% trans 'You must select exactly' %} " + limit + " {% trans 'options for' %} " + name.toUpperCase() + ".");
+// --- 3. VARIATION FORM VALIDATION ---
+const cartForm = document.getElementById('add-to-cart-form');
+if (cartForm) {
+    cartForm.addEventListener('submit', function(e) {
+        const checkboxes = document.querySelectorAll('.variation-checkbox');
+        const categories = [...new Set([...checkboxes].map(c => c.name))];
+        
+        let allValid = true;
+        let errorMessages = [];
+
+        categories.forEach(name => {
+            const checkedOptions = document.querySelectorAll(`input[name="${name}"]:checked`);
+            const firstInCat = document.querySelector(`input[name="${name}"]`);
+            const limit = parseInt(firstInCat.getAttribute('data-limit'));
+
+            if (checkedOptions.length === 0) {
+                allValid = false;
+                errorMessages.push("{% trans 'Please select' %} " + limit + " {% trans 'option for' %} " + name.toUpperCase() + ".");
+            } else if (checkedOptions.length !== limit) {
+                allValid = false;
+                errorMessages.push("{% trans 'You must select exactly' %} " + limit + " {% trans 'options for' %} " + name.toUpperCase() + ".");
+            }
+        });
+
+        if (!allValid) {
+            e.preventDefault(); 
+            alert(errorMessages.join('\n'));
         }
     });
-
-    if (!allValid) {
-        e.preventDefault(); 
-        alert(errorMessages.join('\n'));
-    }
-});
+}
 
 document.querySelectorAll('.variation-checkbox').forEach(checkbox => {
     checkbox.addEventListener('change', function() {
@@ -274,6 +717,26 @@ document.querySelectorAll('.variation-checkbox').forEach(checkbox => {
         
         const counter = document.getElementById(`count-${name}`);
         if(counter) counter.innerText = document.querySelectorAll(`input[name="${name}"]:checked`).length;
+    });
+});
+
+// --- 4. AUTO SCROLL SLIDERS (DOM READY) ---
+document.addEventListener("DOMContentLoaded", function() {
+    const sliders = document.querySelectorAll('.slider-container-go');
+    sliders.forEach(slider => {
+        let isPaused = false;
+        slider.addEventListener('mouseenter', () => isPaused = true);
+        slider.addEventListener('mouseleave', () => isPaused = false);
+        setInterval(() => {
+            if (!isPaused) {
+                const maxScroll = slider.scrollWidth - slider.clientWidth;
+                if (slider.scrollLeft >= maxScroll - 1) {
+                    slider.scrollTo({ left: 0, behavior: 'smooth' });
+                } else { 
+                    slider.scrollBy({ left: 240, behavior: 'smooth' }); 
+                }
+            }
+        }, 4000);
     });
 });
 </script>

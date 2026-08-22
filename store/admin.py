@@ -37,13 +37,14 @@ class ProductAdmin(TranslationAdmin):
         'slug'
     )
     # Other helpful admin settings
-    list_display = ('product_code', 'product_name', 'price', 'stock', 'category', 'image_preview', 'modified_date', 'is_available')
+    list_display = ('product_code', 'product_name', 'price', 'stock', 'category', 'age', 'supplier', 'warehouse', 'image_preview', 'modified_date', 'is_available')
+    prepopulated_fields = {'slug': ('product_name',)}
     readonly_fields = ('image_preview',)
 
     fields = (
         'product_code', 'product_name', 'slug', 'description', 'price',
         'images', 'image_preview',   
-        'stock', 'category', 'is_available'
+        'stock', 'category', 'age', 'supplier', 'warehouse', 'is_available'
     )
     
     def image_preview(self, obj):

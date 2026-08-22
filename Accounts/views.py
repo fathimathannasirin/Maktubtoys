@@ -17,7 +17,7 @@ from urllib.parse import urlencode
 
 from carts.views import _cart_id
 import requests
-from orders.models import Order,OrderProduct
+from orders.models import Order, OrderProduct, ReturnRequest
 
 # Create your views here.
 
@@ -221,9 +221,35 @@ def resetPassword(request):
 
 @login_required(login_url='login')
 def my_orders(request):
-    orders = Order.objects.filter(user=request.user, is_ordered=True).order_by('-created_at')
-    context ={
-        'orders' : orders,
+    # orderproduct_set prefetch cheyyan 'prefetch_related' add cheythu
+    orders = list(
+        Order.objects.filter(user=request.user, is_ordered=True)
+        .prefetch_related('orderproduct_set__product')
+        .order_by('-created_at')
+    )
+    
+    return_lookup = {
+        return_request.order_id: return_request
+        for return_request in ReturnRequest.objects.filter(order__in=orders)
+    }
+
+    for order in orders:
+        return_request = return_lookup.get(order.id)
+        order.return_request_obj = return_request
+        order.can_show_return_button = order.can_request_return and return_request is None
+        order.return_expired = order.is_return_window_expired
+
+        if return_request:
+            order.return_info_message = f"Return status: {return_request.status}"
+        elif order.return_expired:
+            order.return_info_message = 'The return period for this order has expired.'
+        elif order.status not in order.DELIVERED_STATUSES:
+            order.return_info_message = 'Return is available after delivery.'
+        else:
+            order.return_info_message = ''
+
+    context = {
+        'orders': orders,
     }
     return render(request, 'accounts/my_orders.html', context)
 
@@ -280,7 +306,11 @@ def Change_Password(request):
 @login_required(login_url='login')
 def order_detail(request, order_id):
     try:
-        order = Order.objects.filter(pk=order_id).first() or Order.objects.filter(order_number=order_id).first()
+        order = None
+        if str(order_id).isdigit():
+            order = Order.objects.filter(pk=order_id).first()
+        if order is None:
+            order = Order.objects.filter(order_number=order_id).first()
         if order is None:
             return redirect('my_orders')
 
@@ -288,7 +318,23 @@ def order_detail(request, order_id):
         if not request.user.is_staff and order.user_id != request.user.id:
             return redirect('my_orders')
 
-        order_detail = OrderProduct.objects.filter(order=order)
+        order_detail = list(OrderProduct.objects.filter(order=order))
+        for item in order_detail:
+            item.line_total = item.product_price * item.quantity
+        subtotal = sum(item.line_total for item in order_detail)
+        return_request_obj = ReturnRequest.objects.filter(order=order).prefetch_related('images', 'status_timeline').first()
+
+        can_show_return_button = order.can_request_return and return_request_obj is None
+        return_expired = order.is_return_window_expired
+
+        if return_request_obj:
+            return_info_message = f"Return status: {return_request_obj.status}"
+        elif return_expired:
+            return_info_message = 'The return period for this order has expired.'
+        elif order.status not in order.DELIVERED_STATUSES:
+            return_info_message = 'Return is available after delivery.'
+        else:
+            return_info_message = ''
 
         # Detects if the 'VIEW INVOICE' button was clicked in the Admin
         is_admin_view = request.GET.get('mode') == 'admin'
@@ -296,7 +342,14 @@ def order_detail(request, order_id):
         context = {
             'order_detail': order_detail,
             'order': order,
+            'subtotal': subtotal,
             'is_admin_view': is_admin_view,
+            'return_request_obj': return_request_obj,
+            'return_timeline': list(return_request_obj.status_timeline.all()) if return_request_obj else [],
+            'return_images': list(return_request_obj.images.all()) if return_request_obj else [],
+            'can_show_return_button': can_show_return_button,
+            'return_expired': return_expired,
+            'return_info_message': return_info_message,
         }
         if is_admin_view:
             return render(request, 'orders/admin_invoice_pdf.html', context)
@@ -326,3 +379,16 @@ def contact_us(request):
         return redirect('contact_us')
         
     return render(request, 'accounts/contact_us.html')
+
+
+def return_refund_policy(request):
+    return render(request, 'accounts/return_refund_policy.html')
+
+def contact_info(request):
+    return render(request, 'accounts/contact_info.html')
+
+def terms_of_service(request):
+    return render(request, 'accounts/terms_of_service.html')
+
+def shipping_policy(request):
+    return render(request, 'accounts/shipping_policy.html')
