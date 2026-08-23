@@ -100,6 +100,7 @@ LANGUAGES = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -234,6 +235,11 @@ CSRF_TRUSTED_ORIGINS = [
     'https://*.ngrok-free.app',
     'http://*.trycloudflare.com',
     'https://*.trycloudflare.com',
+
+    'http://187.52.124.127',
+    'https://187.52.124.127',
+    'http://187.52.124.127:8000',  
+    'https://187.52.124.127:8000',
 ]
 
 SECURE_SSL_REDIRECT = config('SECURE_SSL_REDIRECT', default=(not DEBUG and not RUNNING_TESTS), cast=bool)

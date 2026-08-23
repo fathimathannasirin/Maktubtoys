@@ -1,0 +1,14 @@
+/* Lightweight admin theme matching site brand */
+body {
+  background: #f7efe3 !important;
+  color: #2f2a24 !important;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+#header {
+  background: linear-gradient(135deg,#6D001F 0%,#8B4F2D 100%) !important;
+}
+#branding h1, #branding a, #user-tools a { color: #fff !important; }
+.module h2, .module caption { background: #6D001F !important; color: #fff !important; }
+.button, input[type=submit], input[type=button], .submit-row input { background: #6D001F !important; color: #fff !important; border-radius: 6px !important; }
+.change-list table thead th { background: #efe2ce !important; color: #4b2f22 !important; }
+.dashboard .module { border: 1px solid #e8ddcc; box-shadow: 0 6px 20px rgba(109,0,31,0.06); border-radius: 10px; }
