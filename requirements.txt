@@ -56,7 +56,6 @@ psycopg2-binary==2.9.12
 pycparser==3.0
 PyJWT==2.11.0
 PyNaCl==1.6.2
-pypiwin32==223
 python-dateutil==2.9.0.post0
 python-decouple==3.8
 python-ipware==3.0.0
@@ -65,7 +64,6 @@ python-nvd3==0.16.0
 python-slugify==8.0.4
 python3-openid==3.2.0
 pythonnet==3.0.5
-pywin32==311
 PyYAML==6.0.3
 requests==2.32.5
 requests-oauthlib==2.0.0

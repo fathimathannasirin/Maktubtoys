@@ -1,0 +1,19 @@
+[2026-08-23 12:10:40 +0000] [18584] [INFO] Starting gunicorn 26.1.0
+[2026-08-23 12:10:40 +0000] [18584] [INFO] Listening at: http://127.0.0.1:8000 (18584)
+[2026-08-23 12:10:40 +0000] [18584] [INFO] Using worker: sync
+[2026-08-23 12:10:40 +0000] [18585] [INFO] Booting worker with pid: 18585
+[2026-08-23 12:10:40 +0000] [18584] [INFO] Control socket listening at /run/user/0/gunicorn.ctl
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /en/store/category/todays-deal/
+[2026-08-23 15:08:51 +0000] [18584] [INFO] Handling signal: hup
+[2026-08-23 15:08:51 +0000] [18584] [INFO] Hang up: Master
+[2026-08-23 15:08:52 +0000] [19028] [INFO] Booting worker with pid: 19028
+[2026-08-23 15:08:52 +0000] [18584] [WARNING] Worker (pid:18585) was sent SIGHUP!
+[2026-08-23 15:08:52 +0000] [18584] [INFO] Control socket listening at /run/user/0/gunicorn.ctl
+Not Found: /en/store/en/accounts/login
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /favicon.ico
