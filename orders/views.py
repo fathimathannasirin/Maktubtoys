@@ -134,6 +134,13 @@ def place_order(request, total=0, quantity=0):
     # If the cart is empty, redirect back to store
     if not cart_items:
         return redirect('store')
+    for item in cart_items:
+        if item.quantity > item.product.stock:
+            messages.error(
+                request, 
+                f"Sorry, {item.product.product_name} has only {item.product.stock} items left in stock. Please adjust your cart quantity."
+            )
+            return redirect('cart')
 
     grand_total = 0
     tax = 0
@@ -208,14 +215,17 @@ def place_order(request, total=0, quantity=0):
 
                     # 3. Reduce product stock
                     product_to_update = product_updates.setdefault(product.id, product)
-                    product_to_update.stock -= item.quantity
+                    product_to_update.stock = max(0, product_to_update.stock - item.quantity)
+
+                    if product_to_update.stock == 0:
+                        product_to_update.is_available = False
 
                 OrderProduct.objects.bulk_create(order_products)
 
                 for orderproduct, item in zip(order_products, cart_items):
                     orderproduct.variations.set(item.variations.all())
 
-                Product.objects.bulk_update(product_updates.values(), ['stock'])
+                Product.objects.bulk_update(product_updates.values(), ['stock', 'is_available'])
 
                 # 4. Clear cart
                 CartItem.objects.filter(id__in=[item.id for item in cart_items]).delete()

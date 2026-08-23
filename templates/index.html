@@ -377,14 +377,6 @@
             <a href="{{ banner.link_url|default:'#' }}" class="promo-card-item">
                 <img src="{{ banner.image.url }}" alt="{{ banner.title }}">
             </a>
-        {% empty %}
-            <!-- Default placeholders if no banner is added in Admin -->
-            <a href="{% url 'store' %}" class="promo-card-item">
-                <img src="/static/images/default-banner-1.jpg" alt="Promo">
-            </a>
-            <a href="{% url 'store' %}" class="promo-card-item">
-                <img src="/static/images/default-banner-2.jpg" alt="Promo">
-            </a>
         {% endfor %}
     </div>
 

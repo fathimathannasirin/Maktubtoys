@@ -4,6 +4,7 @@ from carts.models import Cart,CartItem
 from django.http import HttpResponse
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 # Create your views here.
 def _cart_id(request):
@@ -15,6 +16,9 @@ def _cart_id(request):
 def add_cart(request, product_id, cart_item_id=None ):
     current_user = request.user
     product = Product.objects.get(id=product_id)
+    if product.stock <= 0:
+        messages.error(request, 'Sorry, this product is out of stock!')
+        return redirect('cart')
     # if the user is authenticated
     if current_user.is_authenticated:
         product_variation = []
@@ -51,6 +55,9 @@ def add_cart(request, product_id, cart_item_id=None ):
                 index=ex_var_list.index(product_variation)
                 item_id = id[index]
                 item= CartItem.objects.get(product=product, id=item_id)
+                if item.quantity + 1 > product.stock:
+                    messages.error(request, f'Cannot add more! Only {product.stock} items available in stock.')
+                    return redirect('cart')
                 item.quantity += 1
                 item.save()
             else: 
@@ -113,6 +120,9 @@ def add_cart(request, product_id, cart_item_id=None ):
                 index=ex_var_list.index(product_variation)
                 item_id = id[index]
                 item= CartItem.objects.get(product=product, id=item_id)
+                if item.quantity + 1 > product.stock:
+                    messages.error(request, f'Cannot add more! Only {product.stock} items available in stock.')
+                    return redirect('cart')
                 item.quantity += 1
                 item.save()
             else: 
