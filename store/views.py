@@ -375,6 +375,15 @@ def get_product_price(request):
         return JsonResponse({'price': float(product.price)}) 
     except:
         return JsonResponse({'price': 0}, status=404)
+
+
+def get_product_cost(request):
+    product_id = request.GET.get('product_id')
+    try:
+        product = Product.objects.get(id=product_id)
+        return JsonResponse({'cost_price': float(product.cost_price or 0)})
+    except (Product.DoesNotExist, ValueError, TypeError):
+        return JsonResponse({'cost_price': 0}, status=404)
     
 def get_product_data(request):
     product_id = request.GET.get('product_id')
