@@ -39,7 +39,7 @@ order = Order.objects.create(
     zone_number='55',
     order_note='',
     order_total=100,
-    tax=2,
+    delivery_charge=20.0,
     status='Completed',
     is_ordered=True,
     delivered_at=timezone.now() - timedelta(days=2),

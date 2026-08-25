@@ -67,7 +67,7 @@ class OrderResource(resources.ModelResource):
         # These are the fields that will appear as columns in your Excel sheet
         fields = (
             'order_number', 'first_name', 'last_name', 'email', 
-            'phone', 'order_total', 'tax', 'status', 
+            'phone', 'order_total', 'delivery_charge', 'status', 
             'payment_method', 'is_ordered', 'created_at'
         )
         export_order = fields
@@ -197,7 +197,7 @@ class BaseOrderAdmin(NoAddAdminMixin, ExportActionMixin, BaseAdmin, AdminChartMi
             )
         }),
         ('Payment Summary', {
-            'fields': ('order_total', 'tax', 'payment', 'ip')
+            'fields': ('order_total', 'delivery_charge', 'payment', 'ip')
         }),
         ('Order Notes', {
             'fields': ('order_note',)}),
@@ -205,7 +205,7 @@ class BaseOrderAdmin(NoAddAdminMixin, ExportActionMixin, BaseAdmin, AdminChartMi
     readonly_fields = (
         'user', 'order_number', 'is_ordered', 'payment_method',
         'first_name', 'last_name', 'email', 'phone', 'address_line_1', 'address_line_2',
-        'street_number', 'building_number', 'zone_number', 'order_total', 'tax',
+        'street_number', 'building_number', 'zone_number', 'order_total', 'delivery_charge',
         'payment', 'ip', 'created_at', 'order_note', 'view_invoice'
     )
 

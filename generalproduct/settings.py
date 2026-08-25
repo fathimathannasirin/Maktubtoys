@@ -76,7 +76,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # 5. Third-party & Project Apps
-    'admin_honeypot',
+    # 'admin_honeypot',  # Disabled due to Django version incompatibility
     'django_nvd3',
     'googlecharts',
     'social_django',

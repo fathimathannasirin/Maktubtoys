@@ -61,7 +61,7 @@ class Order(models.Model):
     zone_number = models.CharField(max_length=50)
     order_note = models.CharField(max_length=160, blank=True)
     order_total = models.FloatField()
-    tax = models.FloatField()
+    delivery_charge = models.FloatField(default=20.0)
     status = models.CharField(max_length=50, choices=STATUS, default='New')
     status_updated_by = models.ForeignKey(
         Account,

@@ -256,6 +256,32 @@
                         </tbody>
                     </table>
                     <hr>
+                    <!-- Order Summary -->
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <strong>{% trans "Subtotal" %}:</strong>
+                        </div>
+                        <div class="col-6 text-right">
+                            <var class="price">{{ total|unlocalize }} {% trans "QAR" %}</var>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <strong>{% trans "Delivery Charge" %}:</strong>
+                        </div>
+                        <div class="col-6 text-right">
+                            <var class="price">{{ delivery_charge|unlocalize }} {% trans "QAR" %}</var>
+                        </div>
+                    </div>
+                    <div class="row mb-3" style="border-top: 2px solid #eee; padding-top: 10px;">
+                        <div class="col-6">
+                            <h5 style="font-weight: bold;">{% trans "Total" %}:</h5>
+                        </div>
+                        <div class="col-6 text-right">
+                            <h5 style="font-weight: bold; color: #6D001F;">{{ grand_total|unlocalize }} {% trans "QAR" %}</h5>
+                        </div>
+                    </div>
+                    <hr>
                     <div class="payment-method mb-4">
                         <h5 class="mb-3">{% trans "Payment Method" %}</h5>
                         <div class="alert alert-light border">

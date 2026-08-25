@@ -1,5 +1,8 @@
 from django.contrib import admin
+from django.utils.html import format_html
+from django.urls import reverse
 
+from .forms import PurchaseItemInlineForm
 from .models import Purchase, PurchaseItem, Return, ReturnItem, Supplier, Warehouse
 
 
@@ -27,7 +30,12 @@ class WarehouseAdmin(admin.ModelAdmin):
 
 class PurchaseItemInline(admin.TabularInline):
     model = PurchaseItem
+    form = PurchaseItemInlineForm
     extra = 1
+    fields = ('product_code', 'product', 'quantity', 'unit_cost', 'received_quantity')
+
+    class Media:
+        js = ('js/purchaseitem_code_sync.js',)
 
 
 @admin.register(Purchase)

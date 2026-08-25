@@ -389,3 +389,33 @@ def get_product_data(request):
         })
     except (Product.DoesNotExist, ValueError):
         return JsonResponse({'price': 0, 'has_variations': False})
+
+
+@csrf_exempt
+def get_purchase_items(request):
+    """API endpoint to fetch purchase items for product creation form"""
+    from warehousing.models import PurchaseItem
+    
+    try:
+        # Fetch recent purchase items that haven't been created as products yet
+        purchase_items = PurchaseItem.objects.select_related(
+            'purchase', 'product'
+        ).filter(
+            purchase__status='Received'
+        ).order_by('-purchase__ordered_at')[:50]
+        
+        data = []
+        for item in purchase_items:
+            data.append({
+                'id': item.id,
+                'purchase_number': item.purchase.purchase_number,
+                'product_name': item.product.product_name,
+                'product_code': item.product.product_code,
+                'unit_cost': float(item.unit_cost),
+                'quantity': item.quantity,
+                'received_quantity': item.received_quantity,
+            })
+        
+        return JsonResponse({'success': True, 'items': data})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})

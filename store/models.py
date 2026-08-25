@@ -19,6 +19,9 @@ class Product(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now_add=True)
     product_code = models.CharField(max_length=20, unique=True, blank=True)
+    cost_price = models.DecimalField(max_digits=10, decimal_places=2, default=0, blank=True, null=True)
+    margin_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0, blank=True, null=True)
+    margin_percentage = models.DecimalField(max_digits=5, decimal_places=2, default=0, blank=True, null=True)
 
     def get_url(self):
         return reverse('product_detail', args=[self.category.slug, self.slug])
@@ -40,6 +43,14 @@ class Product(models.Model):
             count = float(reviews['count'])
         return count
     
+    def calculate_margin(self):
+        """Calculate margin amount and percentage based on cost_price and selling price"""
+        if self.cost_price and self.price:
+            self.margin_amount = self.price - self.cost_price
+            if self.price > 0:
+                self.margin_percentage = (self.margin_amount / self.price) * 100
+        return self.margin_amount, self.margin_percentage
+    
     def save(self, *args, **kwargs):
         if not self.product_code:
             last_product = Product.objects.order_by('-id').first()
@@ -51,6 +62,9 @@ class Product(models.Model):
                 new_code = 1
 
             self.product_code = f"GM/PD{new_code:04d}"
+        
+        # Auto-calculate margins
+        self.calculate_margin()
 
         super(Product, self).save(*args, **kwargs)
 

@@ -5,6 +5,7 @@ from django.http import HttpResponse
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from decimal import Decimal
 
 # Create your views here.
 def _cart_id(request):
@@ -183,6 +184,10 @@ def cart(request, total=0, quantity=0, cart_items=None):
         for cart_item in cart_items:
             total += (cart_item.product.price * cart_item.quantity)
             quantity += cart_item.quantity
+
+        if cart_items.exists():
+            delivery_charge = Decimal('20.0')  # Flat Delivery Charge of 20 QAR
+            grand_total = total + delivery_charge
     except ObjectDoesNotExist:
         pass 
 
@@ -190,6 +195,8 @@ def cart(request, total=0, quantity=0, cart_items=None):
         'total' : total,
         'quantity': quantity,
         'cart_items':cart_items,
+        'delivery_charge': delivery_charge if cart_items.exists() else 0,
+        'grand_total': grand_total if cart_items.exists() else total,
     }
     return render(request, 'store/cart.html',context)
 
@@ -204,6 +211,11 @@ def checkout(request, total=0,quantity=0,cart_items=None):
         for cart_item in cart_items:
             total += (cart_item.product.price * cart_item.quantity)
             quantity += cart_item.quantity
+
+        if cart_items.exists():
+            delivery_charge = Decimal('20.0')  # Flat Delivery Charge of 20 QAR
+            grand_total = total + delivery_charge
+
     except ObjectDoesNotExist:
         pass 
 
@@ -211,5 +223,7 @@ def checkout(request, total=0,quantity=0,cart_items=None):
         'total' : total,
         'quantity': quantity,
         'cart_items':cart_items,
+        'delivery_charge': delivery_charge if cart_items.exists() else 0,
+        'grand_total': grand_total if cart_items.exists() else total,
     }
     return render(request,'store/checkout.html',context)

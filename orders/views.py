@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from collections import defaultdict
 from pathlib import Path
 from threading import Thread
+from decimal import Decimal
 
 from carts.models import CartItem
 from django.contrib import messages
@@ -143,14 +144,13 @@ def place_order(request, total=0, quantity=0):
             return redirect('cart')
 
     grand_total = 0
-    tax = 0
+    delivery_charge = Decimal('20.0')
     for cart_item in cart_items:
         total += (cart_item.product.price * cart_item.quantity)
         quantity += cart_item.quantity
     
-    # Calculation (2% Tax)
-    tax = (2 * total) / 100
-    grand_total = total + tax
+    
+    grand_total = total + delivery_charge
 
     if request.method == 'POST':
         form = OrderForm(request.POST)
@@ -174,7 +174,7 @@ def place_order(request, total=0, quantity=0):
                 data.zone_number = form.cleaned_data['zone_number']
                 data.order_note = form.cleaned_data['order_note']
                 data.order_total = grand_total
-                data.tax = tax
+                data.delivery_charge = delivery_charge
                 data.ip = request.META.get('REMOTE_ADDR')
 
                 # Set Cash on Delivery Defaults
@@ -241,7 +241,7 @@ def place_order(request, total=0, quantity=0):
                 'form': form,
                 'cart_items': cart_items,
                 'total': total,
-                'tax': tax,
+                'delivery_charge': delivery_charge,
                 'grand_total': grand_total,
             }
             return render(request, 'store/checkout.html', context)

@@ -1,0 +1,185 @@
+{% extends "admin/change_form.html" %}
+{% load static %}
+
+{% block extrahead %}
+    {{ block.super }}
+    <style>
+        .margin-display {
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 5px 0;
+            font-weight: bold;
+        }
+        .margin-positive {
+            color: #28a745;
+        }
+        .margin-negative {
+            color: #dc3545;
+        }
+        .margin-zero {
+            color: #6c757d;
+        }
+        .purchase-item-selector {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .purchase-items-dropdown {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+        .purchase-item-option {
+            padding: 10px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+        }
+        .purchase-item-option:hover {
+            background-color: #e8f4f8;
+        }
+    </style>
+{% endblock %}
+
+{% block submit_buttons_bottom %}
+    {{ block.super }}
+{% endblock %}
+
+{% block admin_change_form_document_ready %}
+    {{ block.super }}
+    <script>
+        (function() {
+            // Real-time margin calculation
+            const priceInput = document.getElementById('id_price');
+            const costPriceInput = document.getElementById('id_cost_price');
+            const marginAmountInput = document.getElementById('id_margin_amount');
+            const marginPercentageInput = document.getElementById('id_margin_percentage');
+
+            function calculateMargin() {
+                const price = parseFloat(priceInput.value) || 0;
+                const costPrice = parseFloat(costPriceInput.value) || 0;
+
+                let marginAmount = price - costPrice;
+                let marginPercentage = 0;
+
+                if (price > 0) {
+                    marginPercentage = (marginAmount / price) * 100;
+                }
+
+                // Update the margin fields
+                if (marginAmountInput) marginAmountInput.value = marginAmount.toFixed(2);
+                if (marginPercentageInput) marginPercentageInput.value = marginPercentage.toFixed(2);
+
+                // Update visual feedback
+                updateMarginDisplay(marginAmount, marginPercentage);
+            }
+
+            function updateMarginDisplay(marginAmount, marginPercentage) {
+                let statusClass = 'margin-zero';
+                if (marginAmount > 0) {
+                    statusClass = 'margin-positive';
+                } else if (marginAmount < 0) {
+                    statusClass = 'margin-negative';
+                }
+                console.log(`Margin: ${marginAmount.toFixed(2)} (${marginPercentage.toFixed(2)}%) - ${statusClass}`);
+            }
+
+            // Attach event listeners for real-time calculation
+            if (priceInput) {
+                priceInput.addEventListener('change', calculateMargin);
+                priceInput.addEventListener('keyup', calculateMargin);
+            }
+
+            if (costPriceInput) {
+                costPriceInput.addEventListener('change', calculateMargin);
+                costPriceInput.addEventListener('keyup', calculateMargin);
+            }
+
+            // Calculate on page load
+            if (priceInput && costPriceInput) {
+                calculateMargin();
+            }
+
+            // Purchase Items Selector
+            const purchaseItemSelector = document.createElement('div');
+            purchaseItemSelector.className = 'purchase-item-selector';
+            purchaseItemSelector.innerHTML = `
+                <h3>📦 Link to Purchase Item (Optional)</h3>
+                <p><small>Select a purchase item to auto-fill the cost price</small></p>
+                <input type="text" id="purchase-item-search" placeholder="Search purchase items..." style="width: 100%; padding: 8px; margin-bottom: 10px;">
+                <div id="purchase-items-dropdown" class="purchase-items-dropdown" style="display: none;"></div>
+            `;
+
+            // Insert after the first fieldset
+            const firstFieldset = document.querySelector('fieldset');
+            if (firstFieldset && firstFieldset.parentNode) {
+                firstFieldset.parentNode.insertBefore(purchaseItemSelector, firstFieldset);
+            }
+
+            // Fetch and populate purchase items
+            const searchInput = document.getElementById('purchase-item-search');
+            const dropdown = document.getElementById('purchase-items-dropdown');
+
+            searchInput.addEventListener('focus', async function() {
+                if (dropdown.children.length === 0) {
+                    try {
+                        const response = await fetch('/store/api/purchase-items/');
+                        const data = await response.json();
+                        
+                        if (data.success && data.items.length > 0) {
+                            dropdown.innerHTML = data.items.map(item => `
+                                <div class="purchase-item-option" data-cost="${item.unit_cost}">
+                                    <strong>${item.purchase_number}</strong> - ${item.product_name} (${item.product_code})<br>
+                                    <small>Cost: ${item.unit_cost} QAR | Qty: ${item.received_quantity}/${item.quantity}</small>
+                                </div>
+                            `).join('');
+
+                            // Add click handlers
+                            dropdown.querySelectorAll('.purchase-item-option').forEach(option => {
+                                option.addEventListener('click', function() {
+                                    const cost = parseFloat(this.getAttribute('data-cost'));
+                                    costPriceInput.value = cost.toFixed(2);
+                                    searchInput.value = this.textContent.split('\n')[0];
+                                    dropdown.style.display = 'none';
+                                    calculateMargin();
+                                });
+                            });
+                            
+                            dropdown.style.display = 'block';
+                        } else {
+                            dropdown.innerHTML = '<div class="purchase-item-option">No purchase items found</div>';
+                            dropdown.style.display = 'block';
+                        }
+                    } catch (error) {
+                        console.error('Error fetching purchase items:', error);
+                        dropdown.innerHTML = '<div class="purchase-item-option">Error loading items</div>';
+                        dropdown.style.display = 'block';
+                    }
+                } else {
+                    dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+                }
+            });
+
+            // Filter purchase items as user types
+            searchInput.addEventListener('keyup', function() {
+                const query = this.value.toLowerCase();
+                const options = dropdown.querySelectorAll('.purchase-item-option');
+                options.forEach(option => {
+                    const text = option.textContent.toLowerCase();
+                    option.style.display = text.includes(query) ? 'block' : 'none';
+                });
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(e) {
+                if (e.target !== searchInput && !purchaseItemSelector.contains(e.target)) {
+                    dropdown.style.display = 'none';
+                }
+            });
+        })();
+    </script>
+{% endblock %}

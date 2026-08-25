@@ -10,4 +10,5 @@ urlpatterns =[
     path('check-unique/', views.check_unique, name='check_unique'),
     path('get-product-price/', views.get_product_price, name='get_product_price'),
     path('get-product-data/', views.get_product_data, name='get_product_data'),
+    path('api/purchase-items/', views.get_purchase_items, name='get_purchase_items'),
 ]
