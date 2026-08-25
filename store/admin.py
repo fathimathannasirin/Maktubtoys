@@ -39,7 +39,7 @@ class ProductAdmin(TranslationAdmin):
     # Other helpful admin settings
     list_display = ('product_code', 'product_name', 'price', 'cost_price', 'margin_amount', 'margin_percentage', 'stock', 'category', 'supplier', 'warehouse', 'image_preview', 'is_available')
     prepopulated_fields = {'slug': ('product_name',)}
-    readonly_fields = ('image_preview', 'margin_amount', 'margin_percentage')
+    readonly_fields = ('image_preview', 'cost_price', 'margin_amount', 'margin_percentage')
 
     fields = (
         'product_code', 'product_name', 'slug', 'description', 'price',
