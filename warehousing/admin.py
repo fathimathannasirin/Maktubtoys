@@ -33,6 +33,7 @@ class PurchaseItemInline(admin.TabularInline):
     form = PurchaseItemInlineForm
     extra = 1
     fields = ('product_code', 'product', 'quantity', 'unit_cost', 'received_quantity')
+    readonly_fields = ('unit_cost',)
 
     class Media:
         js = ('js/purchaseitem_code_sync.js',)

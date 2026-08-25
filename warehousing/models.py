@@ -110,6 +110,9 @@ class PurchaseItem(models.Model):
         return f"{self.purchase.purchase_number} - {self.product.product_name}"
 
     def save(self, *args, **kwargs):
+        if self.product and hasattr(self.product, 'cost_price'):
+            self.unit_cost = self.product.cost_price
+
         old_item = None
         old_received = 0
         old_product_id = None
@@ -123,10 +126,6 @@ class PurchaseItem(models.Model):
                 old_purchase_received = old_item.purchase.status == 'Received'
 
         super().save(*args, **kwargs)
-
-        if self.product and self.unit_cost:
-            self.product.cost_price = self.unit_cost
-            self.product.save(update_fields=['cost_price'])
 
         new_received = self.received_quantity or self.quantity
         new_purchase_received = self.purchase.status == 'Received'
