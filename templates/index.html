@@ -139,14 +139,14 @@
         padding: 10px 0; 
         background-color: #481616; 
         border: none;
-        color: #fff; 
+        color: #fafafa; 
         border-radius: 8px; 
         text-transform: uppercase; 
         letter-spacing: 0.5px;
         width: 100%;
         transition: background-color 0.2s ease;
     }
-    .btn-add-go:hover { background-color: #390509; color: #fff; }
+    .btn-add-go:hover { background-color: #350e0e; color: #fafafa; text-decoration: none; }
 
     /* --- FEATURED PRODUCTS SECTION --- */
     .featured-products-wrapper {
@@ -179,8 +179,8 @@
     /* --- HEADERS & HIGH-RES BANNER STYLES --- */
     .section-header-go { display: flex; justify-content: space-between; align-items: center; margin-top: 35px; margin-bottom: 14px; }
     .section-header-go h4 { font-size: 1.4rem; font-weight: 800; color: #111; margin: 0; }
-    .view-all-link { font-size: 0.85rem; font-weight: 700; color: #fff; background: #481616; padding: 6px 18px; border-radius: 20px; text-decoration: none; }
-    .view-all-link:hover { color: #fff; opacity: 0.9; }
+    .view-all-link { font-size: 0.85rem; font-weight: 700; color: #fafafa; background: #481616; padding: 6px 18px; border-radius: 20px; text-decoration: none; }
+    .view-all-link:hover { color: #fafafa; opacity: 0.9; text-decoration: none; }
 
     /* HIGH RESOLUTION CATEGORY BANNERS */
     .between-section-offer { 
@@ -326,7 +326,7 @@
                 <div class="product-info-container">
                     <h6 class="product-name-go">{{ product.product_name }}</h6>
                     <p class="product-price-go">QAR {{ product.price|floatformat:2 }}</p>
-                    <a href="{% url 'add_cart' product.id %}" class="btn btn-block btn-add-go">{% trans "ADD TO CART" %}</a>
+                    <a href="{% url 'add_cart' product.id %}" class="btn btn-block btn-add-go btn-add-cart-link" data-stock="{{ product.stock }}">{% trans "ADD TO CART" %}</a>
                 </div>
             </div>
         </div>
@@ -352,7 +352,7 @@
                                     <div class="product-info-container">
                                         <h6 class="product-name-go">{{ product.product_name }}</h6>
                                         <p class="product-price-go">QAR {{ product.price|floatformat:2 }}</p>
-                                        <a href="{% url 'add_cart' product.id %}" class="btn btn-block btn-add-go">{% trans "ADD TO CART" %}</a>
+                                        <a href="{% url 'add_cart' product.id %}" class="btn btn-block btn-add-go btn-add-cart-link" data-stock="{{ product.stock }}">{% trans "ADD TO CART" %}</a>
                                     </div>
                                 </div>
                             </div>
@@ -401,7 +401,7 @@
                         <div class="product-info-container">
                             <h6 class="product-name-go">{{ product.product_name }}</h6>
                             <p class="product-price-go">QAR {{ product.price|floatformat:2 }}</p>
-                            <a href="{% url 'add_cart' product.id %}" class="btn btn-block btn-add-go">{% trans "ADD TO CART" %}</a>
+                            <a href="{% url 'add_cart' product.id %}" class="btn btn-block btn-add-go btn-add-cart-link" data-stock="{{ product.stock }}">{% trans "ADD TO CART" %}</a>
                         </div>
                     </div>
                 </div>
@@ -428,7 +428,7 @@
                                     <div class="product-info-container">
                                         <h6 class="product-name-go">{{ product.product_name }}</h6>
                                         <p class="product-price-go">QAR {{ product.price|floatformat:2 }}</p>
-                                        <a href="{% url 'add_cart' product.id %}" class="btn btn-block btn-add-go">{% trans "ADD TO CART" %}</a>
+                                        <a href="{% url 'add_cart' product.id %}" class="btn btn-block btn-add-go btn-add-cart-link" data-stock="{{ product.stock }}">{% trans "ADD TO CART" %}</a>
                                     </div>
                                 </div>
                             </div>
@@ -458,7 +458,7 @@
                                     <div class="product-info-container">
                                         <h6 class="product-name-go">{{ product.product_name }}</h6>
                                         <p class="product-price-go">QAR {{ product.price|floatformat:2 }}</p>
-                                        <a href="{% url 'add_cart' product.id %}" class="btn btn-block btn-add-go">{% trans "ADD TO CART" %}</a>
+                                        <a href="{% url 'add_cart' product.id %}" class="btn btn-block btn-add-go btn-add-cart-link" data-stock="{{ product.stock }}">{% trans "ADD TO CART" %}</a>
                                     </div>
                                 </div>
                             </div>

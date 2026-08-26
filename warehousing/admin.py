@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.utils.html import format_html
 from django.urls import reverse
 
-from .forms import PurchaseItemInlineForm
+from .forms import PurchaseItemInlineForm, ReturnItemInlineForm
 from .models import Purchase, PurchaseItem, Return, ReturnItem, Supplier, Warehouse
 
 
@@ -45,10 +45,21 @@ class PurchaseAdmin(admin.ModelAdmin):
     search_fields = ('purchase_number', 'supplier__name', 'warehouse__name')
     inlines = [PurchaseItemInline]
 
+    def save_formset(self, request, form, formset, change):
+        instances = formset.save()
+        if form.instance.status == 'Received':
+            for item in form.instance.items.all():
+                item.save()
+
 
 class ReturnItemInline(admin.TabularInline):
     model = ReturnItem
+    form = ReturnItemInlineForm
     extra = 1
+    fields = ('product_code', 'product', 'quantity', 'notes')
+
+    class Media:
+        js = ('js/returnitem_code_sync.js',)
 
 
 @admin.register(Return)
@@ -57,3 +68,9 @@ class ReturnAdmin(admin.ModelAdmin):
     list_filter = ('status', 'warehouse', 'supplier')
     search_fields = ('return_number', 'supplier__name', 'warehouse__name')
     inlines = [ReturnItemInline]
+
+    def save_formset(self, request, form, formset, change):
+        instances = formset.save()
+        if form.instance.status == 'Completed':
+            for item in form.instance.items.all():
+                item.save()

@@ -96,7 +96,7 @@
         <h2 class="text-center">{% trans "Your Shopping Cart is Empty" %}</h2>
         <br>
         <div class="text-center">
-            <a href="{% url 'store' %}" class="btn btn-primary">{% trans "Continue Shopping" %}</a>
+            <a href="{% url 'store' %}" class="btn btn-block-custom px-4 py-2" style="background-color: #481616; color: #fafafa; border: 1px solid #481616; font-weight: 700; border-radius: 8px; display: inline-block;">{% trans "Continue Shopping" %}</a>
         </div>
     {% else %}
     <div class="row">
@@ -143,7 +143,7 @@
                                         {% for item in cart_item.variations.all %}
                                             <input type="hidden" name="{{ item.variation_category | lower }}" value="{{ item.variation_value }}">
                                         {% endfor %}
-                                        <button class="btn btn-light" type="submit"> <i class="fa fa-plus"></i> </button>
+                                        <button class="btn btn-light btn-plus-cart" type="submit" data-stock="{{ cart_item.product.stock }}" data-qty="{{ cart_item.quantity }}"> <i class="fa fa-plus"></i> </button>
                                     </form>
                                 </div>
                             </div>
@@ -182,8 +182,8 @@
                     <p class="text-center mb-3">
                         <img src="{% static './images/misc/payments.png' %}" height="26">
                     </p>
-                    <a href="{% url 'checkout' %}" class="btn btn-primary btn-block"> {% trans "Checkout" %} </a>
-                    <a href="{% url 'store' %}" class="btn btn-outline-primary btn-block">{% trans "Continue Shopping" %}</a>
+                    <a href="{% url 'checkout' %}" class="btn btn-block shadow-sm" style="background-color: #481616; color: #fafafa; border: 1px solid #481616; font-weight: 700; border-radius: 8px;"> {% trans "Checkout" %} </a>
+                    <a href="{% url 'store' %}" class="btn btn-block shadow-sm" style="background-color: #fafafa; color: #481616; border: 1px solid #481616; font-weight: 700; border-radius: 8px;">{% trans "Continue Shopping" %}</a>
                 </div>
             </div>
         </aside>

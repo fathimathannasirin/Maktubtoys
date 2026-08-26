@@ -256,7 +256,7 @@
         padding: 10px 0; 
         background-color: #481616; 
         border: none;
-        color: #fff; 
+        color: #fafafa; 
         border-radius: 8px; 
         text-transform: uppercase; 
         letter-spacing: 0.5px;
@@ -264,7 +264,7 @@
         text-align: center;
         transition: background-color 0.2s ease;
     }
-    .btn-add-go:hover { background-color: #390509; color: #fff; text-decoration: none; }
+    .btn-add-go:hover { background-color: #350e0e; color: #fafafa; text-decoration: none; }
 
     @media (max-width: 991px) {
         .item-5-fixed { flex: 0 0 calc(33.33% - 11px); min-width: 180px; }
@@ -358,7 +358,7 @@
         </aside>
 
     <main class="col-md-6"> 
-        <form id="add-to-cart-form" action="{% url 'add_cart' single_product.id %}" method="POST">
+        <form id="add-to-cart-form" action="{% url 'add_cart' single_product.id %}" method="POST" data-stock="{{ single_product.stock }}">
         {% csrf_token %}
         <article class="content-body p-4"> 
             <span class="text-uppercase font-weight-bold text-muted small" style="letter-spacing: 1px; color: #888;"> 
@@ -610,7 +610,7 @@
                     <div class="product-info-container">
                         <h6 class="product-name-go">{{ product.product_name }}</h6>
                         <p class="product-price-go">QAR {{ product.price|floatformat:2 }}</p>
-                        <a href="{% url 'add_cart' product.id %}" class="btn btn-block btn-add-go">{% trans "ADD TO CART" %}</a>
+                        <a href="{% url 'add_cart' product.id %}" class="btn btn-block btn-add-go btn-add-cart-link" data-stock="{{ product.stock }}">{% trans "ADD TO CART" %}</a>
                     </div>
                 </div>
             </div>
@@ -643,7 +643,7 @@
                     <div class="product-info-container">
                         <h6 class="product-name-go">{{ product.product_name }}</h6>
                         <p class="product-price-go">QAR {{ product.price|floatformat:2 }}</p>
-                        <a href="{% url 'add_cart' product.id %}" class="btn btn-block btn-add-go">{% trans "ADD TO CART" %}</a>
+                        <a href="{% url 'add_cart' product.id %}" class="btn btn-block btn-add-go btn-add-cart-link" data-stock="{{ product.stock }}">{% trans "ADD TO CART" %}</a>
                     </div>
                 </div>
             </div>
@@ -673,10 +673,21 @@ function updateMainImage(element, imageUrl) {
     element.classList.add('active-thumb');
 }
 
-// --- 3. VARIATION FORM VALIDATION ---
+// --- 3. VARIATION FORM VALIDATION & STOCK CHECK ---
 const cartForm = document.getElementById('add-to-cart-form');
 if (cartForm) {
     cartForm.addEventListener('submit', function(e) {
+        const stock = parseInt(cartForm.getAttribute('data-stock')) || 0;
+        if (stock <= 0) {
+            e.preventDefault();
+            if (typeof showStockModal === 'function') {
+                showStockModal("{% trans 'Sorry, this product is currently out of stock!' %}");
+            } else {
+                alert("{% trans 'Sorry, this product is currently out of stock!' %}");
+            }
+            return false;
+        }
+
         const checkboxes = document.querySelectorAll('.variation-checkbox');
         const categories = [...new Set([...checkboxes].map(c => c.name))];
         

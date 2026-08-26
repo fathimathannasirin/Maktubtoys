@@ -216,9 +216,7 @@ def place_order(request, total=0, quantity=0):
                     # 3. Reduce product stock
                     product_to_update = product_updates.setdefault(product.id, product)
                     product_to_update.stock = max(0, product_to_update.stock - item.quantity)
-
-                    if product_to_update.stock == 0:
-                        product_to_update.is_available = False
+                    product_to_update.is_available = product_to_update.stock > 0
 
                 OrderProduct.objects.bulk_create(order_products)
 

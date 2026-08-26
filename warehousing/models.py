@@ -139,11 +139,11 @@ class PurchaseItem(models.Model):
         if new_purchase_received:
             if old_item and old_purchase_received:
                 delta = new_received - old_received
-            elif old_item and not old_purchase_received:
-                delta = new_received
             else:
                 delta = new_received
             _adjust_product_stock(self.product_id, delta)
+        elif old_item and old_purchase_received and not new_purchase_received:
+            _adjust_product_stock(old_product_id, -old_received)
 
 
 class Return(models.Model):
@@ -220,12 +220,17 @@ class ReturnItem(models.Model):
             _adjust_product_stock(self.product_id, -self.quantity)
             return
 
+        if old_item and old_return_completed and new_return_completed and old_product_id != self.product_id:
+            _adjust_product_stock(old_product_id, old_quantity)  # പഴയ പ്രോഡക്റ്റിന്റെ തിരികെ സ്റ്റോക്കിലേക്ക് ആഡ് ചെയ്യുന്നു
+            _adjust_product_stock(self.product_id, -self.quantity) # പുതിയ പ്രോഡക്റ്റിന്റെ ലെസ്സ് ചെയ്യുന്നു
+            return
+
+        # 2. Return Status 'Completed' ആണെങ്കിൽ സ്റ്റോക്ക് കുറയ്ക്കുന്നു (-)
         if new_return_completed:
             if old_item and old_return_completed:
                 delta = self.quantity - old_quantity
-            elif old_item and not old_return_completed:
-                delta = self.quantity
             else:
                 delta = self.quantity
-
             _adjust_product_stock(self.product_id, -delta)
+        elif old_item and old_return_completed and not new_return_completed:
+            _adjust_product_stock(old_product_id, old_quantity)

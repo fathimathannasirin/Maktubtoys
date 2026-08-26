@@ -22,6 +22,13 @@ def add_cart(request, product_id, cart_item_id=None ):
         return redirect('cart')
     # if the user is authenticated
     if current_user.is_authenticated:
+        # Check total existing quantity of this product in user's cart
+        existing_cart_items = CartItem.objects.filter(product=product, user=current_user)
+        total_existing_qty = sum(i.quantity for i in existing_cart_items)
+        if total_existing_qty + 1 > product.stock:
+            messages.error(request, f'Cannot add more! Only {product.stock} items available in stock.')
+            return redirect('cart')
+
         product_variation = []
         if request.method == 'POST':
             for key in request.POST:
@@ -104,6 +111,13 @@ def add_cart(request, product_id, cart_item_id=None ):
         except Cart.DoesNotExist:
             cart = Cart.objects.create(cart_id=_cart_id(request))
         cart.save()
+
+        # Check total existing quantity of this product in unauthenticated cart
+        existing_cart_items = CartItem.objects.filter(product=product, cart=cart)
+        total_existing_qty = sum(i.quantity for i in existing_cart_items)
+        if total_existing_qty + 1 > product.stock:
+            messages.error(request, f'Cannot add more! Only {product.stock} items available in stock.')
+            return redirect('cart')
 
         is_cart_item_exits = CartItem.objects.filter(product=product, cart=cart).exists()
         if is_cart_item_exits:

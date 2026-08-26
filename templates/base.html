@@ -137,10 +137,78 @@
 </section>
 {% endif %}
 
+{% include 'includes/alerts.html' %}
+
 {% block content %}
 {% endblock %}
 
 {% include 'includes/footer.html' %}
+
+<!-- Stock Alert Popup Modal -->
+<div class="modal fade" id="stockAlertModal" tabindex="-1" role="dialog" aria-labelledby="stockAlertModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content shadow-lg" style="border-radius: 12px; border: none; background-color: #fafafa;">
+      <div class="modal-header text-white" style="background-color: #481616; border-top-left-radius: 12px; border-top-right-radius: 12px; padding: 12px 20px;">
+        <h5 class="modal-title font-weight-bold" id="stockAlertModalLabel" style="color: #fafafa;">
+          <i class="fa fa-exclamation-circle mr-2"></i> {% trans "Stock Notification" %}
+        </h5>
+        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close" style="color: #fafafa; opacity: 0.9;">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body text-center py-4 px-3">
+        <div class="mb-3">
+          <i class="fa fa-box-open" style="font-size: 3rem; color: #481616;"></i>
+        </div>
+        <h6 id="stockAlertMessage" class="font-weight-bold mb-0" style="font-size: 1.1rem; line-height: 1.5; color: #481616;"></h6>
+      </div>
+      <div class="modal-footer justify-content-center py-2" style="border-top: none;">
+        <button type="button" class="btn font-weight-bold px-4 py-2" data-dismiss="modal" style="border-radius: 8px; background-color: #481616; color: #fafafa; border: none;">{% trans "OK" %}</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function showStockModal(message) {
+    if ($('#stockAlertModal').length) {
+        $('#stockAlertMessage').text(message);
+        $('#stockAlertModal').modal('show');
+    } else {
+        alert(message);
+    }
+}
+
+$(document).ready(function() {
+    // Instant popup check when clicking '+' in cart
+    $(document).on('click', '.btn-plus-cart', function(e) {
+        var stock = parseInt($(this).data('stock'));
+        var qty = parseInt($(this).data('qty'));
+        
+        if (!isNaN(stock) && !isNaN(qty)) {
+            if (stock <= 0) {
+                e.preventDefault();
+                showStockModal("{% trans 'Sorry, this product is out of stock!' %}");
+                return false;
+            } else if (qty >= stock) {
+                e.preventDefault();
+                showStockModal("{% trans 'Cannot add more! Only' %} " + stock + " {% trans 'item(s) available in stock.' %}");
+                return false;
+            }
+        }
+    });
+
+    // Instant popup check for add-to-cart links/buttons with data-stock
+    $(document).on('click', '.btn-add-cart-link', function(e) {
+        var stock = parseInt($(this).data('stock'));
+        if (!isNaN(stock) && stock <= 0) {
+            e.preventDefault();
+            showStockModal("{% trans 'Sorry, this product is out of stock!' %}");
+            return false;
+        }
+    });
+});
+</script>
 
 </body>
 </html>

@@ -1,14 +1,19 @@
 {% load i18n %}
 {% if messages %}
-
     {% for message in messages %}
-    <div id="message" class="container" {% if request.LANGUAGE_CODE == 'ar' %}dir="rtl" style="text-align: right;"{% endif %}>
-    <div{% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %} roll="alert" >
-        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span></button>
-        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}{% trans "Important" %}: {% endif %}
-        {{ message }}
+    <div id="message" class="container my-3" {% if request.LANGUAGE_CODE == 'ar' %}dir="rtl" style="text-align: right;"{% endif %}>
+        <div class="alert alert-dismissible fade show shadow-sm" role="alert" style="border-radius: 8px; background-color: #481616; color: #fafafa; border: 1px solid #481616;">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close" style="color: #fafafa; opacity: 0.9;"><span aria-hidden="true">&times;</span></button>
+            <strong style="color: #fafafa;">{% trans "Notice" %}:</strong>
+            <span style="color: #fafafa;">{{ message }}</span>
+        </div>
     </div>
-    </div>
+    <script>
+        $(document).ready(function() {
+            if (typeof showStockModal === 'function') {
+                showStockModal("{{ message|escapejs }}");
+            }
+        });
+    </script>
     {% endfor %}
-
 {% endif %}

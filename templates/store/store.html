@@ -227,7 +227,7 @@
         padding: 10px 0; 
         background-color: #481616; 
         border: none;
-        color: #fff; 
+        color: #fafafa; 
         border-radius: 8px; 
         text-transform: uppercase; 
         letter-spacing: 0.5px;
@@ -237,7 +237,7 @@
         text-align: center;
     }
 
-    .btn-add-store:hover { background-color: #390509; color: #fff; }
+    .btn-add-store:hover { background-color: #350e0e; color: #fafafa; text-decoration: none; }
 
     /* RTL / Arabic Enhancements */
     {% if LANGUAGE_CODE == 'ar' %}
@@ -453,7 +453,7 @@
                                             <i class="fa fa-list mr-1"></i> {% trans "Select Options" %} 
                                         </a>
                                     {% else %}
-                                        <a href="{% url 'add_cart' product.id %}" class="btn-add-store">
+                                        <a href="{% url 'add_cart' product.id %}" class="btn-add-store btn-add-cart-link" data-stock="{{ product.stock }}">
                                             <i class="fa fa-shopping-cart mr-1"></i> {% trans "Add to Cart" %}
                                         </a>
                                     {% endif %}

@@ -66,6 +66,17 @@ class Product(models.Model):
         # Auto-calculate margins
         self.calculate_margin()
 
+        # Automatically set is_available tick if stock is more than 0
+        if self.stock is not None:
+            self.is_available = self.stock > 0
+
+        update_fields = kwargs.get('update_fields')
+        if update_fields is not None:
+            update_fields = set(update_fields)
+            if 'stock' in update_fields:
+                update_fields.add('is_available')
+            kwargs['update_fields'] = list(update_fields)
+
         super(Product, self).save(*args, **kwargs)
 
 class VariationManager(models.Manager):

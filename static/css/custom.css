@@ -104,3 +104,127 @@ body {
 .card-product-grid .mt-3 {
     margin-top: auto !important;
 }
+
+/* ==========================================================================
+   GLOBAL BRAND COLOR THEME: #481616 (Deep Burgundy) & #fafafa (Off-White)
+   ========================================================================== */
+
+/* Solid / Action Buttons */
+.btn-primary, 
+.btn-secondary,
+.btn-success,
+.btn-danger,
+.btn-warning,
+.btn-info,
+.btn-dark,
+.btn-add-go, 
+.btn-add-store, 
+.view-all-link, 
+.btn-add-cart-link,
+.btn-login,
+.btn-create,
+.btn-search-custom,
+.btn-view-order,
+.btn-return-order {
+    background-color: #481616 !important;
+    border-color: #481616 !important;
+    color: #fafafa !important;
+}
+
+.btn-primary:hover, 
+.btn-primary:focus,
+.btn-primary:active,
+.btn-secondary:hover,
+.btn-success:hover,
+.btn-danger:hover,
+.btn-warning:hover,
+.btn-info:hover,
+.btn-dark:hover,
+.btn-add-go:hover, 
+.btn-add-store:hover, 
+.view-all-link:hover,
+.btn-add-cart-link:hover,
+.btn-login:hover,
+.btn-create:hover,
+.btn-search-custom:hover,
+.btn-view-order:hover,
+.btn-return-order:hover {
+    background-color: #350e0e !important;
+    border-color: #350e0e !important;
+    color: #fafafa !important;
+    text-decoration: none !important;
+}
+
+/* Outline / Secondary / Light Buttons (e.g. Continue Shopping, Back, Cancel) */
+.btn-outline-primary,
+.btn-outline-secondary,
+.btn-outline-success,
+.btn-outline-danger,
+.btn-outline-warning,
+.btn-outline-info,
+.btn-outline-dark,
+.btn-outline-light,
+.btn-light {
+    background-color: #fafafa !important;
+    border: 1px solid #481616 !important;
+    color: #481616 !important;
+}
+
+.btn-outline-primary:hover,
+.btn-outline-secondary:hover,
+.btn-outline-success:hover,
+.btn-outline-danger:hover,
+.btn-outline-warning:hover,
+.btn-outline-info:hover,
+.btn-outline-dark:hover,
+.btn-outline-light:hover,
+.btn-light:hover {
+    background-color: #481616 !important;
+    border-color: #481616 !important;
+    color: #fafafa !important;
+    text-decoration: none !important;
+}
+
+/* Alert Notifications */
+.alert,
+.alert-danger,
+.alert-warning,
+.alert-info,
+.alert-success {
+    background-color: #481616 !important;
+    color: #fafafa !important;
+    border: 1px solid #481616 !important;
+    border-radius: 8px !important;
+}
+
+.alert .close,
+.alert a,
+.alert strong,
+.alert span,
+.alert p,
+.alert i {
+    color: #fafafa !important;
+    opacity: 1 !important;
+}
+
+/* Stock Modal Styling */
+#stockAlertModal .modal-header {
+    background-color: #481616 !important;
+    color: #fafafa !important;
+}
+
+#stockAlertModal .modal-content {
+    background-color: #fafafa !important;
+}
+
+#stockAlertModal .modal-body,
+#stockAlertModal .modal-body h6,
+#stockAlertModal .modal-body i {
+    color: #481616 !important;
+}
+
+#stockAlertModal .modal-footer .btn {
+    background-color: #481616 !important;
+    color: #fafafa !important;
+    border: none !important;
+}

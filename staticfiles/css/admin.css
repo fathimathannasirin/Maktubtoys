@@ -4,11 +4,90 @@ body {
   color: #2f2a24 !important;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
-#header {
-  background: linear-gradient(135deg,#6D001F 0%,#8B4F2D 100%) !important;
+
+/* Breadcrumbs Bar (Red marked area fix) */
+.breadcrumbs,
+div.breadcrumbs,
+.nav-breadcrumbs,
+#content-start,
+div.breadcrumbs *,
+.nav-breadcrumbs * {
+  background: #6D001F !important;
+  background-color: #6D001F !important;
+  color: #ffffff !important;
 }
-#branding h1, #branding a, #user-tools a { color: #fff !important; }
-.module h2, .module caption { background: #6D001F !important; color: #fff !important; }
-.button, input[type=submit], input[type=button], .submit-row input { background: #6D001F !important; color: #fff !important; border-radius: 6px !important; }
-.change-list table thead th { background: #efe2ce !important; color: #4b2f22 !important; }
-.dashboard .module { border: 1px solid #e8ddcc; box-shadow: 0 6px 20px rgba(109,0,31,0.06); border-radius: 10px; }
+
+/* Link color inside Breadcrumbs */
+.breadcrumbs a,
+.nav-breadcrumbs a {
+  color: #ffffff !important;
+  text-decoration: none !important;
+}
+
+.breadcrumbs a:hover,
+.nav-breadcrumbs a:hover {
+  color: #efe2ce !important;
+}
+
+/* Header Links, Branding & Text Visibility */
+#branding h1, 
+#branding a, 
+#user-tools a,
+.breadcrumbs a,
+.breadcrumbs,
+#header a,
+.navbar a { 
+  color: #ffffff !important; 
+}
+
+/* Header Menu & Navigation Dropdown Links */
+.dropdown-menu a,
+#header .dropdown-menu li a,
+.nav-item .nav-link {
+  color: #ffffff !important;
+  background-color: transparent !important;
+}
+
+.dropdown-menu a:hover,
+#header .dropdown-menu li a:hover,
+.nav-item .nav-link:hover {
+  background-color: #8B4F2D !important;
+  color: #ffffff !important;
+}
+
+/* Fix for Select Dropdown Options Visibility */
+select option {
+  background-color: #ffffff !important;
+  color: #4A0D18 !important;
+}
+
+/* Module Titles & Caption Styling */
+.module h2, .module caption { 
+  background: #6D001F !important; 
+  color: #ffffff !important; 
+}
+
+/* Custom Buttons & Hover Effects */
+.button, input[type=submit], input[type=button], .submit-row input { 
+  background: #6D001F !important; 
+  color: #ffffff !important; 
+  border-radius: 6px !important; 
+  border: none !important;
+}
+
+.button:hover, input[type=submit]:hover, input[type=button]:hover, .submit-row input:hover {
+  background: #8B4F2D !important;
+}
+
+/* Table Header styling */
+.change-list table thead th { 
+  background: #efe2ce !important; 
+  color: #4b2f22 !important; 
+}
+
+/* Dashboard Modules Card Styling */
+.dashboard .module { 
+  border: 1px solid #e8ddcc; 
+  box-shadow: 0 6px 20px rgba(109,0,31,0.06); 
+  border-radius: 10px; 
+}
