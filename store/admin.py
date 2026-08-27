@@ -3,6 +3,33 @@ from .models import Product,Variation,ReviewRating,ProductGallery,VariationCateg
 import admin_thumbnails
 from modeltranslation.admin import TranslationAdmin
 from django.utils.html import format_html
+from import_export.admin import ExportActionMixin
+from import_export import resources
+
+class ProductResource(resources.ModelResource):
+    class Meta:
+        model = Product
+        fields = ('product_code', 'product_name', 'price', 'cost_price', 'margin_amount', 'margin_percentage', 'stock', 'category', 'supplier', 'warehouse', 'is_available')
+        export_order = fields
+class StockStatusFilter(admin.SimpleListFilter):
+    title = 'Stock Status'
+    parameter_name = 'stock_status'
+
+    def lookups(self, request, model_admin):
+        return (
+            ('in_stock', 'In Stock (> 0)'),
+            ('out_of_stock', 'Out of Stock (0)'),
+            ('low_stock', 'Low Stock (<= 5)'),
+        )
+
+    def queryset(self, request, queryset):
+        if self.value() == 'in_stock':
+            return queryset.filter(stock__gt=0)
+        if self.value() == 'out_of_stock':
+            return queryset.filter(stock=0)
+        if self.value() == 'low_stock':
+            return queryset.filter(stock__lte=5, stock__gt=0)
+        return queryset
 
 
 @admin_thumbnails.thumbnail('image')
@@ -24,7 +51,8 @@ class ProductGalleryInline(admin.TabularInline):
     image_preview.short_description = 'Preview'
 
 # Register your models here.
-class ProductAdmin(TranslationAdmin):
+class ProductAdmin(ExportActionMixin, TranslationAdmin):
+    resource_class = ProductResource
     # This line tells Django to "auto-fill" the slug based on the product_name
     prepopulated_fields = {'slug': ('product_name',)} 
     search_fields = (
@@ -38,6 +66,7 @@ class ProductAdmin(TranslationAdmin):
     )
     # Other helpful admin settings
     list_display = ('product_code', 'product_name', 'price', 'cost_price', 'margin_amount', 'margin_percentage', 'stock', 'category', 'supplier', 'warehouse', 'image_preview', 'is_available')
+    list_filter = ('supplier', 'warehouse', 'category', StockStatusFilter, 'is_available', 'modified_date')
     prepopulated_fields = {'slug': ('product_name',)}
     readonly_fields = ('image_preview', 'margin_amount', 'margin_percentage')
 

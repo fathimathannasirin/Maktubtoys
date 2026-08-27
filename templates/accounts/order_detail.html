@@ -8,8 +8,8 @@
             
             <div class="row mb-5">
                 <div class="col-sm-6">
-                    <img src="{% static 'images/maktub_navbar_692x250_larger_maroonbg.png' %}" alt="Logo" style="max-height: 80px; width: auto;">
-                    <p class="text-muted small" style="padding: 10px 10px;">Doha, Qatar<br>Sales@maktubqatar.com</p>
+                    <img src="{% static 'images/maktub_h196.png' %}" alt="Logo" style="max-height: 110px; width: auto;">
+                    <p class="text-muted small" style="padding: 8px 0px;">Doha, Qatar<br>info@maktubqatar.com</p>
                 </div>
                 <div class="col-sm-6 text-sm-right">
                     <h1 class="h3 text-uppercase font-weight-light mb-1">{% trans "Invoice" %}</h1>
@@ -145,8 +145,8 @@
                         <span>{{ subtotal }} QAR</span>
                     </div>
                     <div class="d-flex justify-content-between mb-2">
-                        <span>{% trans "Tax:" %}</span>
-                        <span>{{ order.tax }} QAR</span>
+                        <span>{% trans "Delivery Charge:" %}</span>
+                        <span>20 QAR</span>
                     </div>
                     <div class="d-flex justify-content-between font-weight-bold border-top pt-2" style="font-size: 1.2rem;">
                         <span>{% trans "Grand Total:" %}</span>
@@ -156,7 +156,6 @@
             </div>
 
             <div class="text-center mt-5 no-print">
-                <button onclick="window.print()" class="btn btn-dark px-5">{% trans "Print Invoice" %}</button>
                 {% if not is_admin_view %}
                     <a href="{% url 'my_orders' %}" class="btn btn-light border px-5">{% trans "Back" %}</a>
                 {% endif %}

@@ -157,9 +157,8 @@ class BaseOrderAdmin(NoAddAdminMixin, ExportActionMixin, BaseAdmin, AdminChartMi
 
     def status_badge(self, obj):
         color_map = {
-            'New': '#28a745',       
-            'Accepted': '#17a2b8',  
-            'Packed': '#6f42c1',    
+            'Processing': '#28a745',             
+            'Collecting':'#17a2b8',
             'Ready for Preparing': '#9c7b3e',
             'Preparing': '#8f63c7',
             'Ready for Delivery': '#4f86c6',
@@ -401,7 +400,7 @@ class ParcelAdmin(NoAddDeleteAdminMixin, BaseAdmin, admin.ModelAdmin):
     }
 
     COLUMN_CONFIG = [
-        {'value': 'New', 'title': 'Processing', 'tone': '#7b8da6'},
+        {'value': 'New', 'title': 'Processing', 'tone': "#47e160"},
         {'value': 'Accepted', 'title': 'Delivered', 'tone': '#7d8fcb'},
         {'value': 'Packed', 'title': 'Collecting', 'tone': '#87b6a2'},
         {'value': 'Ready for Preparing', 'title': 'Ready for Preparing', 'tone': '#b8a47a'},

@@ -21,23 +21,17 @@ class Payment(models.Model):
 
 class Order(models.Model):
     STATUS =[
-        ('New', 'New'),
-        ('Accepted','Accepted'),
-        ('Packed','Packed'),
+        ('Processing', 'Processing'),
+        ('Collecting','Collecting'),
         ('Ready for Preparing', 'Ready for Preparing'),
         ('Preparing', 'Preparing'),
         ('Ready for Delivery', 'Ready for Delivery'),
         ('On The Way','On The Way'),
         ('Delivered', 'Delivered'),
-        ('Completed','Completed'),
-        ('Return Requested', 'Return Requested'),
-        ('Returned', 'Returned'),
-        ('Refunded', 'Refunded'),
-        ('Failed', 'Failed'),
         ('Cancelled', 'Cancelled'),
     ]
 
-    RETURN_REQUEST_DAYS = 14
+    RETURN_REQUEST_DAYS = 7
     DELIVERED_STATUSES = {'Delivered', 'Completed'}
     BLOCKED_RETURN_STATUSES = {'Cancelled', 'Failed', 'Refunded', 'Returned', 'Return Requested'}
         
@@ -135,6 +129,13 @@ class Order(models.Model):
         update_fields = kwargs.get('update_fields')
         if update_fields is not None and delivered_at_changed:
             kwargs['update_fields'] = set(update_fields) | {'delivered_at'}
+
+        if previous_status != 'Cancelled' and self.status == 'Cancelled':
+            order_products = OrderProduct.objects.filter(order=self)
+            for item in order_products:
+                if item.product:
+                    item.product.stock += item.quantity
+                    item.product.save()
 
         super().save(*args, **kwargs)
     
