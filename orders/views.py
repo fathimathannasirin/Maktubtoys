@@ -366,7 +366,7 @@ def return_request(request, order_id):
             'Returns are accepted only within 7 days of delivery.',
             'Products must be returned in their original packaging.',
             'Customers are responsible for return shipping costs.',
-            'Maktub is not responsible for transit/shipping damage.',
+            'Maktub Toys is not responsible for transit/shipping damage.',
             'Refunds are processed only after product inspection.',
             'Refunds may take up to 7 working days after approval.',
         ],
