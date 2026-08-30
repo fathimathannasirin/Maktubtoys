@@ -5,6 +5,9 @@ from modeltranslation.admin import TranslationAdmin
 from django.utils.html import format_html
 from import_export.admin import ExportActionMixin
 from import_export import resources
+from django.db.models import Sum, F
+from orders.models import OrderProduct, ReturnRequest
+from warehousing.models import PurchaseItem, ReturnItem
 
 class ProductResource(resources.ModelResource):
     class Meta:
@@ -78,6 +81,45 @@ class ProductAdmin(ExportActionMixin, TranslationAdmin):
     )
     
     change_form_template = 'admin/store/product_change_form.html'
+    inlines = [ProductGalleryInline]
+
+    def changeform_view(self, request, object_id=None, form_url='', extra_context=None):
+        extra_context = extra_context or {}
+        if object_id:
+            product = self.get_object(request, object_id)
+            if product:
+                # 1. TOP CARDS STATS
+                inv_qty = product.stock or 0
+                inv_val = float(product.price or 0) * inv_qty
+
+                sales_agg = OrderProduct.objects.filter(product=product, ordered=True).aggregate(
+                    total_qty=Sum('quantity'),
+                    total_amt=Sum(F('quantity') * F('product_price'))
+                )
+                sales_qty = sales_agg['total_qty'] or 0
+                sales_amt = sales_agg['total_amt'] or 0.0
+
+                return_qty = ReturnRequest.objects.filter(
+                    order__orderproduct__product=product
+                ).distinct().count()
+
+                # 2. TABLES DATA
+                purchase_items = PurchaseItem.objects.filter(product=product).select_related('purchase', 'purchase__supplier', 'purchase__warehouse')
+                purchase_returns = ReturnItem.objects.filter(product=product).select_related('return_record', 'return_record__supplier', 'return_record__warehouse')
+                customer_orders = OrderProduct.objects.filter(product=product).select_related('order')
+
+                extra_context.update({
+                    'inv_qty': inv_qty,
+                    'inv_val': inv_val,
+                    'sales_qty': sales_qty,
+                    'sales_amt': sales_amt,
+                    'return_qty': return_qty,
+                    'purchase_items': purchase_items,
+                    'purchase_returns': purchase_returns,
+                    'customer_orders': customer_orders,
+                })
+
+        return super().changeform_view(request, object_id, form_url, extra_context)
     
     def image_preview(self, obj):
         if obj and obj.images:
@@ -88,8 +130,7 @@ class ProductAdmin(ExportActionMixin, TranslationAdmin):
         # This empty tag is the "target" for our JavaScript
         return format_html('<img class="admin-preview-image" width="100" style="display:none; border-radius:5px;"/>')
 
-    inlines = [ProductGalleryInline]
-
+    
     class Media:
         js = (
             'js/admin_form_validation.js', 

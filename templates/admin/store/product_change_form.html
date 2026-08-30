@@ -4,56 +4,265 @@
 {% block extrahead %}
     {{ block.super }}
     <style>
-        .margin-display {
-            background-color: #f0f0f0;
-            padding: 10px;
-            border-radius: 4px;
+        /* Top Cards Layout */
+        .dashboard-cards {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        .dash-card {
+            flex: 1;
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 16px 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .dash-card .title {
+            color: #64748b;
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .dash-card .main-val {
+            font-size: 28px;
+            font-weight: 700;
+            color: #0f172a;
             margin: 5px 0;
-            font-weight: bold;
         }
-        .margin-positive {
-            color: #28a745;
+        .dash-card .sub-val {
+            font-size: 12px;
+            color: #64748b;
         }
-        .margin-negative {
-            color: #dc3545;
+
+        /* Detail Tables Section */
+        .admin-sec-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1e293b;
+            margin: 25px 0 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-        .margin-zero {
-            color: #6c757d;
-        }
-        .purchase-item-selector {
+        .admin-custom-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
             margin-bottom: 20px;
-            padding: 15px;
-            background-color: #f9f9f9;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            overflow: hidden;
         }
-        .purchase-items-dropdown {
-            max-height: 300px;
-            overflow-y: auto;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            margin-top: 10px;
+        .admin-custom-table th, .admin-custom-table td {
+            padding: 10px 14px;
+            text-align: left;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 13px;
         }
-        .purchase-item-option {
-            padding: 10px;
-            cursor: pointer;
-            border-bottom: 1px solid #eee;
+        .admin-custom-table th {
+            background-color: #f8fafc;
+            color: #475569;
+            font-weight: 600;
         }
-        .purchase-item-option:hover {
-            background-color: #e8f4f8;
+        .status-pill {
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
         }
+        .status-delivered { background: #dcfce7; color: #166534; }
+        .status-processing { background: #e0f2fe; color: #0369a1; }
+        .status-default { background: #f1f5f9; color: #475569; }
+
+        .margin-display { background-color: #f0f0f0; padding: 10px; border-radius: 4px; margin: 5px 0; font-weight: bold; }
+        .margin-positive { color: #28a745; }
+        .margin-negative { color: #dc3545; }
+        .margin-zero { color: #6c757d; }
+        .purchase-item-selector { margin-bottom: 20px; padding: 15px; background-color: #f9f9f9; border: 1px solid #ddd; border-radius: 4px; }
+        .purchase-items-dropdown { max-height: 300px; overflow-y: auto; border: 1px solid #ccc; border-radius: 4px; margin-top: 10px; }
+        .purchase-item-option { padding: 10px; cursor: pointer; border-bottom: 1px solid #eee; }
+        .purchase-item-option:hover { background-color: #e8f4f8; }
     </style>
 {% endblock %}
 
-{% block submit_buttons_bottom %}
+{% block content %}
+    {% if original %}
+    <!-- 3 TOP DASHBOARD CARDS -->
+    <div class="dashboard-cards">
+        <div class="dash-card">
+            <div class="title">Inventory</div>
+            <div class="main-val">{{ inv_qty }}</div>
+            <div class="sub-val">{{ inv_val|floatformat:2 }} QAR</div>
+        </div>
+        <div class="dash-card">
+            <div class="title">Sales</div>
+            <div class="main-val">{{ sales_qty }}</div>
+            <div class="sub-val">{{ sales_amt|floatformat:2 }} QAR</div>
+        </div>
+        <div class="dash-card">
+            <div class="title">Returns</div>
+            <div class="main-val">{{ return_qty }}</div>
+            <div class="sub-val">0 QAR</div>
+        </div>
+    </div>
+    {% endif %}
+
     {{ block.super }}
+
+    {% if original %}
+    <!-- 5 DETAIL TABLES BELOW MEDIA / FORM -->
+    <div style="margin-top: 30px;">
+        
+        <!-- 1. Warehouse -->
+        <div class="admin-sec-title"> Warehouse</div>
+        <table class="admin-custom-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>NAME</th>
+                    <th>LOCATION</th>
+                    <th>INVENTORY</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if original.warehouse %}
+                <tr>
+                    <td>{{ original.warehouse.code }}</td>
+                    <td>{{ original.warehouse.name }}</td>
+                    <td>{{ original.warehouse.location }}</td>
+                    <td>{{ original.stock }}</td>
+                </tr>
+                {% else %}
+                <tr><td colspan="4" style="color: #94a3b8; text-align: center;">No Warehouse Assigned</td></tr>
+                {% endif %}
+            </tbody>
+        </table>
+
+        <!-- 2. Supplier -->
+        <div class="admin-sec-title"> Supplier</div>
+        <table class="admin-custom-table">
+            <thead>
+                <tr>
+                    <th>NAME</th>
+                    <th>PHONE</th>
+                    <th>EMAIL</th>
+                    <th>COST</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if original.supplier %}
+                <tr>
+                    <td>{{ original.supplier.name }}</td>
+                    <td>{{ original.supplier.phone|default:"-" }}</td>
+                    <td>{{ original.supplier.email|default:"-" }}</td>
+                    <td>{{ original.cost_price|default:"0.00" }} QAR</td>
+                </tr>
+                {% else %}
+                <tr><td colspan="4" style="color: #94a3b8; text-align: center;">No Supplier Assigned</td></tr>
+                {% endif %}
+            </tbody>
+        </table>
+
+        <!-- 3. Purchase Order -->
+        <div class="admin-sec-title"> Purchase Order</div>
+        <table class="admin-custom-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>SUPPLIER</th>
+                    <th>WAREHOUSE</th>
+                    <th>STATUS</th>
+                    <th>COST</th>
+                    <th>COUNT</th>
+                    <th>DATE</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in purchase_items %}
+                <tr>
+                    <td>{{ item.purchase.purchase_number }}</td>
+                    <td>{{ item.purchase.supplier.name }}</td>
+                    <td>{{ item.purchase.warehouse.name }}</td>
+                    <td><span class="status-pill status-default">{{ item.purchase.status }}</span></td>
+                    <td>{{ item.unit_cost }} QAR</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ item.purchase.created_at|date:"d/m/Y" }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="7" style="color: #94a3b8; text-align: center;">No data available in table</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- 4. Purchase Return -->
+        <div class="admin-sec-title"> Purchase Return</div>
+        <table class="admin-custom-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>SUPPLIER</th>
+                    <th>WAREHOUSE</th>
+                    <th>STATUS</th>
+                    <th>COUNT</th>
+                    <th>DATE</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in purchase_returns %}
+                <tr>
+                    <td>{{ item.return_record.return_number }}</td>
+                    <td>{{ item.return_record.supplier.name }}</td>
+                    <td>{{ item.return_record.warehouse.name }}</td>
+                    <td><span class="status-pill status-default">{{ item.return_record.status }}</span></td>
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ item.return_record.created_at|date:"d/m/Y" }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="6" style="color: #94a3b8; text-align: center;">No data available in table</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- 5. Order -->
+        <div class="admin-sec-title"> Order</div>
+        <table class="admin-custom-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>CODE</th>
+                    <th>PARCEL COUNT</th>
+                    <th>DATE</th>
+                    <th>STATUS</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in customer_orders %}
+                <tr>
+                    <td>{{ item.order.order_number }}</td>
+                    <td>{{ item.order.parcel_id }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ item.order.created_at|date:"d/m/Y" }}</td>
+                    <td>
+                        <span class="status-pill {% if item.order.status == 'Delivered' %}status-delivered{% else %}status-processing{% endif %}">
+                            {{ item.order.status }}
+                        </span>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="5" style="color: #94a3b8; text-align: center;">No data available in table</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+    {% endif %}
 {% endblock %}
 
 {% block admin_change_form_document_ready %}
     {{ block.super }}
     <script>
         (function() {
-            // Real-time margin calculation
             const priceInput = document.getElementById('id_price');
             const costPriceInput = document.getElementById('id_cost_price');
             const marginAmountInput = document.getElementById('id_margin_amount');
@@ -62,124 +271,23 @@
             function calculateMargin() {
                 const price = parseFloat(priceInput.value) || 0;
                 const costPrice = parseFloat(costPriceInput.value) || 0;
-
                 let marginAmount = price - costPrice;
                 let marginPercentage = 0;
-
                 if (price > 0) {
                     marginPercentage = (marginAmount / price) * 100;
                 }
-
-                // Update the margin fields
                 if (marginAmountInput) marginAmountInput.value = marginAmount.toFixed(2);
                 if (marginPercentageInput) marginPercentageInput.value = marginPercentage.toFixed(2);
-
-                // Update visual feedback
-                updateMarginDisplay(marginAmount, marginPercentage);
             }
 
-            function updateMarginDisplay(marginAmount, marginPercentage) {
-                let statusClass = 'margin-zero';
-                if (marginAmount > 0) {
-                    statusClass = 'margin-positive';
-                } else if (marginAmount < 0) {
-                    statusClass = 'margin-negative';
-                }
-                console.log(`Margin: ${marginAmount.toFixed(2)} (${marginPercentage.toFixed(2)}%) - ${statusClass}`);
-            }
-
-            // Attach event listeners for real-time calculation
             if (priceInput) {
                 priceInput.addEventListener('change', calculateMargin);
                 priceInput.addEventListener('keyup', calculateMargin);
             }
-
             if (costPriceInput) {
                 costPriceInput.addEventListener('change', calculateMargin);
                 costPriceInput.addEventListener('keyup', calculateMargin);
             }
-
-            // Calculate on page load
-            if (priceInput && costPriceInput) {
-                calculateMargin();
-            }
-
-            // Purchase Items Selector
-            const purchaseItemSelector = document.createElement('div');
-            purchaseItemSelector.className = 'purchase-item-selector';
-            purchaseItemSelector.innerHTML = `
-                <h3>📦 Link to Purchase Item (Optional)</h3>
-                <p><small>Select a purchase item to auto-fill the cost price</small></p>
-                <input type="text" id="purchase-item-search" placeholder="Search purchase items..." style="width: 100%; padding: 8px; margin-bottom: 10px;">
-                <div id="purchase-items-dropdown" class="purchase-items-dropdown" style="display: none;"></div>
-            `;
-
-            // Insert after the first fieldset
-            const firstFieldset = document.querySelector('fieldset');
-            if (firstFieldset && firstFieldset.parentNode) {
-                firstFieldset.parentNode.insertBefore(purchaseItemSelector, firstFieldset);
-            }
-
-            // Fetch and populate purchase items
-            const searchInput = document.getElementById('purchase-item-search');
-            const dropdown = document.getElementById('purchase-items-dropdown');
-
-            searchInput.addEventListener('focus', async function() {
-                if (dropdown.children.length === 0) {
-                    try {
-                        const response = await fetch('/store/api/purchase-items/');
-                        const data = await response.json();
-                        
-                        if (data.success && data.items.length > 0) {
-                            dropdown.innerHTML = data.items.map(item => `
-                                <div class="purchase-item-option" data-cost="${item.unit_cost}">
-                                    <strong>${item.purchase_number}</strong> - ${item.product_name} (${item.product_code})<br>
-                                    <small>Cost: ${item.unit_cost} QAR | Qty: ${item.received_quantity}/${item.quantity}</small>
-                                </div>
-                            `).join('');
-
-                            // Add click handlers
-                            dropdown.querySelectorAll('.purchase-item-option').forEach(option => {
-                                option.addEventListener('click', function() {
-                                    const cost = parseFloat(this.getAttribute('data-cost'));
-                                    costPriceInput.value = cost.toFixed(2);
-                                    searchInput.value = this.textContent.split('\n')[0];
-                                    dropdown.style.display = 'none';
-                                    calculateMargin();
-                                });
-                            });
-                            
-                            dropdown.style.display = 'block';
-                        } else {
-                            dropdown.innerHTML = '<div class="purchase-item-option">No purchase items found</div>';
-                            dropdown.style.display = 'block';
-                        }
-                    } catch (error) {
-                        console.error('Error fetching purchase items:', error);
-                        dropdown.innerHTML = '<div class="purchase-item-option">Error loading items</div>';
-                        dropdown.style.display = 'block';
-                    }
-                } else {
-                    dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
-                }
-            });
-
-            // Filter purchase items as user types
-            searchInput.addEventListener('keyup', function() {
-                const query = this.value.toLowerCase();
-                const options = dropdown.querySelectorAll('.purchase-item-option');
-                options.forEach(option => {
-                    const text = option.textContent.toLowerCase();
-                    option.style.display = text.includes(query) ? 'block' : 'none';
-                });
-            });
-
-            // Close dropdown when clicking outside
-            document.addEventListener('click', function(e) {
-                if (e.target !== searchInput && !purchaseItemSelector.contains(e.target)) {
-                    dropdown.style.display = 'none';
-                }
-            });
         })();
     </script>
 {% endblock %}
