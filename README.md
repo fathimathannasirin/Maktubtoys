@@ -1,4 +1,4 @@
-"# Maktub Toys"
+"# MAKTUB Toys"
 
 ## Deployment Notes
 
