@@ -19,7 +19,7 @@ class PurchaseItemInlineForm(forms.ModelForm):
 
     class Meta:
         model = PurchaseItem
-        fields = ('product_code', 'product', 'quantity', 'unit_cost', 'received_quantity')
+        fields = ('product_code', 'product', 'old_upc', 'quantity', 'unit_cost', 'received_quantity')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -46,7 +46,7 @@ class ReturnItemInlineForm(forms.ModelForm):
 
     class Meta:
         model = ReturnItem
-        fields = ('product_code', 'product', 'quantity', 'notes')
+        fields = ('product_code', 'product', 'old_upc', 'quantity', 'unit_cost', 'notes')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

@@ -6,13 +6,15 @@ from django.utils.html import format_html
 from import_export.admin import ExportActionMixin
 from import_export import resources
 from django.db.models import Sum, F
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import path, reverse
 from orders.models import OrderProduct, ReturnRequest
 from warehousing.models import PurchaseItem, ReturnItem
 
 class ProductResource(resources.ModelResource):
     class Meta:
         model = Product
-        fields = ('product_code', 'product_name', 'price', 'cost_price', 'margin_amount', 'margin_percentage', 'stock', 'category', 'supplier', 'warehouse', 'is_available')
+        fields = ('product_code', 'sku', 'upc', 'product_name', 'price', 'cost_price', 'margin_amount', 'margin_percentage', 'stock', 'category', 'supplier', 'warehouse', 'is_available')
         export_order = fields
 class StockStatusFilter(admin.SimpleListFilter):
     title = 'Stock Status'
@@ -60,6 +62,8 @@ class ProductAdmin(ExportActionMixin, TranslationAdmin):
     prepopulated_fields = {'slug': ('product_name',)} 
     search_fields = (
         'product_code', 
+        'sku',
+        'upc',
         'product_name', 
         'price', 
         'stock', 
@@ -68,20 +72,68 @@ class ProductAdmin(ExportActionMixin, TranslationAdmin):
         'slug'
     )
     # Other helpful admin settings
-    list_display = ('product_code', 'product_name', 'price', 'cost_price', 'margin_amount', 'margin_percentage', 'stock', 'category', 'supplier', 'warehouse', 'image_preview', 'is_available')
+    list_display = ('product_code', 'sku', 'upc', 'product_name', 'price', 'cost_price', 'margin_amount', 'margin_percentage', 'stock', 'category', 'supplier', 'warehouse', 'image_preview', 'is_available')
     list_filter = ('supplier', 'warehouse', 'category', StockStatusFilter, 'is_available', 'modified_date')
     prepopulated_fields = {'slug': ('product_name',)}
-    readonly_fields = ('image_preview', 'margin_amount', 'margin_percentage')
+    readonly_fields = ('image_preview', 'barcode_preview', 'margin_amount', 'margin_percentage')
+    actions = ('regenerate_barcodes',)
 
     fields = (
         'product_code', 'product_name', 'slug', 'description', 'price',
         'cost_price', 'margin_amount', 'margin_percentage',
         'images', 'image_preview',   
-        'stock', 'category', 'age', 'supplier', 'warehouse', 'is_available'
+        'stock', 'category', 'age', 'supplier', 'warehouse', 'is_available',
+        'sku', 'upc', 'barcode_preview'
     )
     
     change_form_template = 'admin/store/product_change_form.html'
     inlines = [ProductGalleryInline]
+
+    def get_urls(self):
+        urls = super().get_urls()
+        barcode_urls = [
+            path(
+                '<path:object_id>/barcode/print/',
+                self.admin_site.admin_view(self.print_barcode),
+                name='store_product_print_barcode',
+            ),
+        ]
+        return barcode_urls + urls
+
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+        if obj.generate_barcode():
+            obj.save(update_fields=['barcode_image'])
+
+    @admin.action(description='Regenerate barcode images for selected products')
+    def regenerate_barcodes(self, request, queryset):
+        generated_count = 0
+        for product in queryset:
+            if product.generate_barcode():
+                product.save(update_fields=['barcode_image'])
+                generated_count += 1
+        self.message_user(request, f'Generated {generated_count} barcode image(s).')
+
+    def barcode_preview(self, obj):
+        if not obj or not obj.barcode_image:
+            return 'The barcode image is generated after the product is saved.'
+        print_url = reverse('admin:store_product_print_barcode', args=[obj.pk])
+        return format_html(
+            '<img src="{}" width="260" alt="Barcode for {}"/><br>'
+            '<a class="button" href="{}" target="_blank">Print barcode</a>',
+            obj.barcode_image.url,
+            obj.product_name,
+            print_url,
+        )
+
+    barcode_preview.short_description = 'Barcode'
+
+    def print_barcode(self, request, object_id):
+        product = get_object_or_404(Product, pk=object_id)
+        if not product.barcode_image:
+            self.message_user(request, 'Save or regenerate this product to create its barcode image.')
+            return redirect(reverse('admin:store_product_change', args=[product.pk]))
+        return render(request, 'admin/barcode_print.html', {'product': product})
 
     def changeform_view(self, request, object_id=None, form_url='', extra_context=None):
         extra_context = extra_context or {}

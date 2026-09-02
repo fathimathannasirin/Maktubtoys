@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>{{ product.product_name }} barcode</title>
+    <style>
+        @page { margin: 12mm; }
+        body { color: #1f1f1f; font-family: sans-serif; margin: 0; }
+        .barcode-label { display: inline-block; max-width: 90mm; text-align: center; }
+        h1 { font-size: 16pt; margin: 0 0 4mm; }
+        p { font-size: 10pt; margin: 0 0 4mm; }
+        img { display: block; max-width: 90mm; width: 100%; }
+        button { margin-top: 8mm; padding: 8px 12px; }
+        @media print { button { display: none; } }
+    </style>
+</head>
+<body>
+    <section class="barcode-label">
+        <h1>{{ product.product_name }}</h1>
+        <p>SKU: {{ product.sku|default:"-" }} | UPC: {{ product.upc|default:"-" }}</p>
+        <img src="{{ product.barcode_image.url }}" alt="Barcode for {{ product.product_name }}">
+        <button type="button" onclick="window.print()">Print</button>
+    </section>
+</body>
+</html>

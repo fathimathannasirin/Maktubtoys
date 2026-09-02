@@ -56,7 +56,7 @@ class Order(models.Model):
     order_note = models.CharField(max_length=160, blank=True)
     order_total = models.FloatField()
     delivery_charge = models.FloatField(default=20.0)
-    status = models.CharField(max_length=50, choices=STATUS, default='New')
+    status = models.CharField(max_length=50, choices=STATUS, default='Processing')
     status_updated_by = models.ForeignKey(
         Account,
         on_delete=models.SET_NULL,

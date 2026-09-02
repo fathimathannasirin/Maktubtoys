@@ -1,3 +1,8 @@
+from io import BytesIO
+
+import barcode
+from barcode.writer import ImageWriter
+from django.core.files.base import ContentFile
 from django.db import models
 from category.models import Category
 from django.urls import reverse
@@ -22,6 +27,9 @@ class Product(models.Model):
     cost_price = models.DecimalField(max_digits=10, decimal_places=2, default=0, blank=True, null=True)
     margin_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0, blank=True, null=True)
     margin_percentage = models.DecimalField(max_digits=5, decimal_places=2, default=0, blank=True, null=True)
+    sku = models.CharField(max_length=64, unique=True, blank=True, null=True)
+    upc = models.CharField(max_length=32, unique=True, blank=True, null=True)
+    barcode_image = models.ImageField(upload_to='barcodes/products/', blank=True, null=True)
 
     def get_url(self):
         return reverse('product_detail', args=[self.category.slug, self.slug])
@@ -50,6 +58,21 @@ class Product(models.Model):
             if self.price > 0:
                 self.margin_percentage = (self.margin_amount / self.price) * 100
         return self.margin_amount, self.margin_percentage
+
+    def generate_barcode(self):
+        barcode_value = self.upc or self.sku or self.product_code
+        if not barcode_value:
+            return False
+
+        image_buffer = BytesIO()
+        code128 = barcode.get_barcode_class('code128')
+        code128(barcode_value, writer=ImageWriter()).write(image_buffer)
+        self.barcode_image.save(
+            f'product-{self.pk}-{barcode_value}.png',
+            ContentFile(image_buffer.getvalue()),
+            save=False,
+        )
+        return True
     
     def save(self, *args, **kwargs):
         if not self.product_code:

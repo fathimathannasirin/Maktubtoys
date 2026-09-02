@@ -56,6 +56,12 @@ class Warehouse(models.Model):
 
 
 class Purchase(models.Model):
+    DOCUMENT_TYPE = 'INBOUND'
+    AGREEMENT_CHOICES = [
+        ('Consignment', 'Consignment'),
+        ('Direct Purchase', 'Direct Purchase'),
+        ('Credit', 'Credit'),
+    ]
     STATUS_CHOICES = [
         ('Draft', 'Draft'),
         ('Ordered', 'Ordered'),
@@ -69,6 +75,11 @@ class Purchase(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Draft')
     ordered_at = models.DateTimeField(default=timezone.now)
     expected_delivery = models.DateField(blank=True, null=True)
+    storekeeper = models.CharField(max_length=150, blank=True)
+    agreement = models.CharField(max_length=30, choices=AGREEMENT_CHOICES, default='Direct Purchase')
+    adjustment = models.BooleanField(default=False)
+    reference_number = models.CharField(max_length=80, blank=True)
+    vat_rate = models.DecimalField(max_digits=5, decimal_places=2, default=0)
     notes = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -78,6 +89,10 @@ class Purchase(models.Model):
 
     def __str__(self):
         return self.purchase_number
+
+    @property
+    def document_type(self):
+        return self.DOCUMENT_TYPE
 
     def save(self, *args, **kwargs):
         previous_status = None
@@ -102,6 +117,7 @@ class PurchaseItem(models.Model):
     quantity = models.PositiveIntegerField(default=1)
     unit_cost = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     received_quantity = models.PositiveIntegerField(default=0)
+    old_upc = models.CharField(max_length=32, blank=True)
 
     class Meta:
         unique_together = ('purchase', 'product')
@@ -147,6 +163,8 @@ class PurchaseItem(models.Model):
 
 
 class Return(models.Model):
+    DOCUMENT_TYPE = 'OUTBOUND'
+    AGREEMENT_CHOICES = Purchase.AGREEMENT_CHOICES
     STATUS_CHOICES = [
         ('Created', 'Created'),
         ('Approved', 'Approved'),
@@ -160,6 +178,11 @@ class Return(models.Model):
     warehouse = models.ForeignKey(Warehouse, on_delete=models.PROTECT, related_name='returns')
     reason = models.TextField(blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Created')
+    storekeeper = models.CharField(max_length=150, blank=True)
+    agreement = models.CharField(max_length=30, choices=AGREEMENT_CHOICES, default='Direct Purchase')
+    adjustment = models.BooleanField(default=False)
+    reference_number = models.CharField(max_length=80, blank=True)
+    vat_rate = models.DecimalField(max_digits=5, decimal_places=2, default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -168,6 +191,10 @@ class Return(models.Model):
 
     def __str__(self):
         return self.return_number
+
+    @property
+    def document_type(self):
+        return self.DOCUMENT_TYPE
 
     def save(self, *args, **kwargs):
         previous_status = None
@@ -189,6 +216,8 @@ class ReturnItem(models.Model):
     return_record = models.ForeignKey(Return, on_delete=models.CASCADE, related_name='items')
     product = models.ForeignKey('store.Product', on_delete=models.PROTECT, related_name='return_items')
     quantity = models.PositiveIntegerField(default=1)
+    old_upc = models.CharField(max_length=32, blank=True)
+    unit_cost = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     notes = models.CharField(max_length=255, blank=True)
 
     class Meta:

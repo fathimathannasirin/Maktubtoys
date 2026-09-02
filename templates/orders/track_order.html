@@ -33,11 +33,11 @@
                     <div class="step-icon-wrap"><div class="step-icon"><i class="fa fa-check"></i></div></div>
                     <h6 class="step-title">{% trans "Confirmed" %}</h6>
                 </div>
-                <div class="step {% if order.status == 'On The Way' or order.status == 'Completed' %}completed{% endif %}">
+                <div class="step {% if order.status == 'On The Way' or order.status == 'Delivered' or order.status == 'Completed' %}completed{% endif %}">
                     <div class="step-icon-wrap"><div class="step-icon"><i class="fa fa-truck"></i></div></div>
                     <h6 class="step-title">{% trans "On the Way" %}</h6>
                 </div>
-                <div class="step {% if order.status == 'Completed' %}completed{% endif %}">
+                <div class="step {% if order.status == 'Delivered' or order.status == 'Completed' %}completed{% endif %}">
                     <div class="step-icon-wrap"><div class="step-icon"><i class="fa fa-home"></i></div></div>
                     <h6 class="step-title">{% trans "Delivered" %}</h6>
                 </div>

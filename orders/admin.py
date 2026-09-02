@@ -396,17 +396,20 @@ class ParcelAdmin(NoAddDeleteAdminMixin, BaseAdmin, admin.ModelAdmin):
     change_list_template = 'admin/orders/parcel/change_list.html'
 
     STATUS_ALIASES = {
-        'Completed': 'Preparing',
+        'New': 'Processing',
+        'Accepted': 'Delivered',
+        'Packed': 'Collecting',
+        'Completed': 'Delivered',
     }
 
     COLUMN_CONFIG = [
-        {'value': 'New', 'title': 'Processing', 'tone': "#47e160"},
-        {'value': 'Accepted', 'title': 'Delivered', 'tone': '#7d8fcb'},
-        {'value': 'Packed', 'title': 'Collecting', 'tone': '#87b6a2'},
+        {'value': 'Processing', 'title': 'Processing', 'tone': "#47e160"},
+        {'value': 'Collecting', 'title': 'Collecting', 'tone': '#87b6a2'},
         {'value': 'Ready for Preparing', 'title': 'Ready for Preparing', 'tone': '#b8a47a'},
         {'value': 'Preparing', 'title': 'Preparing', 'tone': '#b38bd6'},
         {'value': 'Ready for Delivery', 'title': 'Ready for Delivery', 'tone': '#78a8d8'},
         {'value': 'On The Way', 'title': 'On the way', 'tone': '#f1a559'},
+        {'value': 'Delivered', 'title': 'Delivered', 'tone': '#7d8fcb'},
         {'value': 'Cancelled', 'title': 'Cancelled', 'tone': '#d8777d'},
     ]
 
@@ -437,7 +440,7 @@ class ParcelAdmin(NoAddDeleteAdminMixin, BaseAdmin, admin.ModelAdmin):
     def set_parcel_status(self, request, order_id):
         order = get_object_or_404(Order, pk=order_id)
         new_status = request.POST.get('status')
-        valid_status_values = {column['value'] for column in self.COLUMN_CONFIG} | {'Completed'}
+        valid_status_values = {column['value'] for column in self.COLUMN_CONFIG}
 
         if request.method == 'POST' and new_status in valid_status_values:
             order.status = new_status

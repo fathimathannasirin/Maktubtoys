@@ -99,6 +99,7 @@ class PlaceOrderFlowTests(TestCase):
 		self.assertEqual(order.phone, '+97412345678')
 		self.assertTrue(order.order_number)
 		self.assertTrue(order.is_ordered)
+		self.assertEqual(order.status, 'Processing')
 
 		self.assertEqual(OrderProduct.objects.filter(order=order).count(), 1)
 		self.assertEqual(CartItem.objects.filter(user=self.user).count(), 0)
@@ -193,3 +194,43 @@ class ReturnRequestFlowTests(TestCase):
 
 		self.assertEqual(response.status_code, 200)
 		self.assertEqual(ReturnRequest.objects.filter(order=self.order).count(), 1)
+
+
+class ParcelStatusSynchronizationTests(TestCase):
+	def setUp(self):
+		self.admin_user = Account.objects.create_superuser(
+			first_name='Admin',
+			last_name='User',
+			email='parcel-admin@example.com',
+			username='parceladmin',
+			password='StrongPass123',
+		)
+		self.order = Order.objects.create(
+			order_number='PARCEL-STATUS-1',
+			first_name='Parcel',
+			last_name='Customer',
+			phone='+97412345678',
+			email='parcel@example.com',
+			address_line_1='Doha',
+			address_line_2='',
+			street_number='10',
+			building_number='22',
+			zone_number='55',
+			order_note='',
+			order_total=100,
+			status='Processing',
+			is_ordered=True,
+		)
+		self.client.force_login(self.admin_user)
+
+	def test_parcel_delivered_status_updates_the_order_record(self):
+		response = self.client.post(
+			reverse('admin:orders_parcel_set_status', args=[self.order.pk]),
+			{'status': 'Delivered'},
+			HTTP_X_REQUESTED_WITH='XMLHttpRequest',
+		)
+
+		self.order.refresh_from_db()
+		self.assertEqual(response.status_code, 200)
+		self.assertEqual(response.json()['status'], 'Delivered')
+		self.assertEqual(self.order.status, 'Delivered')

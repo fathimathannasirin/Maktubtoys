@@ -1,0 +1,39 @@
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Purchase Return - {{ return_record.return_number }}</title>
+    <style>
+        @page { size: A4; margin: 15mm; }
+        :root { --brand: #481616; --paper: #fafafa; --line: #d5cdcd; --muted: #eeeaea; }
+        body { background: #fff; color: #202020; font-family: Georgia, serif; font-size: 13px; margin: 0; padding: 20px; }
+        .print-btn { background: var(--brand); border: 0; color: var(--paper); cursor: pointer; margin-bottom: 20px; padding: 8px 16px; }
+        .header { align-items: center; border-bottom: 2px solid var(--brand); display: flex; justify-content: space-between; margin-bottom: 20px; padding-bottom: 15px; }
+        .brand { color: var(--brand); font-size: 100px; font-weight: bold; }
+        .subtitle { font-size: 20px; margin-top: 2px; }
+        .document-title { color: var(--brand); font-family: sans-serif; font-size: 30px; font-weight: bold; text-align: right; }
+        .stamp { border: 2px solid var(--brand); color: var(--brand); display: inline-block; font-family: sans-serif; font-size: 20px; font-weight: bold; background: var(--muted); margin-top: 15px; padding: 10px 20px; transform: rotate(-4deg); }
+        .info-grid { background: var(--muted); display: grid; gap: 15px; grid-template-columns: repeat(2, 1fr); margin-bottom: 20px; padding: 15px; }
+        .info-item { line-height: 1.6; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid var(--line); padding: 8px; vertical-align: middle; }
+        th { background: var(--brand); color: var(--paper); font-size: 11px; text-align: left; }
+        .numeric { text-align: right; }
+        .product-img { display: block; height: 120px; margin: auto; max-width: 135px; object-fit: contain; }
+        .bottom { display: grid; gap: 20px; grid-template-columns: 1fr 180px; margin-top: 25px; }
+        .signature { background: var(--muted); min-height: 54px; padding: 10px; }
+        .summary { background: var(--muted); margin-bottom: 2px; padding: 8px; text-align: right; }
+        .summary strong { float: left; }
+        @media print { .print-btn { display: none; } body { padding: 0; } }
+    </style>
+</head>
+<body>
+    <button class="print-btn" type="button" onclick="window.print()">Print / Save PDF</button>
+    <main>
+        <header class="header"><div><div class="brand"><img src="{% static 'images/maktub_transparent_hires.png' %}" alt="MAKTUB Toys" style="height: 150px; max-width: 260px; object-fit: contain;"></div><div class="subtitle">Warehousing Document</div></div><div><div class="document-title">PURCHASE RETURN</div><div class="stamp">{{ return_record.status|upper }}</div></div></header>
+        <section class="info-grid"><div class="info-item"><strong>ID:</strong> {{ return_record.return_number }}<br><strong>Warehouse:</strong> {{ return_record.warehouse.name }}<br><strong>Supplier:</strong> {{ return_record.supplier.name }}<br><strong>Status:</strong> {{ return_record.get_status_display }}<br><strong>Type:</strong> {{ return_record.document_type }}</div><div class="info-item"><strong>Date:</strong> {{ return_record.created_at|date:"l d F Y" }}<br><strong>Time:</strong> {{ return_record.created_at|date:"H:i" }}<br><strong>Storekeeper:</strong> {{ return_record.storekeeper|default:"System" }}<br><strong>Agreement:</strong> {{ return_record.get_agreement_display }}<br><strong>Adjustment:</strong> {% if return_record.adjustment %}Yes{% else %}No{% endif %}<br><strong>Reference No:</strong> {{ return_record.reference_number|default:"-" }}</div></section>
+        <table><thead><tr><th>#</th><th style="width: 110px;">Image</th><th>Product</th><th>UPC</th><th>Old UPC</th><th>SKU</th><th class="numeric">Count</th><th class="numeric">Cost (QAR)</th><th class="numeric">Final (QAR)</th></tr></thead><tbody>{% for item in items %}<tr><td>{{ forloop.counter }}</td><td>{% if item.product.images %}<img class="product-img" src="{{ item.product.images.url }}" alt="{{ item.product.product_name }}">{% endif %}</td><td>{{ item.product.product_name }}</td><td>{{ item.product.upc|default:"-" }}</td><td>{{ item.old_upc|default:"-" }}</td><td>{{ item.product.sku|default:"-" }}</td><td class="numeric">{{ item.quantity }}</td><td class="numeric">{{ item.unit_cost|floatformat:2 }}</td><td class="numeric">{{ item.line_total|floatformat:2 }}</td></tr>{% empty %}<tr><td colspan="9">No products have been added.</td></tr>{% endfor %}</tbody></table>
+        <section class="bottom"><div><div class="signature">Storekeeper's Signature:</div><div class="signature" style="margin-top: 4px;">Store Manager's Signature:</div>{% if return_record.reason %}<p><strong>Return reason:</strong> {{ return_record.reason }}</p>{% endif %}</div><div><div class="summary"><strong>Total Count</strong>{{ total_quantity }}</div><div class="summary"><strong>Subtotal</strong>{{ subtotal|floatformat:2 }} QAR</div><div class="summary"><strong>VAT ({{ return_record.vat_rate|floatformat:2 }}%)</strong>{{ total_vat|floatformat:2 }} QAR</div><div class="summary"><strong>Total Value</strong>{{ total|floatformat:2 }} QAR</div></div></section>
+    </main>
+</body>
+</html>

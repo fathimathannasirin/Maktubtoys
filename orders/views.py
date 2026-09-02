@@ -180,7 +180,7 @@ def place_order(request, total=0, quantity=0):
                 # Set Cash on Delivery Defaults
                 data.payment_method = 'COD'
                 data.is_ordered = True
-                data.status = 'New'
+                data.status = 'Processing'
                 data.save()
 
                 # Generate order number using the current date + unique ID
