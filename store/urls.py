@@ -12,4 +12,5 @@ urlpatterns =[
     path('get-product-data/', views.get_product_data, name='get_product_data'),
     path('get-product-cost/', views.get_product_cost, name='get_product_cost'),
     path('api/purchase-items/', views.get_purchase_items, name='get_purchase_items'),
+    path('get-filtered-products/', views.get_filtered_products, name='get_filtered_products'),
 ]

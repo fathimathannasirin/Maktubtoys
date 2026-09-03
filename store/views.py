@@ -428,3 +428,24 @@ def get_purchase_items(request):
         return JsonResponse({'success': True, 'items': data})
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)})
+
+def get_filtered_products(request):
+    supplier_id = request.GET.get('supplier_id')
+    warehouse_id = request.GET.get('warehouse_id')
+
+    products = Product.objects.all()
+
+    if supplier_id:
+        products = products.filter(supplier_id=supplier_id)
+    if warehouse_id:
+        products = products.filter(warehouse_id=warehouse_id)
+
+    data = [
+        {
+            'id': p.id,
+            'name': str(p),
+            'code': p.product_code or str(p)
+        }
+        for p in products
+    ]
+    return JsonResponse({'products': data})

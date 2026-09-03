@@ -1,7 +1,5 @@
 from django import forms
-
 from store.models import Product
-
 from .models import PurchaseItem, ReturnItem
 
 
@@ -23,6 +21,18 @@ class PurchaseItemInlineForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+        product_qs = Product.objects.all()
+        if self.instance and self.instance.pk and self.instance.purchase:
+            purchase = self.instance.purchase
+            if purchase.supplier:
+                product_qs = product_qs.filter(supplier=purchase.supplier)
+            if purchase.warehouse:
+                product_qs = product_qs.filter(warehouse=purchase.warehouse)
+
+        self.fields['product'].queryset = product_qs
+        self.fields['product_code'].queryset = product_qs
+
         if self.instance and self.instance.pk and self.instance.product_id:
             self.fields['product_code'].initial = self.instance.product_id
 
@@ -50,6 +60,18 @@ class ReturnItemInlineForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        product_qs = Product.objects.all()
+
+        if self.instance and self.instance.pk and self.instance.return_record:
+            return_rec = self.instance.return_record
+            if return_rec.supplier:
+                product_qs = product_qs.filter(supplier=return_rec.supplier)
+            if return_rec.warehouse:
+                product_qs = product_qs.filter(warehouse=return_rec.warehouse)
+
+        self.fields['product'].queryset = product_qs
+        self.fields['product_code'].queryset = product_qs
+        
         if self.instance and self.instance.pk and self.instance.product_id:
             self.fields['product_code'].initial = self.instance.product_id
 
