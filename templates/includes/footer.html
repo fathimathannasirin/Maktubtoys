@@ -146,10 +146,16 @@
 			<div class="col-lg-3 col-md-6 footer-col">
 				<h5 class="footer-heading">{% trans "SHOP BY CATEGORY" %}</h5>
 				<ul class="footer-links">
-                    <li><a href="{% url 'products_by_category' 'plastic-tables' %}">{% trans "Plastic Tables" %}</a></li>
-                    <li><a href="{% url 'products_by_category' 'play-house' %}">{% trans "Play House" %}</a></li>
-                    <li><a href="{% url 'products_by_category' 'little-tikess' %}">{% trans "Little Tikess" %}</a></li>
-				</ul>
+                    {% for category in footer_categories %}
+                        <li>
+                            <a href="{{ category.get_url }}">
+                                {{ category.category_name }}
+                            </a>
+                        </li>
+                    {% empty %}
+                        <li><a href="{% url 'store' %}">All Products</a></li>
+                    {% endfor %}
+                </ul>
 			</div>
 
 			<!-- Column 3: Customer Support -->
