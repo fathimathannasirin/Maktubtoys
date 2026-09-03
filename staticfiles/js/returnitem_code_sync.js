@@ -1,47 +1,33 @@
 (function () {
     'use strict';
 
-    function syncPair(codeSelect, productSelect) {
-        if (codeSelect.dataset.syncBound) return;
-        codeSelect.dataset.syncBound = 'true';
-        productSelect.dataset.syncBound = 'true';
-
-        codeSelect.addEventListener('change', function () {
-            if (this.value && productSelect.value !== this.value) {
-                productSelect.value = this.value;
-                productSelect.dispatchEvent(new Event('change', { bubbles: true }));
-            }
-        });
-
-        productSelect.addEventListener('change', function () {
-            if (this.value && codeSelect.value !== this.value) {
-                codeSelect.value = this.value;
-                codeSelect.dispatchEvent(new Event('change', { bubbles: true }));
-            }
-        });
+    function setCost(productId, row) {
+        if (!productId) return;
+        var costInput = row.querySelector('input[name$="-unit_cost"]');
+        var costText = row.querySelector('.field-unit_cost p, .field-unit_cost .readonly');
+        fetch('/store/get-product-cost/?product_id=' + encodeURIComponent(productId))
+            .then(function (response) { return response.json(); })
+            .then(function (data) {
+                if (!data || data.cost_price === undefined) return;
+                if (costInput) costInput.value = data.cost_price;
+                if (costText) costText.textContent = data.cost_price;
+            })
+            .catch(function (error) { console.error('Error fetching cost:', error); });
     }
 
-    function bindAllRows(root) {
-        var productSelects = (root || document).querySelectorAll('select[name$="-product"]');
-        productSelects.forEach(function (productSelect) {
-            var codeName = productSelect.name.replace(/-product$/, '-product_code');
-            var codeSelect = document.querySelector('select[name="' + codeName + '"]');
-            if (codeSelect && productSelect) {
-                syncPair(codeSelect, productSelect);
-            }
-        });
-    }
-
-    function init() {
-        bindAllRows(document);
-        document.addEventListener('formset:added', function (event) {
-            bindAllRows(event.target.closest ? event.target : document);
-        });
-    }
-
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
-    } else {
-        init();
-    }
+    document.addEventListener('change', function (event) {
+        var target = event.target;
+        var row = target && (target.closest('tr') || target.closest('.form-row'));
+        if (!row || !target.matches('select[name$="-product_code"], select[name$="-product"]')) return;
+        var codeSelect = row.querySelector('select[name$="-product_code"]');
+        var productSelect = row.querySelector('select[name$="-product"]');
+        var productId = target.value;
+        if (target === codeSelect && productSelect && productSelect.value !== productId) {
+            productSelect.value = productId;
+            productSelect.dispatchEvent(new Event('change', { bubbles: true }));
+        } else if (target === productSelect && codeSelect && codeSelect.value !== productId) {
+            codeSelect.value = productId;
+        }
+        setCost(productId, row);
+    });
 })();

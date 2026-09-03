@@ -1,0 +1,95 @@
+{% extends "admin/change_form.html" %}
+
+{% block after_related_objects %}
+    {{ block.super }}
+
+    <hr style="margin: 30px 0; border: 1px solid #ccc;">
+
+    <!-- 1. SKU / Products Table -->
+    {% if related_products %}
+    <div class="module" style="margin-bottom: 30px;">
+        <h2>Products / SKUs</h2>
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr style="background: #f8f8f8; text-align: left;">
+                    <th style="padding: 8px;">Image</th>
+                    <th style="padding: 8px;">Product Name</th>
+                    <th style="padding: 8px;">SKU</th>
+                    <th style="padding: 8px;">UPC</th>
+                    <th style="padding: 8px;">Cost Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for prod in related_products %}
+                <tr style="border-bottom: 1px solid #eee;">
+                    <td style="padding: 8px;">
+                        {% if prod.images %}
+                            <img src="{{ prod.images.url }}" style="height: 40px; width: 40px; object-fit: cover; border-radius: 4px;">
+                        {% else %}-{% endif %}
+                    </td>
+                    <td style="padding: 8px;"><b>{{ prod.product_name }}</b></td>
+                    <td style="padding: 8px;">{{ prod.sku|default:"-" }}</td>
+                    <td style="padding: 8px;">{{ prod.upc|default:"-" }}</td>
+                    <td style="padding: 8px;">{{ prod.cost_price }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+
+    <!-- 2. Purchase Orders Table -->
+    {% if related_purchases %}
+    <div class="module" style="margin-bottom: 30px;">
+        <h2>Purchase Orders</h2>
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr style="background: #f8f8f8; text-align: left;">
+                    <th style="padding: 8px;">PO Number</th>
+                    <th style="padding: 8px;">Status</th>
+                    <th style="padding: 8px;">Date</th>
+                    <th style="padding: 8px;">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for po in related_purchases %}
+                <tr style="border-bottom: 1px solid #eee;">
+                    <td style="padding: 8px;"><b>{{ po.purchase_number }}</b></td>
+                    <td style="padding: 8px;">{{ po.status }}</td>
+                    <td style="padding: 8px;">{{ po.ordered_at|date:"Y-m-d" }}</td>
+                    <td style="padding: 8px;"><a href="{% url 'admin:warehousing_purchase_change' po.pk %}">View Details</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+
+    <!-- 3. Returns Table -->
+    {% if related_returns %}
+    <div class="module" style="margin-bottom: 30px;">
+        <h2>Purchase Returns</h2>
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr style="background: #f8f8f8; text-align: left;">
+                    <th style="padding: 8px;">Return Number</th>
+                    <th style="padding: 8px;">Status</th>
+                    <th style="padding: 8px;">Date</th>
+                    <th style="padding: 8px;">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ret in related_returns %}
+                <tr style="border-bottom: 1px solid #eee;">
+                    <td style="padding: 8px;"><b>{{ ret.return_number }}</b></td>
+                    <td style="padding: 8px;">{{ ret.status }}</td>
+                    <td style="padding: 8px;">{{ ret.created_at|date:"Y-m-d" }}</td>
+                    <td style="padding: 8px;"><a href="{% url 'admin:warehousing_return_change' ret.pk %}">View Details</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+
+{% endblock %}

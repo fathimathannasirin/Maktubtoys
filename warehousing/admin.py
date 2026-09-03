@@ -4,6 +4,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.utils.html import format_html
 from django.urls import path, reverse
+from store.models import Product
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import getSampleStyleSheet
@@ -27,6 +28,21 @@ class SupplierAdmin(admin.ModelAdmin):
     list_filter = ('is_active',)
     inlines = [WarehouseInline]
 
+    def change_view(self, request, object_id, form_url='', extra_context=None):
+        extra_context = extra_context or {}
+        supplier = get_object_or_404(Supplier, pk=object_id)
+
+        # 1. Related Products (SKUs)
+        extra_context['related_products'] = Product.objects.filter(supplier=supplier)
+
+        # 2. Related Purchase Orders
+        extra_context['related_purchases'] = Purchase.objects.filter(supplier=supplier)
+
+        # 3. Related Purchase Returns
+        extra_context['related_returns'] = Return.objects.filter(supplier=supplier)
+
+        return super().change_view(request, object_id, form_url, extra_context=extra_context)
+
 
 @admin.register(Warehouse)
 class WarehouseAdmin(admin.ModelAdmin):
@@ -34,6 +50,21 @@ class WarehouseAdmin(admin.ModelAdmin):
     search_fields = ('name', 'code', 'location', 'manager_name', 'manager_email', 'supplier__name')
     list_filter = ('is_active', 'supplier')
     autocomplete_fields = ('supplier',)
+
+    def change_view(self, request, object_id, form_url='', extra_context=None):
+        extra_context = extra_context or {}
+        warehouse = get_object_or_404(Warehouse, pk=object_id)
+
+        # 1. Related Products in this Warehouse
+        extra_context['related_products'] = Product.objects.filter(warehouse=warehouse)
+
+        # 2. Related Purchase Orders
+        extra_context['related_purchases'] = Purchase.objects.filter(warehouse=warehouse)
+
+        # 3. Related Purchase Returns
+        extra_context['related_returns'] = Return.objects.filter(warehouse=warehouse)
+
+        return super().change_view(request, object_id, form_url, extra_context=extra_context)
 
 
 class PurchaseItemInline(admin.TabularInline):

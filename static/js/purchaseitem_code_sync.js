@@ -1,70 +1,39 @@
 (function () {
     'use strict';
 
-    function syncPair(codeSelect, productSelect) {
-        if (codeSelect.dataset.syncBound) return;
-        codeSelect.dataset.syncBound = 'true';
-        productSelect.dataset.syncBound = 'true';
+    function setCost(productId, row) {
+        if (!productId) return;
+        var costInput = row.querySelector('input[name$="-unit_cost"]');
+        var costText = row.querySelector('.field-unit_cost p, .field-unit_cost .readonly');
 
-        function updateCost(productId, selectElement) {
-            if (!productId) return;
-            
-            var row = selectElement.closest('.form-row') || selectElement.closest('tr');
-            if (!row) return;
+        fetch('/store/get-product-cost/?product_id=' + encodeURIComponent(productId))
+            .then(function (response) { return response.json(); })
+            .then(function (data) {
+                if (!data || data.cost_price === undefined) return;
+                if (costInput) {
+                    costInput.value = data.cost_price;
+                    costInput.dispatchEvent(new Event('input', { bubbles: true }));
+                }
+                if (costText) costText.textContent = data.cost_price;
+            })
+            .catch(function (error) { console.error('Error fetching cost:', error); });
+    }
 
-            // Targets both the readonly paragraph and the editable input
-            var costText = row.querySelector('.field-unit_cost p, .field-unit_cost .readonly');
-            var costInput = row.querySelector('input[name$="-unit_cost"]'); 
-            
-            fetch('/store/get-product-cost/?product_id=' + productId)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.cost_price !== undefined) {
-                        if (costText) costText.innerText = data.cost_price;
-                        if (costInput) costInput.value = data.cost_price;
-                    }
-                })
-                .catch(error => console.error('Error fetching cost:', error));
+    document.addEventListener('change', function (event) {
+        var target = event.target;
+        var row = target && (target.closest('tr') || target.closest('.form-row'));
+        if (!row || !target.matches('select[name$="-product_code"], select[name$="-product"]')) return;
+
+        var codeSelect = row.querySelector('select[name$="-product_code"]');
+        var productSelect = row.querySelector('select[name$="-product"]');
+        var productId = target.value;
+
+        if (target === codeSelect && productSelect && productSelect.value !== productId) {
+            productSelect.value = productId;
+            productSelect.dispatchEvent(new Event('change', { bubbles: true }));
+        } else if (target === productSelect && codeSelect && codeSelect.value !== productId) {
+            codeSelect.value = productId;
         }
-
-        codeSelect.addEventListener('change', function () {
-            if (this.value && productSelect.value !== this.value) {
-                productSelect.value = this.value;
-                productSelect.dispatchEvent(new Event('change', { bubbles: true }));
-            }
-            updateCost(this.value, this);
-        });
-
-        productSelect.addEventListener('change', function () {
-            if (this.value && codeSelect.value !== this.value) {
-                codeSelect.value = this.value;
-                codeSelect.dispatchEvent(new Event('change', { bubbles: true }));
-            }
-            updateCost(this.value, this);
-        });
-    }
-
-    function bindAllRows(root) {
-        var productSelects = (root || document).querySelectorAll('select[name$="-product"]');
-        productSelects.forEach(function (productSelect) {
-            var codeName = productSelect.name.replace(/-product$/, '-product_code');
-            var codeSelect = document.querySelector('select[name="' + codeName + '"]');
-            if (codeSelect && productSelect) {
-                syncPair(codeSelect, productSelect);
-            }
-        });
-    }
-
-    function init() {
-        bindAllRows(document);
-        document.addEventListener('formset:added', function (event) {
-            bindAllRows(event.target.closest ? event.target : document);
-        });
-    }
-
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
-    } else {
-        init();
-    }
+        setCost(productId, row);
+    });
 })();
