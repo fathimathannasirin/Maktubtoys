@@ -13,4 +13,5 @@ urlpatterns =[
     path('get-product-cost/', views.get_product_cost, name='get_product_cost'),
     path('api/purchase-items/', views.get_purchase_items, name='get_purchase_items'),
     path('get-filtered-products/', views.get_filtered_products, name='get_filtered_products'),
+    path('get-returnable-products/', views.get_returnable_products, name='get_returnable_products'),
 ]

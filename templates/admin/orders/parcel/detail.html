@@ -6,7 +6,7 @@
     <div class="parcel-detail-shell">
         <header class="parcel-detail-topbar">
             <div>
-                <div class="parcel-detail-title">Parcel #{{ order.parcel_id|default:order.order_number }}</div>
+                <div class="parcel-detail-title">Parcel #{{ parcel.parcel_number|default:order.order_number }}</div>
             </div>
             <div class="parcel-detail-actions">
                 <a class="parcel-detail-btn" href="{% url 'admin:orders_parcel_changelist' %}">{% trans "Back" %}</a>
@@ -22,7 +22,7 @@
                     </div>
 
                     <div class="parcel-info-grid">
-                        <div class="parcel-info-row"><span>ID</span><strong>{{ order.parcel_id|default:order.order_number }}</strong></div>
+                        <div class="parcel-info-row"><span>ID</span><strong>{{ parcel.parcel_number|default:order.order_number }}</strong></div>
                         <div class="parcel-info-row"><span>Status</span><strong><span class="status-pill">{{ detail_status_label }}</span></strong></div>
                         <div class="parcel-info-row"><span>Warehouse</span><strong>{{ warehouse_label }}</strong></div>
                         <div class="parcel-info-row"><span>Delivery Date</span><strong>{{ order.created_at|date:"d/m/Y" }}</strong></div>
@@ -55,7 +55,7 @@
                             <tbody>
                                 {% for row in sku_rows %}
                                 <tr>
-                                    <td>{{ order.parcel_id|default:order.order_number }}-{{ forloop.counter }}</td>
+                                    <td>{{ parcel.parcel_number|default:order.order_number }}-{{ forloop.counter }}</td>
                                     <td>
                                         {% if row.image %}
                                         <img src="{{ row.image.url }}" alt="{{ row.name }}">

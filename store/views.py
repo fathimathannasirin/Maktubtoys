@@ -1,9 +1,11 @@
 import re
+from datetime import time, timedelta
 from urllib.parse import urlencode
 
 from django.shortcuts import render,get_object_or_404,redirect
 from django.http import JsonResponse
 from django.urls import reverse
+from django.utils import timezone
 from store.models import Product
 from category.models import Category
 from carts.models import CartItem
@@ -16,6 +18,37 @@ from store.forms import ReviewForm
 from django.contrib import messages
 from orders.models import OrderProduct
 from django.views.decorators.csrf import csrf_exempt
+
+DELIVERY_CUTOFF_TIME = time(19, 0, 0)  # 7:00 PM
+
+
+def _get_delivery_estimate(product):
+    """Same cutoff rule used at checkout: Own Warehouse ships same/next day, other warehouses take 2/3 days."""
+    now = timezone.localtime()
+    is_before_cutoff = now.time() <= DELIVERY_CUTOFF_TIME
+    is_other_warehouse = bool(product.warehouse and product.warehouse.name != 'Own Warehouse')
+
+    if not is_other_warehouse:
+        if is_before_cutoff:
+            eta_date = now.date()
+            message = 'Same-Day Delivery: order before 7:00 PM to get it today.'
+        else:
+            eta_date = now.date() + timedelta(days=1)
+            message = "Ordered after 7:00 PM, you'll receive it tomorrow before 7:00 PM."
+    else:
+        if is_before_cutoff:
+            eta_date = now.date() + timedelta(days=2)
+            message = '2-Day Delivery: order before 7:00 PM to receive it within 2 days.'
+        else:
+            eta_date = now.date() + timedelta(days=3)
+            message = "Ordered after 7:00 PM, delivery will take 3 days."
+
+    return {
+        'is_before_cutoff': is_before_cutoff,
+        'is_other_warehouse': is_other_warehouse,
+        'eta_date': eta_date,
+        'message': message,
+    }
 
 
 # views.py
@@ -259,6 +292,7 @@ def product_detail(request, category_slug, product_slug):
         'product_gallery': product_gallery,
         'related_products': related_products,
         'recommended_products': recommended_products,
+        'delivery_estimate': _get_delivery_estimate(single_product),
     }
     return render(request, 'store/product_detail.html', context)
 
@@ -431,14 +465,11 @@ def get_purchase_items(request):
 
 def get_filtered_products(request):
     supplier_id = request.GET.get('supplier_id')
-    warehouse_id = request.GET.get('warehouse_id')
 
     products = Product.objects.all()
 
     if supplier_id:
         products = products.filter(supplier_id=supplier_id)
-    if warehouse_id:
-        products = products.filter(warehouse_id=warehouse_id)
 
     data = [
         {
@@ -449,3 +480,37 @@ def get_filtered_products(request):
         for p in products
     ]
     return JsonResponse({'products': data})
+
+
+def get_returnable_products(request):
+    """Products previously purchased from the selected supplier (optionally scoped to a warehouse)."""
+    from warehousing.models import PurchaseItem
+
+    supplier_id = request.GET.get('supplier_id')
+    warehouse_id = request.GET.get('warehouse_id')
+
+    purchase_items = PurchaseItem.objects.all()
+    if supplier_id:
+        purchase_items = purchase_items.filter(purchase__supplier_id=supplier_id)
+    if warehouse_id:
+        purchase_items = purchase_items.filter(purchase__warehouse_id=warehouse_id)
+
+    product_ids = purchase_items.values_list('product_id', flat=True).distinct()
+    products = Product.objects.filter(id__in=product_ids)
+
+    data = [
+        {
+            'id': p.id,
+            'name': str(p),
+            'code': p.product_code or str(p)
+        }
+        for p in products
+    ]
+    return JsonResponse({'products': data})
+
+def get_supplier_products(request):
+    supplier_id = request.GET.get('supplier_id')
+    if supplier_id:
+        products = Product.objects.filter(supplier_id=supplier_id).values('id', 'product_name', 'product_code')
+        return JsonResponse(list(products), safe=False)
+    return JsonResponse([], safe=False)

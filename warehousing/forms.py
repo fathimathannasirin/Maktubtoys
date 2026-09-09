@@ -27,8 +27,6 @@ class PurchaseItemInlineForm(forms.ModelForm):
             purchase = self.instance.purchase
             if purchase.supplier:
                 product_qs = product_qs.filter(supplier=purchase.supplier)
-            if purchase.warehouse:
-                product_qs = product_qs.filter(warehouse=purchase.warehouse)
 
         self.fields['product'].queryset = product_qs
         self.fields['product_code'].queryset = product_qs
@@ -64,14 +62,19 @@ class ReturnItemInlineForm(forms.ModelForm):
 
         if self.instance and self.instance.pk and self.instance.return_record:
             return_rec = self.instance.return_record
-            if return_rec.supplier:
-                product_qs = product_qs.filter(supplier=return_rec.supplier)
-            if return_rec.warehouse:
-                product_qs = product_qs.filter(warehouse=return_rec.warehouse)
+            if return_rec.supplier or return_rec.warehouse:
+                # Only products actually purchased from this supplier/warehouse can be returned.
+                purchased_items = PurchaseItem.objects.all()
+                if return_rec.supplier:
+                    purchased_items = purchased_items.filter(purchase__supplier=return_rec.supplier)
+                if return_rec.warehouse:
+                    purchased_items = purchased_items.filter(purchase__warehouse=return_rec.warehouse)
+                product_qs = product_qs.filter(id__in=purchased_items.values_list('product_id', flat=True).distinct())
 
         self.fields['product'].queryset = product_qs
         self.fields['product_code'].queryset = product_qs
-        
+        self.fields['product_code'].label_from_instance = lambda obj: f"{obj.product_code}"
+
         if self.instance and self.instance.pk and self.instance.product_id:
             self.fields['product_code'].initial = self.instance.product_id
 
@@ -82,10 +85,3 @@ class ReturnItemInlineForm(forms.ModelForm):
         if not product and product_code:
             cleaned_data['product'] = product_code
         return cleaned_data
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # Dropdown-ൽ Product-ന്റെ Code കാണിക്കാൻ
-        self.fields['product_code'].label_from_instance = lambda obj: f"{obj.product_code}"
-        if self.instance and self.instance.pk and self.instance.product:
-            self.fields['product_code'].initial = self.instance.product

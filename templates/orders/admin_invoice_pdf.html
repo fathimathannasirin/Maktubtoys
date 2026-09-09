@@ -70,8 +70,11 @@
             <td class="text-right">
                 <div class="invoice-title">Invoice</div>
                 <div class="detail-text mt-2">
-                    <strong>Invoice Number:</strong> {{ invoice_number_value }}<br>
-                    <strong>Parcel Number:</strong> {{ parcel_number_value|default:order.order_number }}<br>
+                    <strong>Invoice Number:</strong> {{ order.order_number }}<br>
+                    {% if is_single_parcel %}
+                    <strong>Parcel Number:</strong> {{ parcel.parcel_number }}<br>
+                    {% endif %}
+                    <strong>Delivery Type:</strong> <span class="badge badge-info">{{ order.delivery_type|default:"Standard Delivery" }}</span><br>
                     <strong>Date:</strong> {{ order.created_at|date:"d/m/Y" }}<br>
                     <strong>Time:</strong> {{ order.created_at|time:"H:i" }}
                 </div>
@@ -79,7 +82,7 @@
         </tr>
     </table>
 
-    {% if order.full_name or order.phone or order.email or order.address_line_1 or order.address_line_2 or order.street_number or order.building_number or order.zone_number or payment_method_value %}
+    {% if order.full_name or order.phone or order.email or order.address_line_1 or order.address_line_2 or order.street_number or order.building_number or order.zone_number or order.payment_method %}
     <div class="billing-box">
         <div class="billing-title">Billing Address</div>
         <div class="detail-text">
@@ -91,63 +94,108 @@
             {% if order.street_number or order.building_number or order.zone_number %}
             <br>Bldg: {{ order.building_number }}, St: {{ order.street_number }}, Zone: {{ order.zone_number }}
             {% endif %}
-            {% if payment_method_value %}<br><strong>Payment Method:</strong> {{ payment_method_value }}{% endif %}
+            {% if order.payment_method %}<br><strong>Payment Method:</strong> {{ order.payment_method }}{% endif %}
         </div>
     </div>
     {% endif %}
 
-    <div class="invoice-band mt-4">
-        <div><strong>{{ parcel_number_value|default:order.order_number }}</strong> <span class="pill">{{ order.status }}</span></div>
-        <div>{% if warehouses %}{% for warehouse in warehouses %}{{ warehouse }}{% if not forloop.last %}, {% endif %}{% endfor %}{% else %}-{% endif %}</div>
-        <div>{{ order.created_at|date:"Y-m-d" }}</div>
-        <div class="right">QAR {{ order.order_total|floatformat:2 }}</div>
-    </div>
+    {% if is_single_parcel %}
+        <!-- Single Parcel Detail Band -->
+        <div class="invoice-band mt-4">
+            <div><strong>{{ parcel.parcel_number }}</strong> <span class="pill">{{ parcel.status }}</span></div>
+            <div><strong>Warehouse:</strong> {{ parcel.warehouse.name|default:"Own Warehouse" }}</div>
+            <div>{{ order.created_at|date:"Y-m-d" }}</div>
+            <div class="right">QAR {{ order.order_total|floatformat:2 }}</div>
+        </div>
 
-    <table class="table mt-5">
-        <thead>
-            <tr>
-                <th>#</th>
-                <th>Product</th>
-                <th>Supplier(s)</th>
-                <th class="text-right">Price (QAR)</th>
-                <th class="text-center">Count</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in order_detail %}
-            <tr>
-                <td>{{ forloop.counter }}</td>
-                <td>
-                    <div class="product-cell">
-                        {% if item.product.images %}
-                        <img class="product-thumb" src="{{ item.product.images.url }}" alt="{{ item.product.product_name }}">
-                        {% else %}
-                        <div class="product-thumb"></div>
-                        {% endif %}
-                        <div>
-                            <div class="product-name">{{ item.product.product_name }}</div>
-                            <div class="product-sub">ID: {{ item.product.product_code }}</div>
+        <table class="table mt-4">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Product</th>
+                    <th>Supplier</th>
+                    <th class="text-right">Price (QAR)</th>
+                    <th class="text-center">Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in order_detail %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>
+                        <div class="product-cell">
+                            {% if item.product.images %}
+                            <img class="product-thumb" src="{{ item.product.images.url }}" alt="{{ item.product.product_name }}">
+                            {% else %}
+                            <div class="product-thumb"></div>
+                            {% endif %}
+                            <div>
+                                <div class="product-name">{{ item.product.product_name }}</div>
+                                <div class="product-sub">ID: {{ item.product.product_code }}</div>
+                            </div>
                         </div>
-                    </div>
-                </td>
-                <td>{{ item.supplier|default:"-" }}</td>
-                <td class="text-right">{{ item.product_price|floatformat:2 }}</td>
-                <td class="text-center">{{ item.quantity }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+                    </td>
+                    <td>{{ item.supplier|default:"-" }}</td>
+                    <td class="text-right">{{ item.product_price|floatformat:2 }}</td>
+                    <td class="text-center">{{ item.quantity }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    {% else %}
+        <!-- Multi-Parcel Dynamic Group Loop -->
+        {% for parcel in parcels %}
+        <div class="invoice-band mt-4">
+            <div><strong>{{ parcel.parcel_number }}</strong> <span class="pill">{{ parcel.status }}</span></div>
+            <div><strong>Warehouse:</strong> {{ parcel.warehouse.name|default:"Own Warehouse" }}</div>
+            <div>{{ order.created_at|date:"Y-m-d" }}</div>
+            <div class="right">Parcel #{{ forloop.counter }}</div>
+        </div>
+
+        <table class="table mb-4">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Product</th>
+                    <th>Supplier</th>
+                    <th class="text-right">Price (QAR)</th>
+                    <th class="text-center">Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in parcel.items.all %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>
+                        <div class="product-cell">
+                            {% if item.product.images %}
+                            <img class="product-thumb" src="{{ item.product.images.url }}" alt="{{ item.product.product_name }}">
+                            {% else %}
+                            <div class="product-thumb"></div>
+                            {% endif %}
+                            <div>
+                                <div class="product-name">{{ item.product.product_name }}</div>
+                                <div class="product-sub">ID: {{ item.product.product_code }}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>{{ item.supplier|default:"-" }}</td>
+                    <td class="text-right">{{ item.product_price|floatformat:2 }}</td>
+                    <td class="text-center">{{ item.quantity }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endfor %}
+    {% endif %}
 
     <div class="row justify-content-end mt-4">
-        <div class="col-4 text-right total-section">
+        <div class="col-5 text-right total-section">
             <table class="summary-table">
                 <tr>
-                    <td>Subtotal</td>
-                    <td>QAR {{ subtotal|floatformat:2 }}</td>
-                </tr>
-                <tr>
                     <td>Delivery Charge</td>
-                    <td>QAR 20.00</td>
+                    <td>QAR {{ order.delivery_charge|default:"20.00"|floatformat:2 }}</td>
                 </tr>
                 {% if order.payment and order.payment.amount_paid %}
                 <tr>
@@ -160,9 +208,6 @@
                     <td>QAR {{ order.order_total|floatformat:2 }}</td>
                 </tr>
             </table>
-            <div class="grand-total">
-                
-            </div>
         </div>
     </div>
 </div>

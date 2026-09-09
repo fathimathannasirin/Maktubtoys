@@ -27,7 +27,7 @@
 
         if (!supplierId && !warehouseId) return;
 
-        fetch('/store/get-filtered-products/?supplier_id=' + encodeURIComponent(supplierId) + '&warehouse_id=' + encodeURIComponent(warehouseId))
+        fetch('/store/get-returnable-products/?supplier_id=' + encodeURIComponent(supplierId) + '&warehouse_id=' + encodeURIComponent(warehouseId))
             .then(function (response) { return response.json(); })
             .then(function (data) {
                 var products = data.products || [];

@@ -20,6 +20,18 @@ def _adjust_product_stock(product_id, delta):
         product.save(update_fields=['stock'])
 
 
+def _assign_product_warehouse(product_id, warehouse_id):
+    if not warehouse_id:
+        return
+
+    with transaction.atomic():
+        Product = apps.get_model('store', 'Product')
+        product = Product.objects.select_for_update().get(pk=product_id)
+        if product.warehouse_id != warehouse_id:
+            product.warehouse_id = warehouse_id
+            product.save(update_fields=['warehouse'])
+
+
 class Supplier(models.Model):
     name = models.CharField(max_length=150, unique=True)
     contact_person = models.CharField(max_length=150, blank=True)
@@ -104,11 +116,13 @@ class Purchase(models.Model):
 
         super().save(*args, **kwargs)
 
-        # When a purchase becomes received, push received quantities into stock once.
+        # When a purchase becomes received, push received quantities into stock once
+        # and assign the product to this purchase's warehouse.
         if previous_status != 'Received' and self.status == 'Received':
             for item in self.items.select_related('product').all():
                 received_qty = item.received_quantity or item.quantity
                 _adjust_product_stock(item.product_id, received_qty)
+                _assign_product_warehouse(item.product_id, self.warehouse_id)
 
 
 class PurchaseItem(models.Model):
@@ -150,6 +164,7 @@ class PurchaseItem(models.Model):
         if old_item and old_purchase_received and new_purchase_received and old_product_id != self.product_id:
             _adjust_product_stock(old_product_id, -old_received)
             _adjust_product_stock(self.product_id, new_received)
+            _assign_product_warehouse(self.product_id, self.purchase.warehouse_id)
             return
 
         if new_purchase_received:
@@ -158,6 +173,7 @@ class PurchaseItem(models.Model):
             else:
                 delta = new_received
             _adjust_product_stock(self.product_id, delta)
+            _assign_product_warehouse(self.product_id, self.purchase.warehouse_id)
         elif old_item and old_purchase_received and not new_purchase_received:
             _adjust_product_stock(old_product_id, -old_received)
 

@@ -24,7 +24,7 @@ class ProductForm(forms.ModelForm):
         model = Product
         fields = [
             'product_name', 'slug', 'description', 'price', 'cost_price',
-            'images', 'stock', 'category', 'age', 'supplier', 'warehouse',
+            'images', 'stock', 'category', 'age', 'supplier',
             'is_available', 'margin_amount', 'margin_percentage'
         ]
         widgets = {
@@ -38,7 +38,6 @@ class ProductForm(forms.ModelForm):
             'category': forms.Select(attrs={'class': 'form-control'}),
             'age': forms.NumberInput(attrs={'class': 'form-control'}),
             'supplier': forms.Select(attrs={'class': 'form-control'}),
-            'warehouse': forms.Select(attrs={'class': 'form-control'}),
             'is_available': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
             'margin_amount': forms.NumberInput(attrs={'class': 'form-control', 'readonly': 'readonly', 'step': '0.01', 'id': 'id_margin_amount'}),
             'margin_percentage': forms.NumberInput(attrs={'class': 'form-control', 'readonly': 'readonly', 'step': '0.01', 'id': 'id_margin_percentage'}),

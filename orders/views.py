@@ -11,7 +11,7 @@ from django.utils import timezone
 from django.db import transaction
 from django.db.models import ExpressionWrapper, F, FloatField, Sum
 from .forms import OrderForm, ReturnRequestForm
-from .models import Order, OrderProduct, ReturnRequest, ReturnRequestImage
+from .models import Order, OrderProduct, Parcel, ReturnRequest, ReturnRequestImage
 from store.models import Product
 from django.template.loader import render_to_string
 import datetime
@@ -135,6 +135,9 @@ def place_order(request, total=0, quantity=0):
     # If the cart is empty, redirect back to store
     if not cart_items:
         return redirect('store')
+    now = timezone.localtime()
+    cutoff_time = datetime.time(19, 0, 0) # 7:00 PM
+    delivery_type = "Same-Day Delivery"
     for item in cart_items:
         if item.quantity > item.product.stock:
             messages.error(
@@ -142,6 +145,9 @@ def place_order(request, total=0, quantity=0):
                 f"Sorry, {item.product.product_name} has only {item.product.stock} items left in stock. Please adjust your cart quantity."
             )
             return redirect('cart')
+        if (item.product.warehouse and item.product.warehouse.name != "Own Warehouse") or (now.time() > cutoff_time):
+            delivery_type = "2-Day Delivery"
+            break
 
     grand_total = 0
     delivery_charge = Decimal('20.0')
@@ -181,6 +187,7 @@ def place_order(request, total=0, quantity=0):
                 data.payment_method = 'COD'
                 data.is_ordered = True
                 data.status = 'Processing'
+                data.delivery_type = delivery_type
                 data.save()
 
                 # Generate order number using the current date + unique ID
@@ -188,6 +195,23 @@ def place_order(request, total=0, quantity=0):
                 order_number = current_date + str(data.id)
                 data.order_number = order_number
                 data.save(update_fields=['order_number'])
+
+                # 2. Multi-Parcel Grouping Logic (Dabdoob Model)
+                warehouse_grouped_items = defaultdict(list)
+                for item in cart_items:
+                    wh = item.product.warehouse
+                    warehouse_grouped_items[wh].append(item)
+
+                order_products = []
+                cart_item_by_product = []
+
+                # Create Parcel per Warehouse & Attach OrderProducts
+                parcels_by_warehouse = {}
+                for wh, items in warehouse_grouped_items.items():
+                    parcels_by_warehouse[wh] = Parcel.objects.create(
+                        order=data,
+                        warehouse=wh
+                    )
 
                 # 2. Move Cart Items to Order Product table
                 for item in cart_items:
@@ -199,11 +223,12 @@ def place_order(request, total=0, quantity=0):
                             product_id=item.product_id,
                             supplier=product.supplier,
                             warehouse=product.warehouse,
+                            parcel=parcels_by_warehouse[product.warehouse],
                             quantity=item.quantity,
                             product_price=product.price,
                             ordered=True,
-                        )
-                    )
+                    ))
+                    cart_item_by_product.append(item)
 
                     if product.supplier and product.supplier.email:
                         supplier_notifications[product.supplier].append({
@@ -220,7 +245,7 @@ def place_order(request, total=0, quantity=0):
 
                 OrderProduct.objects.bulk_create(order_products)
 
-                for orderproduct, item in zip(order_products, cart_items):
+                for orderproduct, item in zip(order_products, cart_item_by_product):
                     orderproduct.variations.set(item.variations.all())
 
                 Product.objects.bulk_update(product_updates.values(), ['stock', 'is_available'])
@@ -374,3 +399,28 @@ def return_request(request, order_id):
         'server_now': timezone.now(),
     }
     return render(request, 'orders/return_request.html', context)
+
+
+def print_single_parcel(request, parcel_id):
+    parcel = get_object_or_404(Parcel, pk=parcel_id)
+    order_items = OrderProduct.objects.filter(parcel=parcel)
+
+    context = {
+        'order': parcel.order,
+        'parcel': parcel,
+        'order_detail': order_items,
+        'is_single_parcel': True,
+    }
+    return render(request, 'orders/admin_invoice_pdf.html', context)
+
+# 2. Full Multi-Parcel Order Invoice View
+def print_full_invoice(request, order_id):
+    order = get_object_or_404(Order, pk=order_id)
+    parcels = Parcel.objects.filter(order=order).prefetch_related('items__product')
+
+    context = {
+        'order': order,
+        'parcels': parcels,
+        'is_single_parcel': False,
+    }
+    return render(request, 'orders/admin_invoice_pdf.html', context)

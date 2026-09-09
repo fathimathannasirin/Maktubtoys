@@ -11,7 +11,7 @@ from category.models import Category
 from store.models import Product
 
 from .forms import OrderForm
-from .models import Order, OrderProduct, ReturnRequest
+from .models import Order, OrderProduct, Parcel, ReturnRequest
 
 
 class OrderPhoneValidationTests(TestCase):
@@ -221,16 +221,49 @@ class ParcelStatusSynchronizationTests(TestCase):
 			status='Processing',
 			is_ordered=True,
 		)
+		self.parcel_one = Parcel.objects.create(order=self.order)
+		self.parcel_two = Parcel.objects.create(order=self.order)
 		self.client.force_login(self.admin_user)
 
 	def test_parcel_delivered_status_updates_the_order_record(self):
 		response = self.client.post(
-			reverse('admin:orders_parcel_set_status', args=[self.order.pk]),
+			reverse('admin:orders_parcel_set_status', args=[self.parcel_one.pk]),
+			{'status': 'Delivered'},
+			HTTP_X_REQUESTED_WITH='XMLHttpRequest',
+		)
+
+		self.parcel_one.refresh_from_db()
+		self.assertEqual(response.status_code, 200)
+		self.assertEqual(response.json()['status'], 'Delivered')
+		self.assertEqual(self.parcel_one.status, 'Delivered')
+
+	def test_updating_one_parcel_does_not_change_sibling_parcel_status(self):
+		self.client.post(
+			reverse('admin:orders_parcel_set_status', args=[self.parcel_one.pk]),
+			{'status': 'Delivered'},
+			HTTP_X_REQUESTED_WITH='XMLHttpRequest',
+		)
+
+		self.parcel_one.refresh_from_db()
+		self.parcel_two.refresh_from_db()
+		self.order.refresh_from_db()
+
+		self.assertEqual(self.parcel_one.status, 'Delivered')
+		self.assertEqual(self.parcel_two.status, 'Processing')
+		# Order status only follows once every sibling parcel agrees.
+		self.assertEqual(self.order.status, 'Processing')
+
+	def test_order_status_syncs_once_all_parcels_share_the_same_status(self):
+		self.client.post(
+			reverse('admin:orders_parcel_set_status', args=[self.parcel_one.pk]),
+			{'status': 'Delivered'},
+			HTTP_X_REQUESTED_WITH='XMLHttpRequest',
+		)
+		self.client.post(
+			reverse('admin:orders_parcel_set_status', args=[self.parcel_two.pk]),
 			{'status': 'Delivered'},
 			HTTP_X_REQUESTED_WITH='XMLHttpRequest',
 		)
 
 		self.order.refresh_from_db()
-		self.assertEqual(response.status_code, 200)
-		self.assertEqual(response.json()['status'], 'Delivered')
 		self.assertEqual(self.order.status, 'Delivered')

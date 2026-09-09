@@ -51,6 +51,17 @@ class WarehouseAdmin(admin.ModelAdmin):
     list_filter = ('is_active', 'supplier')
     autocomplete_fields = ('supplier',)
 
+    def has_delete_permission(self, request, obj=None):
+        if obj is not None and obj.code == 'OWN':
+            return False
+        return super().has_delete_permission(request, obj)
+
+    def get_readonly_fields(self, request, obj=None):
+        readonly_fields = super().get_readonly_fields(request, obj)
+        if obj is not None and obj.code == 'OWN':
+            readonly_fields = tuple(readonly_fields) + ('code', 'supplier')
+        return readonly_fields
+
     def change_view(self, request, object_id, form_url='', extra_context=None):
         extra_context = extra_context or {}
         warehouse = get_object_or_404(Warehouse, pk=object_id)

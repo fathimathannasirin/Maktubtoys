@@ -14,7 +14,7 @@ from warehousing.models import PurchaseItem, ReturnItem
 class ProductResource(resources.ModelResource):
     class Meta:
         model = Product
-        fields = ('product_code', 'sku', 'upc', 'product_name', 'price', 'cost_price', 'margin_amount', 'margin_percentage', 'stock', 'category', 'supplier', 'warehouse', 'is_available')
+        fields = ('product_code', 'sku', 'upc', 'product_name', 'price', 'cost_price', 'margin_amount', 'margin_percentage', 'stock', 'category', 'supplier', 'is_available')
         export_order = fields
 class StockStatusFilter(admin.SimpleListFilter):
     title = 'Stock Status'
@@ -72,8 +72,8 @@ class ProductAdmin(ExportActionMixin, TranslationAdmin):
         'slug'
     )
     # Other helpful admin settings
-    list_display = ('product_code', 'sku', 'upc', 'product_name', 'price', 'cost_price', 'margin_amount', 'margin_percentage', 'stock', 'category', 'supplier', 'warehouse', 'image_preview', 'is_available')
-    list_filter = ('supplier', 'warehouse', 'category', StockStatusFilter, 'is_available', 'modified_date')
+    list_display = ('product_code', 'sku', 'upc', 'product_name', 'price', 'cost_price', 'margin_amount', 'margin_percentage', 'stock', 'category', 'supplier', 'image_preview', 'is_available')
+    list_filter = ('supplier', 'category', StockStatusFilter, 'is_available', 'modified_date')
     prepopulated_fields = {'slug': ('product_name',)}
     readonly_fields = ('image_preview', 'barcode_preview', 'margin_amount', 'margin_percentage')
     actions = ('regenerate_barcodes',)
@@ -82,7 +82,7 @@ class ProductAdmin(ExportActionMixin, TranslationAdmin):
         'product_code', 'product_name', 'slug', 'description', 'price',
         'cost_price', 'margin_amount', 'margin_percentage',
         'images', 'image_preview',   
-        'stock', 'category', 'age', 'supplier', 'warehouse', 'is_available',
+        'stock', 'category', 'age', 'supplier', 'is_available',
         'sku', 'upc', 'barcode_preview'
     )
     

@@ -92,13 +92,13 @@
                         draggable="true"
                         data-card-id="{{ card.id }}"
                         data-card-status="{{ card.status }}"
-                        data-update-url="{% url 'admin:orders_parcel_set_status' card.id %}"
+                        data-update-url="{{ card.update_url }}"
                         data-detail-url="{{ card.detail_url }}"
                         style="--card-tone: {{ card.status_tone }};"
                     >
                         <div class="parcel-card-top">
                             <a href="{{ card.detail_url }}" class="parcel-card-number-link">
-                                <div class="parcel-card-number">{{ card.parcel_id|default:card.order_number }}</div>
+                                <div class="parcel-card-number">{{ card.parcel_number|default:card.order_number }}</div>
                             </a>
                             <div class="parcel-card-top-right">
                                 <div class="parcel-card-since">{{ card.since_label }} {% trans "ago" %}</div>

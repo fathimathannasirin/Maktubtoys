@@ -40,8 +40,8 @@ class AdminChartMixin:
 
 class OrderProductInline(admin.TabularInline):
     model = OrderProduct
-    fields = ('product', 'supplier', 'warehouse', 'display_variations', 'quantity', 'product_price', 'ordered', 'get_total')
-    readonly_fields = ('product', 'supplier', 'warehouse', 'display_variations', 'quantity', 'product_price', 'ordered', 'get_total')
+    fields = ('product', 'supplier', 'warehouse', 'parcel', 'display_variations', 'quantity', 'product_price', 'ordered', 'get_total')
+    readonly_fields = ('product', 'supplier', 'warehouse', 'parcel', 'display_variations', 'quantity', 'product_price', 'ordered', 'get_total')
     extra = 0
     can_delete = False
 
@@ -67,7 +67,7 @@ class OrderResource(resources.ModelResource):
         # These are the fields that will appear as columns in your Excel sheet
         fields = (
             'order_number', 'first_name', 'last_name', 'email', 
-            'phone', 'order_total', 'delivery_charge', 'status', 
+            'phone', 'order_total', 'delivery_charge', 'delivery_type', 'status', 
             'payment_method', 'is_ordered', 'created_at'
         )
         export_order = fields
@@ -90,9 +90,9 @@ class NoAddDeleteAdminMixin(NoAddAdminMixin):
 
 class BaseOrderAdmin(NoAddAdminMixin, ExportActionMixin, BaseAdmin, AdminChartMixin, admin.ModelAdmin):
     resource_class = OrderResource
-    list_display = ['order_number', 'status_badge', 'status', 'created_at', 'full_name', 'phone', 'view_invoice', 'total_formatted']
+    list_display = ['order_number', 'status_badge', 'status', 'delivery_type', 'created_at', 'full_name', 'phone', 'view_invoice', 'total_formatted']
     list_display_links = ('order_number', 'full_name')
-    list_filter = ['status', ('created_at', DateRangeFilter)]
+    list_filter = ['status', 'delivery_type', ('created_at', DateRangeFilter)]
     search_fields = ['order_number', 'first_name', 'last_name', 'phone', 'email']
     list_per_page = 20
     list_editable = ['status']
@@ -111,7 +111,11 @@ class BaseOrderAdmin(NoAddAdminMixin, ExportActionMixin, BaseAdmin, AdminChartMi
 
     def admin_invoice_view(self, request, order_id):
         order = get_object_or_404(Order, pk=order_id)
+        
+        # Dabdoob Multi-Parcel Context
+        parcels = Parcel.objects.filter(order=order).prefetch_related('items__product', 'items__supplier', 'warehouse')
         order_detail = list(OrderProduct.objects.filter(order=order).select_related('supplier', 'warehouse', 'product'))
+        
         for item in order_detail:
             item.line_total = item.product_price * item.quantity
         subtotal = sum(item.line_total for item in order_detail)
@@ -132,6 +136,7 @@ class BaseOrderAdmin(NoAddAdminMixin, ExportActionMixin, BaseAdmin, AdminChartMi
 
         context = {
             'order': order,
+            'parcels': parcels,
             'order_detail': order_detail,
             'subtotal': subtotal,
             'warehouses': warehouses,
@@ -140,7 +145,7 @@ class BaseOrderAdmin(NoAddAdminMixin, ExportActionMixin, BaseAdmin, AdminChartMi
             'payment_status_value': payment_status_value,
             'payment_id_value': payment_id_value,
             'invoice_number_value': invoice_number_value,
-            'parcel_number_value': order.parcel_id,
+            'is_single_parcel': False,
             'is_admin_view': True,
         }
         return TemplateResponse(request, 'orders/admin_invoice_pdf.html', context)
@@ -149,7 +154,7 @@ class BaseOrderAdmin(NoAddAdminMixin, ExportActionMixin, BaseAdmin, AdminChartMi
         if obj.id:
             url = reverse('admin:orders_order_invoice', args=[obj.id])
             return format_html(
-                '<a class="button" href="{}" target="_blank" style="background:#6D001F; color:white; padding:6px 10px; border-radius:4px; text-decoration:none;">VIEW</a>',
+                '<a class="button" href="{}" target="_blank" style="background:#6D001F; color:white; padding:6px 10px; border-radius:4px; text-decoration:none;">VIEW INVOICE</a>',
                 url
             )
         return "N/A"
@@ -185,7 +190,7 @@ class BaseOrderAdmin(NoAddAdminMixin, ExportActionMixin, BaseAdmin, AdminChartMi
 
     fieldsets = (
         ('Order Overview', {
-            'fields': ('user', 'order_number', 'status', 'is_ordered', 'payment_method', 'view_invoice')
+            'fields': ('user', 'order_number', 'status', 'delivery_type', 'is_ordered', 'payment_method', 'view_invoice')
         }),
         ('Customer & Delivery Information', {
             'fields': (
@@ -202,7 +207,7 @@ class BaseOrderAdmin(NoAddAdminMixin, ExportActionMixin, BaseAdmin, AdminChartMi
             'fields': ('order_note',)}),
     )
     readonly_fields = (
-        'user', 'order_number', 'is_ordered', 'payment_method',
+        'user', 'order_number', 'is_ordered', 'payment_method', 'delivery_type',
         'first_name', 'last_name', 'email', 'phone', 'address_line_1', 'address_line_2',
         'street_number', 'building_number', 'zone_number', 'order_total', 'delivery_charge',
         'payment', 'ip', 'created_at', 'order_note', 'view_invoice'
@@ -210,8 +215,8 @@ class BaseOrderAdmin(NoAddAdminMixin, ExportActionMixin, BaseAdmin, AdminChartMi
 
     class Media:
         js = (
-            'js/admin_form_validation.js', # Keep your validation
-            'js/admin_orders.js',          # Load the new automation
+            'js/admin_form_validation.js',
+            'js/admin_orders.js',
         )
 
 
@@ -394,6 +399,7 @@ class ReturnRequestAdmin(admin.ModelAdmin):
 @admin.register(Parcel)
 class ParcelAdmin(NoAddDeleteAdminMixin, BaseAdmin, admin.ModelAdmin):
     change_list_template = 'admin/orders/parcel/change_list.html'
+    list_display = ['parcel_number', 'order', 'warehouse', 'status', 'created_at', 'print_parcel_button']
 
     STATUS_ALIASES = {
         'New': 'Processing',
@@ -413,11 +419,21 @@ class ParcelAdmin(NoAddDeleteAdminMixin, BaseAdmin, admin.ModelAdmin):
         {'value': 'Cancelled', 'title': 'Cancelled', 'tone': '#d8777d'},
     ]
 
+    def print_parcel_button(self, obj):
+        if obj.id:
+            url = reverse('print_single_parcel', args=[obj.id])
+            return format_html(
+                '<a class="button" href="{}" target="_blank" style="background:#28a745; color:white; padding:4px 8px; border-radius:4px; text-decoration:none;">PRINT PARCEL</a>',
+                url
+            )
+        return "N/A"
+    print_parcel_button.short_description = 'Action'
+
     def get_queryset(self, request):
         return (
             super()
             .get_queryset(request)
-            .filter(is_ordered=True)
+            .filter(order__is_ordered=True)
             .order_by('-created_at')
         )
 
@@ -425,40 +441,56 @@ class ParcelAdmin(NoAddDeleteAdminMixin, BaseAdmin, admin.ModelAdmin):
         urls = super().get_urls()
         custom_urls = [
             path(
-                '<int:order_id>/detail/',
+                '<int:parcel_id>/detail/',
                 self.admin_site.admin_view(self.parcel_detail_view),
                 name='orders_parcel_detail',
             ),
             path(
-                '<int:order_id>/set-status/',
+                '<int:parcel_id>/set-status/',
                 self.admin_site.admin_view(self.set_parcel_status),
                 name='orders_parcel_set_status',
             ),
         ]
         return custom_urls + urls
 
-    def set_parcel_status(self, request, order_id):
-        order = get_object_or_404(Order, pk=order_id)
+    def set_parcel_status(self, request, parcel_id):
+        parcel = get_object_or_404(Parcel, pk=parcel_id)
         new_status = request.POST.get('status')
         valid_status_values = {column['value'] for column in self.COLUMN_CONFIG}
 
         if request.method == 'POST' and new_status in valid_status_values:
-            order.status = new_status
-            order.status_updated_by = request.user if request.user.is_authenticated else None
-            order.status_updated_at = timezone.now()
-            order.save(update_fields=['status', 'status_updated_by', 'status_updated_at', 'updated_at'])
-            self.log_change(request, order, f'Parcel status changed to "{new_status}" from board.')
-            messages.success(request, f'Order {order.order_number} moved to {new_status}.')
+            actor = request.user if request.user.is_authenticated else None
+            now = timezone.now()
+
+            parcel.status = new_status
+            parcel.status_updated_by = actor
+            parcel.status_updated_at = now
+            parcel.save(update_fields=['status', 'status_updated_by', 'status_updated_at'])
+            self.log_change(request, parcel, f'Parcel status changed to "{new_status}" from board.')
+            messages.success(request, f'Parcel {parcel.parcel_number} moved to {new_status}.')
+
+            # Only reflect the change on the order once every sibling parcel agrees,
+            # so other parcels of the same order never flip status automatically.
+            sibling_statuses = set(
+                Parcel.objects.filter(order_id=parcel.order_id).values_list('status', flat=True)
+            )
+            if sibling_statuses == {new_status}:
+                order = parcel.order
+                order.status = new_status
+                order.status_updated_by = actor
+                order.status_updated_at = now
+                order.save(update_fields=['status', 'status_updated_by', 'status_updated_at', 'updated_at'])
         else:
             messages.error(request, 'Invalid status update request.')
 
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             return JsonResponse({
                 'ok': request.method == 'POST' and new_status in valid_status_values,
-                'status': order.status,
-                'status_label': self.STATUS_ALIASES.get(order.status, order.status),
-                'order_id': order.id,
-                'updated_by_label': self._user_display_label(order.status_updated_by),
+                'status': parcel.status,
+                'status_label': self.STATUS_ALIASES.get(parcel.status, parcel.status),
+                'parcel_id': parcel.id,
+                'order_id': parcel.order_id,
+                'updated_by_label': self._user_display_label(parcel.status_updated_by),
             })
 
         return redirect(request.META.get('HTTP_REFERER') or reverse('admin:orders_parcel_changelist'))
@@ -469,14 +501,15 @@ class ParcelAdmin(NoAddDeleteAdminMixin, BaseAdmin, admin.ModelAdmin):
         full_name = f'{getattr(user, "first_name", "")} {getattr(user, "last_name", "")}'.strip()
         return full_name or getattr(user, 'email', '') or getattr(user, 'username', '') or str(user)
 
-    def parcel_detail_view(self, request, order_id):
-        order = get_object_or_404(
-            Order.objects.select_related('user', 'payment'),
-            pk=order_id,
-            is_ordered=True,
+    def parcel_detail_view(self, request, parcel_id):
+        parcel = get_object_or_404(
+            Parcel.objects.select_related('order__user', 'order__payment', 'warehouse'),
+            pk=parcel_id,
+            order__is_ordered=True,
         )
+        order = parcel.order
         ordered_products = list(
-            OrderProduct.objects.filter(order=order).select_related('supplier', 'warehouse', 'product')
+            OrderProduct.objects.filter(parcel=parcel).select_related('supplier', 'warehouse', 'product')
         )
 
         sku_rows = []
@@ -495,8 +528,8 @@ class ParcelAdmin(NoAddDeleteAdminMixin, BaseAdmin, admin.ModelAdmin):
             LogEntry.objects.filter(content_type=content_type, object_id=str(order.pk)).order_by('-action_time')[:10]
         )
 
-        warehouse_label = '-'
-        if ordered_products:
+        warehouse_label = str(parcel.warehouse) if parcel.warehouse else '-'
+        if warehouse_label == '-' and ordered_products:
             first_warehouse = next((item.warehouse for item in ordered_products if item.warehouse), None)
             if first_warehouse:
                 warehouse_label = str(first_warehouse)
@@ -514,15 +547,16 @@ class ParcelAdmin(NoAddDeleteAdminMixin, BaseAdmin, admin.ModelAdmin):
             })
 
         context = {
-            'title': f'Parcel #{order.parcel_id or order.order_number}',
+            'title': f'Parcel #{parcel.parcel_number}',
             'order': order,
+            'parcel': parcel,
             'ordered_products': ordered_products,
             'sku_rows': sku_rows,
             'history_rows': history_rows,
             'related_warehouses': list(dict.fromkeys(str(item.warehouse) for item in ordered_products if item.warehouse)),
             'related_suppliers': [item.supplier for item in ordered_products if item.supplier],
-            'detail_status_label': self.STATUS_ALIASES.get(order.status, order.status),
-            'detail_invoice_url': reverse('admin:orders_order_invoice', args=[order.id]),
+            'detail_status_label': self.STATUS_ALIASES.get(parcel.status, parcel.status),
+            'detail_invoice_url': reverse('print_single_parcel', args=[parcel.id]),
             'detail_created_age': timesince(order.created_at),
             'warehouse_label': warehouse_label,
         }
@@ -539,89 +573,74 @@ class ParcelAdmin(NoAddDeleteAdminMixin, BaseAdmin, admin.ModelAdmin):
         page_number = page_index + 1
 
         order_products = OrderProduct.objects.select_related('warehouse', 'product')
-        queryset = self.get_queryset(request).select_related('user').prefetch_related(
-            Prefetch('orderproduct_set', queryset=order_products)
+        queryset = self.get_queryset(request).select_related('order', 'warehouse').prefetch_related(
+            Prefetch('items', queryset=order_products)
         )
 
         if search_term:
             queryset = queryset.filter(
-                Q(order_number__icontains=search_term)
-                | Q(first_name__icontains=search_term)
-                | Q(last_name__icontains=search_term)
-                | Q(phone__icontains=search_term)
-                | Q(email__icontains=search_term)
-                | Q(address_line_1__icontains=search_term)
-                | Q(address_line_2__icontains=search_term)
-                | Q(zone_number__icontains=search_term)
-                | Q(street_number__icontains=search_term)
-                | Q(building_number__icontains=search_term)
+                Q(parcel_number__icontains=search_term)
+                | Q(order__order_number__icontains=search_term)
+                | Q(order__first_name__icontains=search_term)
+                | Q(order__last_name__icontains=search_term)
+                | Q(order__phone__icontains=search_term)
             ).distinct()
 
         if status_filter:
             queryset = queryset.filter(status=status_filter)
 
         if warehouse_filter:
-            queryset = queryset.filter(orderproduct__warehouse_id=warehouse_filter).distinct()
-
-        status_counts = Counter(
-            self.STATUS_ALIASES.get(status, status)
-            for status in queryset.values_list('status', flat=True)
-        )
-
-        warehouse_choices = (
-            order_products.values_list('warehouse_id', 'warehouse__name', 'warehouse__code')
-            .distinct()
-            .order_by('warehouse__name')
-        )
+            queryset = queryset.filter(warehouse_id=warehouse_filter).distinct()
 
         paginator = Paginator(queryset, 16)
         page_obj = paginator.get_page(page_number)
-        order_cards = list(page_obj.object_list)
-        total_item_count = sum(
-            sum(item.quantity for item in order.orderproduct_set.all())
-            for order in order_cards
-        )
+        parcel_cards = list(page_obj.object_list)
+        total_item_count = 0
 
         columns = []
         for column in self.COLUMN_CONFIG:
             cards = []
-            for order in order_cards:
-                mapped_status = self.STATUS_ALIASES.get(order.status, order.status)
+            for parcel in parcel_cards:
+                mapped_status = self.STATUS_ALIASES.get(parcel.status, parcel.status)
                 if mapped_status != column['value']:
                     continue
 
-                order_items = list(order.orderproduct_set.all())
-                item_count = sum(item.quantity for item in order_items)
-                warehouse_name = 'Unassigned'
-                warehouse = next((item.warehouse for item in order_items if item.warehouse), None)
-                if warehouse:
-                    warehouse_name = warehouse.name
+                parcel_items = list(parcel.items.all())
+                item_count = sum(item.quantity for item in parcel_items)
+                total_item_count += item_count
 
                 cards.append({
-                    'id': order.id,
-                    'parcel_id': order.parcel_id,
-                    'order_number': order.order_number,
-                    'customer_name': order.full_name(),
-                    'phone': order.phone,
-                    'delivery_date_label': order.created_at.strftime('%d %b %Y'),
-                    'delivery_date': order.created_at,
-                    'warehouse_name': warehouse_name,
+                    'id': parcel.id,
+                    'order_id': parcel.order.id,
+                    'parcel_number': parcel.parcel_number,
+                    'order_number': parcel.order.order_number,
+                    'customer_name': parcel.order.full_name(),
+                    'phone': parcel.order.phone,
+                    'delivery_date_label': parcel.created_at.strftime('%d %b %Y'),
+                    'warehouse_name': parcel.warehouse.name if parcel.warehouse else 'Own Warehouse',
                     'item_count': item_count,
-                    'since_label': timesince(order.created_at),
+                    'since_label': timesince(parcel.created_at),
                     'status': mapped_status,
                     'status_tone': column['tone'],
-                    'updated_by_label': self._user_display_label(order.status_updated_by),
-                    'detail_url': reverse('admin:orders_parcel_detail', args=[order.id]),
-                    'invoice_url': reverse('admin:orders_order_invoice', args=[order.id]),
+                    'updated_by_label': self._user_display_label(parcel.status_updated_by),
+                    'detail_url': reverse('admin:orders_parcel_detail', args=[parcel.id]),
+                    'update_url': reverse('admin:orders_parcel_set_status', args=[parcel.id]),
+                    'invoice_url': reverse('print_single_parcel', args=[parcel.id]),
                 })
 
             columns.append({
                 'value': column['value'],
                 'title': column['title'],
                 'tone': column['tone'],
-                'count': status_counts.get(column['value'], 0),
+                'count': len(cards),
                 'cards': cards,
             })
+
+        warehouse_choices = (
+            queryset.values_list('warehouse_id', 'warehouse__name', 'warehouse__code')
+            .distinct()
+            .order_by('warehouse__name')
+        )
 
         page_range = paginator.get_elided_page_range(page_obj.number, on_each_side=1, on_ends=1)
         pagination_query = request.GET.copy()
@@ -650,7 +669,7 @@ class ParcelAdmin(NoAddDeleteAdminMixin, BaseAdmin, admin.ModelAdmin):
             'page_range': page_range,
             'pagination_query': pagination_query.urlencode(),
             'total_parcels': queryset.count(),
-            'visible_parcels': len(order_cards),
+            'visible_parcels': len(parcel_cards),
             'total_item_count': total_item_count,
             'title': 'Parcel Board',
         })

@@ -39,10 +39,16 @@ class Order(models.Model):
         ('COD', 'Cash on Delivery'),
         ('PAYPAL', 'PayPal'),
     )
-    
+
+    DELIVERY_TYPE_CHOICES = (
+        ('Same-Day Delivery', 'Same-Day Delivery'),
+        ('2-Day Delivery', '2-Day Delivery'),
+    )
+
     user = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, blank=True)
     payment = models.ForeignKey(Payment,on_delete=models.SET_NULL, blank=True, null=True)
     payment_method = models.CharField(max_length=20, choices=PAYMENT_METHOD_CHOICES, default='COD')
+    delivery_type = models.CharField(max_length=30, choices=DELIVERY_TYPE_CHOICES, blank=True, null=True)
     order_number = models.CharField(max_length=50)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField (max_length=50)
@@ -139,6 +145,35 @@ class Order(models.Model):
 
         super().save(*args, **kwargs)
     
+class Parcel(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='parcels')
+    warehouse = models.ForeignKey('warehousing.Warehouse', on_delete=models.SET_NULL, null=True, blank=True, related_name='parcels')
+    parcel_number = models.CharField(max_length=30, unique=True, blank=True)
+    status = models.CharField(max_length=50, choices=Order.STATUS, default='Processing')
+    status_updated_by = models.ForeignKey(
+        Account,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='status_updated_parcels',
+    )
+    status_updated_at = models.DateTimeField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'Parcel'
+        verbose_name_plural = 'Parcels'
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if not self.parcel_number:
+            self.parcel_number = f'PCL{self.id:07d}'
+            super().save(update_fields=['parcel_number'])
+
+    def __str__(self):
+        return self.parcel_number or f'Parcel {self.id}'
+
+
 class OrderProduct(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     payment = models.ForeignKey(Payment,on_delete=models.SET_NULL, blank=True, null=True)
@@ -146,6 +181,7 @@ class OrderProduct(models.Model):
     product = models.ForeignKey(Product,on_delete=models.CASCADE)
     supplier = models.ForeignKey('warehousing.Supplier', on_delete=models.SET_NULL, null=True, blank=True, related_name='order_products')
     warehouse = models.ForeignKey('warehousing.Warehouse', on_delete=models.SET_NULL, null=True, blank=True, related_name='order_products')
+    parcel = models.ForeignKey(Parcel, on_delete=models.SET_NULL, null=True, blank=True, related_name='items')
     variations = models.ManyToManyField(Variation,blank=True)
     quantity = models.IntegerField()
     product_price = models.FloatField()
@@ -169,13 +205,6 @@ class PendingReturn(Order):
         proxy = True
         verbose_name = 'Pending Return'
         verbose_name_plural = 'Pending Returns'
-
-
-class Parcel(Order):
-    class Meta:
-        proxy = True
-        verbose_name = 'Parcel'
-        verbose_name_plural = 'Parcels'
 
 
 class ReturnRequest(models.Model):
