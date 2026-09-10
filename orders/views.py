@@ -13,6 +13,7 @@ from django.db.models import ExpressionWrapper, F, FloatField, Sum
 from .forms import OrderForm, ReturnRequestForm
 from .models import Order, OrderProduct, Parcel, ReturnRequest, ReturnRequestImage
 from store.models import Product
+from warehousing.models import ProductWarehouseStock
 from django.template.loader import render_to_string
 import datetime
 from django.core.mail import EmailMessage, get_connection
@@ -124,6 +125,34 @@ def _schedule_order_notifications(request, order, supplier_notifications, tracki
         ).start()
     )
 
+
+def _warehouse_allocations(product, quantity):
+    inventory_rows = list(
+        ProductWarehouseStock.objects.filter(product=product, quantity__gt=0)
+        .select_related('warehouse')
+        .order_by('warehouse_id')
+    )
+    inventory_rows.sort(key=lambda row: (row.warehouse.code != 'OWN', row.warehouse_id))
+
+    allocations = []
+    remaining = quantity
+    for inventory in inventory_rows:
+        allocated = min(remaining, inventory.quantity)
+        if allocated:
+            allocations.append((inventory.warehouse, allocated))
+            remaining -= allocated
+        if not remaining:
+            break
+
+    if remaining and product.warehouse:
+        allocations.append((product.warehouse, remaining))
+        remaining = 0
+
+    if remaining:
+        raise ValueError(f'Insufficient warehouse inventory for {product.product_name}.')
+
+    return allocations
+
 def place_order(request, total=0, quantity=0):
     current_user = request.user
     cart_items = list(
@@ -145,7 +174,15 @@ def place_order(request, total=0, quantity=0):
                 f"Sorry, {item.product.product_name} has only {item.product.stock} items left in stock. Please adjust your cart quantity."
             )
             return redirect('cart')
-        if (item.product.warehouse and item.product.warehouse.name != "Own Warehouse") or (now.time() > cutoff_time):
+        try:
+            supplying_warehouses = _warehouse_allocations(item.product, item.quantity)
+        except ValueError:
+            messages.error(
+                request,
+                f"Sorry, {item.product.product_name} is not available in the required warehouse quantity.",
+            )
+            return redirect('cart')
+        if any(warehouse.code != 'OWN' for warehouse, _ in supplying_warehouses) or now.time() > cutoff_time:
             delivery_type = "2-Day Delivery"
             break
 
@@ -196,52 +233,73 @@ def place_order(request, total=0, quantity=0):
                 data.order_number = order_number
                 data.save(update_fields=['order_number'])
 
-                # 2. Multi-Parcel Grouping Logic (Dabdoob Model)
+                # 2. Allocate each cart line from actual warehouse inventory.
                 warehouse_grouped_items = defaultdict(list)
+                inventory_allocations = []
                 for item in cart_items:
-                    wh = item.product.warehouse
-                    warehouse_grouped_items[wh].append(item)
+                    try:
+                        allocations = _warehouse_allocations(item.product, item.quantity)
+                    except ValueError as error:
+                        messages.error(request, str(error))
+                        return redirect('cart')
+                    for warehouse, allocated_quantity in allocations:
+                        warehouse_grouped_items[warehouse].append((item, allocated_quantity))
+                        inventory_allocations.append((item.product_id, warehouse.id, allocated_quantity))
 
                 order_products = []
                 cart_item_by_product = []
 
-                # Create Parcel per Warehouse & Attach OrderProducts
+                # Create one parcel per supplying warehouse.
                 parcels_by_warehouse = {}
                 for wh, items in warehouse_grouped_items.items():
                     parcels_by_warehouse[wh] = Parcel.objects.create(
                         order=data,
-                        warehouse=wh
+                        warehouse=wh,
+                        delivery_date=wh.get_delivery_date(data.created_at),
                     )
 
-                # 2. Move Cart Items to Order Product table
+                # 3. Move allocated quantities to OrderProduct rows.
                 for item in cart_items:
                     product = item.product
-                    order_products.append(
-                        OrderProduct(
-                            order_id=data.id,
-                            user_id=request.user.id,
-                            product_id=item.product_id,
-                            supplier=product.supplier,
-                            warehouse=product.warehouse,
-                            parcel=parcels_by_warehouse[product.warehouse],
-                            quantity=item.quantity,
-                            product_price=product.price,
-                            ordered=True,
-                    ))
-                    cart_item_by_product.append(item)
+                    for warehouse, warehouse_items in warehouse_grouped_items.items():
+                        for grouped_item, allocated_quantity in warehouse_items:
+                            if grouped_item.id != item.id:
+                                continue
+                            order_products.append(
+                                OrderProduct(
+                                    order_id=data.id,
+                                    user_id=request.user.id,
+                                    product_id=item.product_id,
+                                    supplier=product.supplier,
+                                    warehouse=warehouse,
+                                    parcel=parcels_by_warehouse[warehouse],
+                                    quantity=allocated_quantity,
+                                    product_price=product.price,
+                                    ordered=True,
+                                )
+                            )
+                            cart_item_by_product.append(item)
 
-                    if product.supplier and product.supplier.email:
-                        supplier_notifications[product.supplier].append({
-                            'product_name': product.product_name,
-                            'product_code': product.product_code,
-                            'quantity': item.quantity,
-                            'warehouse': product.warehouse.name if product.warehouse else 'N/A',
-                        })
+                            if product.supplier and product.supplier.email:
+                                supplier_notifications[product.supplier].append({
+                                    'product_name': product.product_name,
+                                    'product_code': product.product_code,
+                                    'quantity': allocated_quantity,
+                                    'warehouse': warehouse.name,
+                                })
 
-                    # 3. Reduce product stock
+                    # Reduce total product stock once per cart line.
                     product_to_update = product_updates.setdefault(product.id, product)
                     product_to_update.stock = max(0, product_to_update.stock - item.quantity)
                     product_to_update.is_available = product_to_update.stock > 0
+
+                for product_id, warehouse_id, allocated_quantity in inventory_allocations:
+                    inventory = ProductWarehouseStock.objects.select_for_update().get(
+                        product_id=product_id,
+                        warehouse_id=warehouse_id,
+                    )
+                    inventory.quantity = max(0, inventory.quantity - allocated_quantity)
+                    inventory.save(update_fields=['quantity', 'updated_at'])
 
                 OrderProduct.objects.bulk_create(order_products)
 

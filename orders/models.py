@@ -158,6 +158,7 @@ class Parcel(models.Model):
         related_name='status_updated_parcels',
     )
     status_updated_at = models.DateTimeField(blank=True, null=True)
+    delivery_date = models.DateField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

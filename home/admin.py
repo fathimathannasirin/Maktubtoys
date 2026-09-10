@@ -1,5 +1,43 @@
 from django.contrib import admin
-from .models import Announcement, Banner, SectionOfferBanner, PromoBanner
+from django.contrib import messages
+from django.shortcuts import redirect
+from django.urls import path
+from .models import AdminPinnedApp, Announcement, Banner, SectionOfferBanner, PromoBanner
+
+
+@admin.register(AdminPinnedApp)
+class AdminPinnedAppAdmin(admin.ModelAdmin):
+    list_display = ('app_label', 'order', 'is_pinned')
+    list_editable = ('order', 'is_pinned')
+    list_display_links = ('app_label',)
+    ordering = ('order', 'app_label')
+
+    def get_urls(self):
+        urls = super().get_urls()
+        custom_urls = [
+            path(
+                'toggle/<str:app_label>/',
+                self.admin_site.admin_view(self.toggle_pin),
+                name='home_adminpinnedapp_toggle',
+            ),
+        ]
+        return custom_urls + urls
+
+    def toggle_pin(self, request, app_label):
+        if request.method != 'POST':
+            return redirect('admin:index')
+
+        setting, created = AdminPinnedApp.objects.get_or_create(
+            app_label=app_label,
+            defaults={'order': 100, 'is_pinned': False},
+        )
+        setting.is_pinned = not setting.is_pinned
+        if setting.is_pinned:
+            highest_order = AdminPinnedApp.objects.filter(is_pinned=True).exclude(pk=setting.pk).order_by('-order').values_list('order', flat=True).first()
+            setting.order = (highest_order or 0) + 10
+        setting.save(update_fields=['is_pinned', 'order'])
+        messages.success(request, f'{setting} updated in the admin sidebar.')
+        return redirect(request.META.get('HTTP_REFERER') or 'admin:index')
 
 
 @admin.register(Announcement)

@@ -228,3 +228,111 @@ body {
     color: #fafafa !important;
     border: none !important;
 }
+
+.product-inline-search {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 10px 0;
+    padding: 10px 12px;
+    background: #fff4f5;
+    border: 1px solid #ead0d5;
+    border-left: 4px solid #6d001f;
+}
+
+.product-inline-search input {
+    width: min(420px, 70%);
+    min-height: 32px;
+    padding: 6px 9px;
+    border: 1px solid #c9b0b5;
+    border-radius: 3px;
+}
+
+.product-search-input-wrap {
+    position: relative;
+    width: min(420px, 70%);
+}
+
+.product-search-input-wrap input {
+    width: 100%;
+}
+
+.product-search-results {
+    position: absolute;
+    z-index: 20;
+    top: calc(100% + 3px);
+    left: 0;
+    right: 0;
+    max-height: 280px;
+    overflow-y: auto;
+    background: #fff;
+    border: 1px solid #c9b0b5;
+    box-shadow: 0 4px 12px rgba(55, 0, 15, 0.18);
+}
+
+.product-search-result {
+    display: grid !important;
+    grid-template-columns: 1fr 2fr auto;
+    width: 100%;
+    gap: 8px;
+    align-items: center;
+    padding: 8px 10px !important;
+    border: 0 !important;
+    border-bottom: 1px solid #f0e2e4 !important;
+    border-radius: 0 !important;
+    background: #fff !important;
+    color: #32151c !important;
+    text-align: left;
+    font-weight: 400 !important;
+}
+
+.product-search-result:hover,
+.product-search-result:focus {
+    background: #fff1f3 !important;
+}
+
+.product-search-result strong {
+    color: #6d001f;
+}
+
+.product-search-result span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.product-search-result em {
+    color: #6b555a;
+    font-size: 12px;
+    font-style: normal;
+    white-space: nowrap;
+}
+
+.product-inline-search button {
+    min-height: 32px;
+    padding: 6px 14px;
+    border: 0;
+    border-radius: 3px;
+    background: #6d001f;
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.product-inline-search button.clear-search {
+    background: #8b6a70;
+}
+
+@media (max-width: 640px) {
+    .product-inline-search {
+        flex-wrap: wrap;
+    }
+
+    .product-inline-search input {
+        width: 100%;
+    }
+
+    .product-search-input-wrap {
+        width: 100%;
+    }
+}

@@ -1,5 +1,5 @@
 import re
-from datetime import time, timedelta
+from datetime import time
 from urllib.parse import urlencode
 
 from django.shortcuts import render,get_object_or_404,redirect
@@ -23,29 +23,22 @@ DELIVERY_CUTOFF_TIME = time(19, 0, 0)  # 7:00 PM
 
 
 def _get_delivery_estimate(product):
-    """Same cutoff rule used at checkout: Own Warehouse ships same/next day, other warehouses take 2/3 days."""
+    """Return the product's warehouse-configured delivery estimate."""
     now = timezone.localtime()
     is_before_cutoff = now.time() <= DELIVERY_CUTOFF_TIME
-    is_other_warehouse = bool(product.warehouse and product.warehouse.name != 'Own Warehouse')
-
-    if not is_other_warehouse:
-        if is_before_cutoff:
-            eta_date = now.date()
-            message = 'Same-Day Delivery: order before 7:00 PM to get it today.'
-        else:
-            eta_date = now.date() + timedelta(days=1)
-            message = "Ordered after 7:00 PM, you'll receive it tomorrow before 7:00 PM."
+    warehouse = product.warehouse
+    delivery_days = warehouse.delivery_days if warehouse else 2
+    eta_date = warehouse.get_delivery_date(now) if warehouse else now.date()
+    if not is_before_cutoff:
+        message = f"Ordered after 7:00 PM, delivery is expected in {delivery_days + 1} day(s)."
+    elif delivery_days == 0:
+        message = 'Same-Day Delivery: order before 7:00 PM to get it today.'
     else:
-        if is_before_cutoff:
-            eta_date = now.date() + timedelta(days=2)
-            message = '2-Day Delivery: order before 7:00 PM to receive it within 2 days.'
-        else:
-            eta_date = now.date() + timedelta(days=3)
-            message = "Ordered after 7:00 PM, delivery will take 3 days."
+        message = f'{delivery_days}-Day Delivery: order before 7:00 PM to receive it in {delivery_days} day(s).'
 
     return {
         'is_before_cutoff': is_before_cutoff,
-        'is_other_warehouse': is_other_warehouse,
+        'delivery_days': delivery_days,
         'eta_date': eta_date,
         'message': message,
     }
@@ -465,17 +458,26 @@ def get_purchase_items(request):
 
 def get_filtered_products(request):
     supplier_id = request.GET.get('supplier_id')
+    search_term = (request.GET.get('q') or '').strip()
 
     products = Product.objects.all()
 
     if supplier_id:
         products = products.filter(supplier_id=supplier_id)
+    if search_term:
+        products = products.filter(
+            Q(product_name__icontains=search_term)
+            | Q(product_code__icontains=search_term)
+            | Q(sku__icontains=search_term)
+            | Q(upc__icontains=search_term)
+        )
 
     data = [
         {
             'id': p.id,
             'name': str(p),
-            'code': p.product_code or str(p)
+            'code': p.product_code or str(p),
+            'cost_price': float(p.cost_price) if p.cost_price is not None else None,
         }
         for p in products
     ]
@@ -488,6 +490,7 @@ def get_returnable_products(request):
 
     supplier_id = request.GET.get('supplier_id')
     warehouse_id = request.GET.get('warehouse_id')
+    search_term = (request.GET.get('q') or '').strip()
 
     purchase_items = PurchaseItem.objects.all()
     if supplier_id:
@@ -497,12 +500,20 @@ def get_returnable_products(request):
 
     product_ids = purchase_items.values_list('product_id', flat=True).distinct()
     products = Product.objects.filter(id__in=product_ids)
+    if search_term:
+        products = products.filter(
+            Q(product_name__icontains=search_term)
+            | Q(product_code__icontains=search_term)
+            | Q(sku__icontains=search_term)
+            | Q(upc__icontains=search_term)
+        )
 
     data = [
         {
             'id': p.id,
             'name': str(p),
-            'code': p.product_code or str(p)
+            'code': p.product_code or str(p),
+            'cost_price': float(p.cost_price) if p.cost_price is not None else None,
         }
         for p in products
     ]

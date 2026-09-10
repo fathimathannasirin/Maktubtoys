@@ -90,6 +90,8 @@ INSTALLED_APPS = [
     'carts',
 ]
 
+ADMIN_TOOLS_MENU = 'generalproduct.menu.CustomMenu'
+
 LANGUAGE_CODE = 'en'
 
 # Add the languages you want to support

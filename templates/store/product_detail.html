@@ -451,19 +451,7 @@
                 {% if delivery_estimate %}
                 <p class="small mb-0 mt-2" style="color: #481616; font-weight: 600;">
                     <i class="fa fa-clock-o mr-2"></i>
-                    {% if delivery_estimate.is_other_warehouse %}
-                        {% if delivery_estimate.is_before_cutoff %}
-                            {% trans "Delivery: order before 7:00 PM to receive it within 2 days." %}
-                        {% else %}
-                            {% trans "Ordered after 7:00 PM, delivery will take 3 days." %}
-                        {% endif %}
-                    {% else %}
-                        {% if delivery_estimate.is_before_cutoff %}
-                            {% trans "Same-Day Delivery: order before 7:00 PM to get it today." %}
-                        {% else %}
-                            {% trans "Ordered after 7:00 PM, you'll receive it tomorrow before 7:00 PM." %}
-                        {% endif %}
-                    {% endif %}
+                    {{ delivery_estimate.message }}
                     <span class="text-muted">({{ delivery_estimate.eta_date|date:"d M Y" }})</span>
                 </p>
                 {% endif %}

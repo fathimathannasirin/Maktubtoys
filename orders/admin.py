@@ -558,6 +558,7 @@ class ParcelAdmin(NoAddDeleteAdminMixin, BaseAdmin, admin.ModelAdmin):
             'detail_status_label': self.STATUS_ALIASES.get(parcel.status, parcel.status),
             'detail_invoice_url': reverse('print_single_parcel', args=[parcel.id]),
             'detail_created_age': timesince(order.created_at),
+            'delivery_date': parcel.delivery_date,
             'warehouse_label': warehouse_label,
         }
         return TemplateResponse(request, 'admin/orders/parcel/detail.html', context)
@@ -616,7 +617,7 @@ class ParcelAdmin(NoAddDeleteAdminMixin, BaseAdmin, admin.ModelAdmin):
                     'order_number': parcel.order.order_number,
                     'customer_name': parcel.order.full_name(),
                     'phone': parcel.order.phone,
-                    'delivery_date_label': parcel.created_at.strftime('%d %b %Y'),
+                    'delivery_date_label': parcel.delivery_date.strftime('%d %b %Y') if parcel.delivery_date else '-',
                     'warehouse_name': parcel.warehouse.name if parcel.warehouse else 'Own Warehouse',
                     'item_count': item_count,
                     'since_label': timesince(parcel.created_at),

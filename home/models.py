@@ -1,4 +1,28 @@
 from django.db import models
+
+
+class AdminPinnedApp(models.Model):
+    APP_CHOICES = [
+        ('store', 'Store'),
+        ('warehousing', 'Warehousing'),
+        ('orders', 'Orders'),
+        ('Accounts', 'Accounts'),
+        ('carts', 'Carts'),
+        ('category', 'Category'),
+        ('home', 'Home'),
+    ]
+
+    app_label = models.CharField(max_length=50, choices=APP_CHOICES, unique=True)
+    order = models.PositiveIntegerField(default=0)
+    is_pinned = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ['order', 'app_label']
+        verbose_name = 'Pinned admin app'
+        verbose_name_plural = 'Pinned admin apps'
+
+    def __str__(self):
+        return self.get_app_label_display()
 from category.models import Category
 
 

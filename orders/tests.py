@@ -6,12 +6,37 @@ from django.utils import timezone
 from datetime import timedelta
 
 from Accounts.models import Account
-from carts.models import CartItem
+from carts.models import Cart, CartItem
 from category.models import Category
 from store.models import Product
+from warehousing.models import ProductWarehouseStock, Supplier, Warehouse
+from .views import _warehouse_allocations
 
 from .forms import OrderForm
 from .models import Order, OrderProduct, Parcel, ReturnRequest
+
+
+class MultiWarehouseCheckoutTests(TestCase):
+	def test_same_product_stocked_in_two_warehouses_creates_correct_parcels(self):
+		category = Category.objects.create(category_name='Warehouse Test', slug='warehouse-test')
+		own_warehouse = Warehouse.objects.get(code='OWN')
+		supplier = Supplier.objects.create(name='Parcel Supplier')
+		supplier_warehouse = Warehouse.objects.create(
+			supplier=supplier, name='Parcel Supplier Warehouse', code='PARCEL-SUP', location='Doha',
+		)
+		product = Product.objects.create(
+			product_name='Multi Warehouse Product', slug='multi-warehouse-product',
+			price=10, stock=5, category=category, supplier=supplier,
+			warehouse=supplier_warehouse,
+		)
+		ProductWarehouseStock.objects.create(product=product, warehouse=own_warehouse, quantity=2)
+		ProductWarehouseStock.objects.create(product=product, warehouse=supplier_warehouse, quantity=3)
+
+		allocations = _warehouse_allocations(product, 5)
+		self.assertEqual(
+			[(warehouse.id, quantity) for warehouse, quantity in allocations],
+			[(own_warehouse.id, 2), (supplier_warehouse.id, 3)],
+		)
 
 
 class OrderPhoneValidationTests(TestCase):

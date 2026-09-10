@@ -75,7 +75,8 @@
                     <strong>Parcel Number:</strong> {{ parcel.parcel_number }}<br>
                     {% endif %}
                     <strong>Delivery Type:</strong> <span class="badge badge-info">{{ order.delivery_type|default:"Standard Delivery" }}</span><br>
-                    <strong>Date:</strong> {{ order.created_at|date:"d/m/Y" }}<br>
+                    <strong>Order Date:</strong> {{ order.created_at|date:"d/m/Y" }}<br>
+                    {% if is_single_parcel %}<strong>Delivery Date:</strong> {{ parcel.delivery_date|date:"d/m/Y"|default:"-" }}<br>{% endif %}
                     <strong>Time:</strong> {{ order.created_at|time:"H:i" }}
                 </div>
             </td>
@@ -104,7 +105,7 @@
         <div class="invoice-band mt-4">
             <div><strong>{{ parcel.parcel_number }}</strong> <span class="pill">{{ parcel.status }}</span></div>
             <div><strong>Warehouse:</strong> {{ parcel.warehouse.name|default:"Own Warehouse" }}</div>
-            <div>{{ order.created_at|date:"Y-m-d" }}</div>
+            <div>Delivery: {{ parcel.delivery_date|date:"Y-m-d"|default:"-" }}</div>
             <div class="right">QAR {{ order.order_total|floatformat:2 }}</div>
         </div>
 
@@ -149,7 +150,7 @@
         <div class="invoice-band mt-4">
             <div><strong>{{ parcel.parcel_number }}</strong> <span class="pill">{{ parcel.status }}</span></div>
             <div><strong>Warehouse:</strong> {{ parcel.warehouse.name|default:"Own Warehouse" }}</div>
-            <div>{{ order.created_at|date:"Y-m-d" }}</div>
+            <div>Delivery: {{ parcel.delivery_date|date:"Y-m-d"|default:"-" }}</div>
             <div class="right">Parcel #{{ forloop.counter }}</div>
         </div>
 

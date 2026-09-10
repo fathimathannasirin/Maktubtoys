@@ -1,4 +1,5 @@
 import uuid
+from datetime import time, timedelta
 
 from django.apps import apps
 from django.db import models
@@ -6,18 +7,28 @@ from django.db import transaction
 from django.utils import timezone
 
 
-def _adjust_product_stock(product_id, delta):
+def _adjust_product_stock(product_id, delta, warehouse_id=None):
     if not delta:
         return
 
     with transaction.atomic():
         Product = apps.get_model('store', 'Product')
+        ProductWarehouseStock = apps.get_model('warehousing', 'ProductWarehouseStock')
         product = Product.objects.select_for_update().get(pk=product_id)
         new_stock = product.stock + delta
         if new_stock < 0:
             new_stock = 0
         product.stock = new_stock
         product.save(update_fields=['stock'])
+
+        if warehouse_id:
+            inventory, _ = ProductWarehouseStock.objects.select_for_update().get_or_create(
+                product_id=product_id,
+                warehouse_id=warehouse_id,
+                defaults={'quantity': 0},
+            )
+            inventory.quantity = max(0, inventory.quantity + delta)
+            inventory.save(update_fields=['quantity', 'updated_at'])
 
 
 def _assign_product_warehouse(product_id, warehouse_id):
@@ -56,6 +67,10 @@ class Warehouse(models.Model):
     location = models.CharField(max_length=255)
     manager_name = models.CharField(max_length=150, blank=True)
     manager_email = models.EmailField(blank=True)
+    delivery_days = models.PositiveIntegerField(
+        default=2,
+        help_text='Transit days after the order cutoff. Use 0 for same-day delivery before 19:00.',
+    )
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -65,6 +80,26 @@ class Warehouse(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.code})"
+
+    def get_delivery_date(self, ordered_at=None):
+        ordered_at = timezone.localtime(ordered_at or timezone.now())
+        cutoff_days = 0 if ordered_at.time() <= time(19, 0) else 1
+        return ordered_at.date() + timedelta(days=self.delivery_days + cutoff_days)
+
+
+class ProductWarehouseStock(models.Model):
+    product = models.ForeignKey('store.Product', on_delete=models.CASCADE, related_name='warehouse_stocks')
+    warehouse = models.ForeignKey(Warehouse, on_delete=models.CASCADE, related_name='product_stocks')
+    quantity = models.PositiveIntegerField(default=0)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['product', 'warehouse'], name='unique_product_warehouse_stock'),
+        ]
+
+    def __str__(self):
+        return f'{self.product} - {self.warehouse}: {self.quantity}'
 
 
 class Purchase(models.Model):
@@ -121,7 +156,7 @@ class Purchase(models.Model):
         if previous_status != 'Received' and self.status == 'Received':
             for item in self.items.select_related('product').all():
                 received_qty = item.received_quantity or item.quantity
-                _adjust_product_stock(item.product_id, received_qty)
+                _adjust_product_stock(item.product_id, received_qty, self.warehouse_id)
                 _assign_product_warehouse(item.product_id, self.warehouse_id)
 
 
@@ -162,8 +197,8 @@ class PurchaseItem(models.Model):
 
         # Existing row reassigned to a new product while already received.
         if old_item and old_purchase_received and new_purchase_received and old_product_id != self.product_id:
-            _adjust_product_stock(old_product_id, -old_received)
-            _adjust_product_stock(self.product_id, new_received)
+            _adjust_product_stock(old_product_id, -old_received, self.purchase.warehouse_id)
+            _adjust_product_stock(self.product_id, new_received, self.purchase.warehouse_id)
             _assign_product_warehouse(self.product_id, self.purchase.warehouse_id)
             return
 
@@ -172,10 +207,10 @@ class PurchaseItem(models.Model):
                 delta = new_received - old_received
             else:
                 delta = new_received
-            _adjust_product_stock(self.product_id, delta)
+            _adjust_product_stock(self.product_id, delta, self.purchase.warehouse_id)
             _assign_product_warehouse(self.product_id, self.purchase.warehouse_id)
         elif old_item and old_purchase_received and not new_purchase_received:
-            _adjust_product_stock(old_product_id, -old_received)
+            _adjust_product_stock(old_product_id, -old_received, self.purchase.warehouse_id)
 
 
 class Return(models.Model):
@@ -225,7 +260,7 @@ class Return(models.Model):
         # When a return is completed, remove quantities from stock once.
         if previous_status != 'Completed' and self.status == 'Completed':
             for item in self.items.select_related('product').all():
-                _adjust_product_stock(item.product_id, -item.quantity)
+                _adjust_product_stock(item.product_id, -item.quantity, self.warehouse_id)
 
 
 class ReturnItem(models.Model):
@@ -261,13 +296,13 @@ class ReturnItem(models.Model):
 
         # Existing row reassigned to a new product while already completed.
         if old_item and old_return_completed and new_return_completed and old_product_id != self.product_id:
-            _adjust_product_stock(old_product_id, old_quantity)
-            _adjust_product_stock(self.product_id, -self.quantity)
+            _adjust_product_stock(old_product_id, old_quantity, self.return_record.warehouse_id)
+            _adjust_product_stock(self.product_id, -self.quantity, self.return_record.warehouse_id)
             return
 
         if old_item and old_return_completed and new_return_completed and old_product_id != self.product_id:
-            _adjust_product_stock(old_product_id, old_quantity)  # പഴയ പ്രോഡക്റ്റിന്റെ തിരികെ സ്റ്റോക്കിലേക്ക് ആഡ് ചെയ്യുന്നു
-            _adjust_product_stock(self.product_id, -self.quantity) # പുതിയ പ്രോഡക്റ്റിന്റെ ലെസ്സ് ചെയ്യുന്നു
+            _adjust_product_stock(old_product_id, old_quantity, self.return_record.warehouse_id)
+            _adjust_product_stock(self.product_id, -self.quantity, self.return_record.warehouse_id)
             return
 
         # 2. Return Status 'Completed' ആണെങ്കിൽ സ്റ്റോക്ക് കുറയ്ക്കുന്നു (-)
@@ -276,6 +311,6 @@ class ReturnItem(models.Model):
                 delta = self.quantity - old_quantity
             else:
                 delta = self.quantity
-            _adjust_product_stock(self.product_id, -delta)
+            _adjust_product_stock(self.product_id, -delta, self.return_record.warehouse_id)
         elif old_item and old_return_completed and not new_return_completed:
-            _adjust_product_stock(old_product_id, old_quantity)
+            _adjust_product_stock(old_product_id, old_quantity, self.return_record.warehouse_id)

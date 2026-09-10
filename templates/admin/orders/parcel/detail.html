@@ -25,7 +25,7 @@
                         <div class="parcel-info-row"><span>ID</span><strong>{{ parcel.parcel_number|default:order.order_number }}</strong></div>
                         <div class="parcel-info-row"><span>Status</span><strong><span class="status-pill">{{ detail_status_label }}</span></strong></div>
                         <div class="parcel-info-row"><span>Warehouse</span><strong>{{ warehouse_label }}</strong></div>
-                        <div class="parcel-info-row"><span>Delivery Date</span><strong>{{ order.created_at|date:"d/m/Y" }}</strong></div>
+                        <div class="parcel-info-row"><span>Delivery Date</span><strong>{{ delivery_date|date:"d/m/Y"|default:"-" }}</strong></div>
                         <div class="parcel-info-row"><span>Order</span><strong>{{ order.order_number }}</strong></div>
                         <div class="parcel-info-row"><span>Order Code</span><strong>{{ order.order_number }}</strong></div>
                         <div class="parcel-info-row"><span>User</span><strong>{{ order.full_name }}{% if order.user %} | {{ order.user.email }}{% endif %}</strong></div>

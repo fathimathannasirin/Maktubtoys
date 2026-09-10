@@ -1,0 +1,10 @@
+{% load i18n %}
+{% load admin_sidebar_tags %}
+<button class="sticky toggle-nav-sidebar" id="toggle-nav-sidebar" aria-label="{% translate 'Toggle navigation' %}"></button>
+<nav class="sticky" id="nav-sidebar" aria-label="{% translate 'Sidebar' %}">
+  <input type="search" id="nav-filter"
+         placeholder="{% translate 'Start typing to filter...' %}"
+         aria-label="{% translate 'Filter navigation items' %}">
+  {% order_admin_apps available_apps as ordered_apps %}
+  {% include 'admin/app_list_sidebar.html' with app_list=ordered_apps show_changelinks=False %}
+</nav>

@@ -46,10 +46,19 @@ class SupplierAdmin(admin.ModelAdmin):
 
 @admin.register(Warehouse)
 class WarehouseAdmin(admin.ModelAdmin):
-    list_display = ('supplier', 'name', 'code', 'location', 'manager_name', 'manager_email', 'is_active')
+    list_display = ('supplier', 'name', 'code', 'location', 'delivery_days', 'manager_name', 'manager_email', 'is_active')
     search_fields = ('name', 'code', 'location', 'manager_name', 'manager_email', 'supplier__name')
     list_filter = ('is_active', 'supplier')
     autocomplete_fields = ('supplier',)
+    fieldsets = (
+        (None, {
+            'fields': ('supplier', 'name', 'code', 'location', 'manager_name', 'manager_email', 'is_active'),
+        }),
+        ('Shipping', {
+            'fields': ('delivery_days',),
+            'description': 'Set 0 for same-day delivery when ordered by 19:00. Orders after 19:00 move to the next day.',
+        }),
+    )
 
     def has_delete_permission(self, request, obj=None):
         if obj is not None and obj.code == 'OWN':
@@ -86,6 +95,7 @@ class PurchaseItemInline(admin.TabularInline):
 
     class Media:
         js = ('js/purchaseitem_code_sync.js',)
+        css = {'all': ('css/custom.css',)}
 
 
 @admin.register(Purchase)
@@ -229,6 +239,7 @@ class ReturnItemInline(admin.TabularInline):
 
     class Media:
         js = ('js/returnitem_code_sync.js',)
+        css = {'all': ('css/custom.css',)}
 
 
 @admin.register(Return)

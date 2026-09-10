@@ -1,0 +1,24 @@
+{% load admin_tools_menu_tags %}
+{% spaceless %}
+{% if not item.is_empty %}
+<li class="menu-item pinned-menu-item{% if index == 1 %} first{% endif %}{% if not item.enabled %} disabled{% endif %}{% if selected %} selected{% endif %}">
+    <a href="{% if item.url and item.enabled %}{{ item.url }}{% else %}#{% endif %}"{% if item.description %} title="{{ item.description }}"{% endif %}{% if item.children and item.enabled %} class="has-icon"{% endif %}>{{ item.title|capfirst }}</a>
+    {% if item.app_label and item.enabled %}
+    <button type="button" class="pinned-menu-trigger" aria-label="Options for {{ item.title }}" aria-expanded="false">...</button>
+    <div class="pinned-menu-dropdown" hidden>
+        <form method="post" action="{{ item.pin_url }}">
+            {% csrf_token %}
+            <button type="submit">{% if item.is_pinned %}Unpin from top{% else %}Pin to top{% endif %}</button>
+        </form>
+    </div>
+    {% endif %}
+    {% if item.children and item.enabled %}
+    <ul>
+        {% for child_item in item.children %}
+        {% admin_tools_render_menu_item child_item %}
+        {% endfor %}
+    </ul>
+    {% endif %}
+</li>
+{% endif %}
+{% endspaceless %}
