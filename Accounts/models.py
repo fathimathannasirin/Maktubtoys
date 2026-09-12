@@ -54,6 +54,7 @@ class Account(AbstractBaseUser):
     is_staff=models.BooleanField(default=False)
     is_active=models.BooleanField(default=False)
     is_superadmin=models.BooleanField(default=False)
+    is_superuser=models.BooleanField(default=False)
 
     USERNAME_FIELD='email'
     REQUIRED_FIELDS=['username','first_name','last_name']
@@ -64,7 +65,7 @@ class Account(AbstractBaseUser):
         return self.email
     
     def has_perm(self, perm, obj=None):
-        return self.is_admin
+        return self.is_active and (self.is_admin or self.is_superuser)
     
     def has_module_perms(self, add_label):
         return True
