@@ -114,6 +114,7 @@ class PurchaseAdmin(admin.ModelAdmin):
         urls = super().get_urls()
         purchase_urls = [
             path('<int:object_id>/purchase-order/print/', self.admin_site.admin_view(self.print_purchase_order), name='warehousing_purchase_print'),
+            path('<int:object_id>/purchase-order/pdf/', self.admin_site.admin_view(self.purchase_order_pdf), name='warehousing_purchase_pdf'),
         ]
         return purchase_urls + urls
 
@@ -258,6 +259,7 @@ class ReturnAdmin(admin.ModelAdmin):
         urls = super().get_urls()
         return_urls = [
             path('<int:object_id>/return-document/print/', self.admin_site.admin_view(self.print_return_document), name='warehousing_return_print'),
+            path('<int:object_id>/return-document/pdf/', self.admin_site.admin_view(self.return_document_pdf), name='warehousing_return_pdf'),
         ]
         return return_urls + urls
 
