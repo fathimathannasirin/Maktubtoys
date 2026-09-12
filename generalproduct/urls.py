@@ -14,6 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from django.http import HttpResponse
 from django.urls import path, include
 from . import views
 from django.conf import settings
@@ -24,9 +25,13 @@ admin.site.site_header = "MAKTUB Toys"  # Admin Header
 admin.site.site_title = "MAKTUB Toys Admin Portal"     # Browser Tab
 admin.site.index_title = "Welcome to MAKTUB Toys Admin Dashboard" # Admin Home
 
+def robots_txt(request):
+    content = "User-agent: *\nAllow: /"
+    return HttpResponse(content, content_type="text/plain")
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    
+    path('robots.txt', robots_txt),
 ]
 
 # 1. Non-translatable URLs (Keep these outside i18n_patterns)
