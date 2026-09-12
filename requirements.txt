@@ -56,7 +56,7 @@ psycopg2-binary==2.9.12
 pycparser==3.0
 PyJWT==2.11.0
 PyNaCl==1.6.2
-pypiwin32==223
+
 python-barcode==0.16.1
 python-dateutil==2.9.0.post0
 python-decouple==3.8
