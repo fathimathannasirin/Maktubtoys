@@ -53,6 +53,7 @@ urlpatterns = [
 # 1. Non-translatable URLs (Keep these outside i18n_patterns)
 urlpatterns = [
     path('robots.txt', robots_txt),
+    path('sitemap.xml', dummy_sitemap, name='sitemap'),
     path('admin_tools/', include('admin_tools.urls')),
     # path('admin/', include('admin_honeypot.urls', namespace='admin_honeypot')),  # Disabled
     path('i18n/', include('django.conf.urls.i18n')),  # Required for language switching
