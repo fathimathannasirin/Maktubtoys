@@ -171,6 +171,15 @@ class PurchaseItem(models.Model):
     class Meta:
         unique_together = ('purchase', 'product')
 
+    def clean(self):
+        from django.core.exceptions import ValidationError
+
+        super().clean()
+        if self.received_quantity > self.quantity:
+            raise ValidationError({
+                'received_quantity': 'Received quantity cannot be greater than the ordered quantity.',
+            })
+
     def __str__(self):
         return f"{self.purchase.purchase_number} - {self.product.product_name}"
 

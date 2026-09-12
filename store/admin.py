@@ -75,7 +75,7 @@ class ProductAdmin(ExportActionMixin, TranslationAdmin):
     list_display = ('product_code', 'sku', 'upc', 'product_name', 'price', 'cost_price', 'margin_amount', 'margin_percentage', 'stock', 'category', 'supplier', 'image_preview', 'is_available')
     list_filter = ('supplier', 'category', StockStatusFilter, 'is_available', 'modified_date')
     prepopulated_fields = {'slug': ('product_name',)}
-    readonly_fields = ('image_preview', 'barcode_preview', 'margin_amount', 'margin_percentage')
+    readonly_fields = ('image_preview', 'barcode_preview', 'margin_amount', 'margin_percentage', 'sku')
     actions = ('regenerate_barcodes',)
 
     fields = (

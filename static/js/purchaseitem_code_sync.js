@@ -143,13 +143,31 @@
         loadProducts('').catch(function (error) { console.error('Error loading products:', error); });
     }
 
+    function syncReceivedQuantityLimit(row) {
+        if (!row) return;
+        var quantityInput = row.querySelector('input[name$="-quantity"]');
+        var receivedInput = row.querySelector('input[name$="-received_quantity"]');
+        if (!quantityInput || !receivedInput) return;
+
+        receivedInput.max = quantityInput.value || '';
+        receivedInput.setCustomValidity(
+            quantityInput.value && Number(receivedInput.value) > Number(quantityInput.value)
+                ? 'Received quantity cannot be greater than the ordered quantity.'
+                : ''
+        );
+    }
+
     document.addEventListener('change', function (event) {
         var target = event.target;
+        var row = target && (target.closest('tr') || target.closest('.form-row'));
+        if (target && target.name && (target.name.endsWith('-quantity') || target.name.endsWith('-received_quantity'))) {
+            syncReceivedQuantityLimit(row);
+            return;
+        }
         if (target.name === 'supplier' || target.name === 'warehouse') {
             updateProductDropdowns();
             return;
         }
-        var row = target && (target.closest('tr') || target.closest('.form-row'));
         if (!row || !target.matches('select[name$="-product_code"], select[name$="-product"]')) return;
         var codeSelect = row.querySelector('select[name$="-product_code"]');
         var productSelect = row.querySelector('select[name$="-product"]');
@@ -159,12 +177,24 @@
         setCost(productId, row);
     });
 
+    document.addEventListener('input', function (event) {
+        var target = event.target;
+        if (!target || !target.name) return;
+        if (target.name.endsWith('-quantity') || target.name.endsWith('-received_quantity')) {
+            syncReceivedQuantityLimit(target.closest('tr') || target.closest('.form-row'));
+        }
+    });
+
     document.addEventListener('DOMContentLoaded', function () {
         addSearchToolbar();
         updateProductDropdowns();
+        document.querySelectorAll('.tabular tbody tr').forEach(syncReceivedQuantityLimit);
     });
 
     if (window.django && django.jQuery) {
-        django.jQuery(document).on('formset:added', function () { addSearchToolbar(); });
+        django.jQuery(document).on('formset:added', function (event, row) {
+            addSearchToolbar();
+            syncReceivedQuantityLimit(row);
+        });
     }
 })();

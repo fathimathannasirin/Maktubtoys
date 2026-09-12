@@ -8,6 +8,7 @@ from category.models import Category
 from django.urls import reverse
 from Accounts.models import Account
 from django.db.models import Avg,Count
+import re
 
 class Product(models.Model):
     product_name = models.CharField(max_length=200,unique=True)
@@ -85,6 +86,13 @@ class Product(models.Model):
                 new_code = 1
 
             self.product_code = f"GM/PD{new_code:04d}"
+
+        if not self.sku:
+            numeric_skus = []
+            for sku in Product.objects.exclude(sku__isnull=True).exclude(sku='').values_list('sku', flat=True):
+                if str(sku).isdigit():
+                    numeric_skus.append(int(sku))
+            self.sku = str(max(numeric_skus, default=0) + 1)
         
         # Auto-calculate margins
         self.calculate_margin()

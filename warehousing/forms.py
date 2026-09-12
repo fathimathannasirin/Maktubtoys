@@ -40,6 +40,18 @@ class PurchaseItemInlineForm(forms.ModelForm):
         product_code = cleaned_data.get('product_code')
         if not product and product_code:
             cleaned_data['product'] = product_code
+
+        quantity = cleaned_data.get('quantity')
+        received_quantity = cleaned_data.get('received_quantity')
+        if (
+            quantity is not None
+            and received_quantity is not None
+            and received_quantity > quantity
+        ):
+            self.add_error(
+                'received_quantity',
+                'Received quantity cannot be greater than the ordered quantity.',
+            )
         return cleaned_data
 
 
