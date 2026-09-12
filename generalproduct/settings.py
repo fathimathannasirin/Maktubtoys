@@ -29,7 +29,7 @@ def _split_csv(value):
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', default=False, cast=bool)
+DEBUG = config('DEBUG', default=True, cast=bool)
 RUNNING_TESTS = 'test' in sys.argv
 
 # SECURITY WARNING: keep the secret key used in production secret!
@@ -44,7 +44,7 @@ if not DEBUG and (
 ):
     raise ImproperlyConfigured('A strong production SECRET_KEY is required when DEBUG is False.')
 
-default_hosts = 'localhost,127.0.0.1,.loca.lt'
+default_hosts = 'localhost,127.0.0.1,.loca.lt,maktubtoys.com,www.maktubtoys.com,187.52.124.127'
 ALLOWED_HOSTS = _split_csv(config('ALLOWED_HOSTS', default=default_hosts if DEBUG else ''))
 if not DEBUG and not ALLOWED_HOSTS:
     raise ImproperlyConfigured('Set ALLOWED_HOSTS for production deployment.')
@@ -217,7 +217,7 @@ AUTHENTICATION_BACKENDS =(
 )
 
 #smtp configuraton 
-EMAIL_HOST = config('EMAIL_HOST')
+EMAIL_HOST = config('EMAIL_HOST',)
 EMAIL_PORT = config('EMAIL_PORT', cast=int)
 EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool)
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
@@ -227,21 +227,12 @@ EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:8000',
     'http://127.0.0.1:8000',
-    'http://0.0.0.0:8000',
-    'https://localhost:8000',
-    'https://127.0.0.1:8000',
-    'https://0.0.0.0:8000',
-    'http://*.loca.lt',
-    'https://*.loca.lt',
-    'http://*.ngrok-free.app',
-    'https://*.ngrok-free.app',
-    'http://*.trycloudflare.com',
-    'https://*.trycloudflare.com',
-
     'http://187.52.124.127',
     'https://187.52.124.127',
-    'http://187.52.124.127:8000',  
-    'https://187.52.124.127:8000',
+    'http://maktubtoys.com',
+    'https://maktubtoys.com',
+    'http://www.maktubtoys.com',
+    'https://www.maktubtoys.com',
 ]
 
 SECURE_SSL_REDIRECT = config('SECURE_SSL_REDIRECT', default=(not DEBUG and not RUNNING_TESTS), cast=bool)
