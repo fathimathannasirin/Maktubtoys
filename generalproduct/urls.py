@@ -25,6 +25,22 @@ admin.site.site_header = "MAKTUB Toys"  # Admin Header
 admin.site.site_title = "MAKTUB Toys Admin Portal"     # Browser Tab
 admin.site.index_title = "Welcome to MAKTUB Toys Admin Dashboard" # Admin Home
 
+
+def dummy_sitemap(request):
+    xml_content = """<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+   <url>
+      <loc>https://maktubtoys.com/</loc>
+      <priority>1.0</priority>
+   </url>
+</urlset>"""
+    return HttpResponse(xml_content, content_type="application/xml")
+
+urlpatterns = [
+    # നിങ്ങളുടെ മറ്റ് URLs...
+    path('sitemap.xml', dummy_sitemap, name='sitemap'),
+]
+
 def robots_txt(request):
     content = "User-agent: *\nAllow: /"
     return HttpResponse(content, content_type="text/plain")
