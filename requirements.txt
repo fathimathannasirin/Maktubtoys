@@ -56,15 +56,17 @@ psycopg2-binary==2.9.12
 pycparser==3.0
 PyJWT==2.11.0
 PyNaCl==1.6.2
+pypiwin32==223
+python-barcode==0.16.1
 python-dateutil==2.9.0.post0
 python-decouple==3.8
 python-ipware==3.0.0
 python-memcached==1.62
 python-nvd3==0.16.0
-python-barcode[images]==0.16.1
 python-slugify==8.0.4
 python3-openid==3.2.0
 pythonnet==3.0.5
+pywin32==311
 PyYAML==6.0.3
 reportlab==5.0.1
 requests==2.32.5
@@ -81,4 +83,5 @@ typing_extensions==4.15.0
 tzdata==2025.3
 urllib3==1.26.20
 wcwidth==0.2.14
+whitenoise==6.12.0
 wrapt==2.1.0
