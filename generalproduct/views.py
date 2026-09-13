@@ -14,7 +14,7 @@ def home(request):
     parent_categories = [category for category in categories if category.parent_id is None]
 
     section_offer_banners = list(
-        SectionOfferBanner.objects.filter(is_active=True).select_related('category').order_by('order', 'created_at')
+        SectionOfferBanner.objects.filter(is_active=True).exclude(image='').select_related('category').order_by('order', 'created_at')
     )
     specific_banner_map = {
         banner.category_id: banner
