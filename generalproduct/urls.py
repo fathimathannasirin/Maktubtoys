@@ -26,34 +26,82 @@ admin.site.site_title = "MAKTUB Toys Admin Portal"     # Browser Tab
 admin.site.index_title = "Welcome to MAKTUB Toys Admin Dashboard" # Admin Home
 
 
-def dummy_sitemap(request):
-    xml_content = """<?xml version="1.0" encoding="UTF-8"?>
+def sitemap_xml(request):
+    try:
+        from category.models import Category
+        from store.models import Product
+
+        domain = "https://maktubtoys.com"
+        urls = [
+            {"loc": f"{domain}/", "priority": "1.0", "changefreq": "daily"},
+            {"loc": f"{domain}/store/", "priority": "0.9", "changefreq": "daily"},
+            {"loc": f"{domain}/accounts/contact-us/", "priority": "0.7", "changefreq": "monthly"},
+            {"loc": f"{domain}/accounts/return-refund-policy/", "priority": "0.5", "changefreq": "monthly"},
+            {"loc": f"{domain}/accounts/shipping-policy/", "priority": "0.5", "changefreq": "monthly"},
+            {"loc": f"{domain}/accounts/terms_of_service/", "priority": "0.5", "changefreq": "monthly"},
+        ]
+
+        # Categories
+        for cat in Category.objects.all():
+            urls.append({
+                "loc": f"{domain}{cat.get_url()}",
+                "priority": "0.8",
+                "changefreq": "weekly"
+            })
+
+        # Available Products
+        for prod in Product.objects.filter(is_available=True):
+            urls.append({
+                "loc": f"{domain}{prod.get_url()}",
+                "priority": "0.8",
+                "changefreq": "weekly"
+            })
+
+        xml_lines = [
+            '<?xml version="1.0" encoding="UTF-8"?>',
+            '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
+        ]
+        for item in urls:
+            xml_lines.append('   <url>')
+            xml_lines.append(f'      <loc>{item["loc"]}</loc>')
+            xml_lines.append(f'      <priority>{item["priority"]}</priority>')
+            xml_lines.append(f'      <changefreq>{item["changefreq"]}</changefreq>')
+            xml_lines.append('   </url>')
+        xml_lines.append('</urlset>')
+        xml_content = "\n".join(xml_lines)
+    except Exception:
+        xml_content = """<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
    <url>
       <loc>https://maktubtoys.com/</loc>
       <priority>1.0</priority>
+      <changefreq>daily</changefreq>
+   </url>
+   <url>
+      <loc>https://maktubtoys.com/store/</loc>
+      <priority>0.9</priority>
+      <changefreq>daily</changefreq>
    </url>
 </urlset>"""
     return HttpResponse(xml_content, content_type="application/xml")
 
-urlpatterns = [
-    # നിങ്ങളുടെ മറ്റ് URLs...
-    path('sitemap.xml', dummy_sitemap, name='sitemap'),
-]
 
 def robots_txt(request):
-    content = "User-agent: *\nAllow: /"
+    content = (
+        "User-agent: *\n"
+        "Allow: /\n"
+        "Disallow: /securelogin/\n"
+        "Disallow: /cart/\n"
+        "Disallow: /orders/\n\n"
+        "Sitemap: https://maktubtoys.com/sitemap.xml\n"
+    )
     return HttpResponse(content, content_type="text/plain")
 
-urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('robots.txt', robots_txt),
-]
 
 # 1. Non-translatable URLs (Keep these outside i18n_patterns)
 urlpatterns = [
     path('robots.txt', robots_txt),
-    path('sitemap.xml', dummy_sitemap, name='sitemap'),
+    path('sitemap.xml', sitemap_xml, name='sitemap'),
     path('admin_tools/', include('admin_tools.urls')),
     # path('admin/', include('admin_honeypot.urls', namespace='admin_honeypot')),  # Disabled
     path('i18n/', include('django.conf.urls.i18n')),  # Required for language switching
