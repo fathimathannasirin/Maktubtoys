@@ -193,43 +193,30 @@
   </div>
 </div>
 
-<script>
-function showStockModal(message) {
-    if ($('#stockAlertModal').length) {
-        $('#stockAlertMessage').text(message);
-        $('#stockAlertModal').modal('show');
-    } else {
-        alert(message);
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://maktubtoys.com/#website",
+      "url": "https://maktubtoys.com/",
+      "name": "MAKTUB Toys",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://maktubtoys.com/store/search/?keyword={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://maktubtoys.com/#organization",
+      "name": "MAKTUB Toys",
+      "url": "https://maktubtoys.com/",
+      "logo": "https://maktubtoys.com/static/images/maktub.jpeg"
     }
+  ]
 }
-
-$(document).ready(function() {
-    $(document).on('click', '.btn-plus-cart', function(e) {
-        var stock = parseInt($(this).data('stock'));
-        var qty = parseInt($(this).data('qty'));
-        
-        if (!isNaN(stock) && !isNaN(qty)) {
-            if (stock <= 0) {
-                e.preventDefault();
-                showStockModal("{% trans 'Sorry, this product is out of stock!' %}");
-                return false;
-            } else if (qty >= stock) {
-                e.preventDefault();
-                showStockModal("{% trans 'Cannot add more! Only' %} " + stock + " {% trans 'item(s) available in stock.' %}");
-                return false;
-            }
-        }
-    });
-
-    $(document).on('click', '.btn-add-cart-link', function(e) {
-        var stock = parseInt($(this).data('stock'));
-        if (!isNaN(stock) && stock <= 0) {
-            e.preventDefault();
-            showStockModal("{% trans 'Sorry, this product is out of stock!' %}");
-            return false;
-        }
-    });
-});
 </script>
 
 </body>
