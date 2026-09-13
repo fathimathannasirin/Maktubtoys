@@ -1,5 +1,8 @@
 {% extends "base.html" %}
-{% load static %}
+{% load i18n %}{% load static %}
+
+{% block title %}{% trans "Contact Us" %} | {% trans "MAKTUB Toys" %}{% endblock %}
+{% block og_title %}{% trans "Contact Us" %} | {% trans "MAKTUB Toys" %}{% endblock %}
 
 {% block content %}
 <section class="section-content padding-y bg-light">

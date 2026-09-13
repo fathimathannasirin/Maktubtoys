@@ -1,6 +1,38 @@
 {% extends "base.html" %}
 {% load i18n %}{% load l10n %}{% load static %}
 
+{% block title %}{{ single_product.product_name }} | {% trans "MAKTUB Toys" %}{% endblock %}
+{% block og_title %}{{ single_product.product_name }} | {% trans "MAKTUB Toys" %}{% endblock %}
+{% block meta_description %}{{ single_product.description|default:single_product.product_name|truncatechars:155 }}{% endblock %}
+{% block og_description %}{{ single_product.description|default:single_product.product_name|truncatechars:155 }}{% endblock %}
+{% block og_type %}product{% endblock %}
+{% block og_image %}{{ request.scheme }}://{{ request.get_host }}{{ single_product.images.url }}{% endblock %}
+{% block seo_h1 %}{{ single_product.product_name }}{% endblock %}
+
+{% block extra_structured_data %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": "{{ single_product.product_name|escapejs }}",
+  "image": "{{ request.scheme }}://{{ request.get_host }}{{ single_product.images.url }}",
+  "description": "{{ single_product.description|default:single_product.product_name|truncatechars:300|escapejs }}",
+  "sku": "{{ single_product.product_code|default:single_product.id|escapejs }}",
+  "brand": {
+    "@type": "Brand",
+    "name": "MAKTUB Toys"
+  },
+  "offers": {
+    "@type": "Offer",
+    "url": "{{ request.scheme }}://{{ request.get_host }}{{ request.path }}",
+    "priceCurrency": "QAR",
+    "price": "{{ single_product.price }}",
+    "availability": "{% if single_product.stock > 0 %}https://schema.org/InStock{% else %}https://schema.org/OutOfStock{% endif %}"
+  }
+}
+</script>
+{% endblock %}
+
 {% block content %}
 
 <style>
