@@ -241,7 +241,7 @@
             <div class="row align-items-center">
                 <div class="col-lg-2 col-md-3 col-5">
                     <a href="{% url 'home' %}" class="brand-wrap">
-                        <img class="logo" src="{% static 'images/maktub_navbar_692x250_larger_transparent.png' %}" style="max-height: 70px; width: auto;">
+                        <img class="logo" src="{% static 'images/maktub_navbar_692x250_larger_transparent.png' %}" alt="MAKTUB Toys Logo" style="max-height: 70px; width: auto;">
                     </a>
                 </div>
 
@@ -257,7 +257,7 @@
                                         {% if not category.parent %}
                                         <div class="col-md-4 mb-2">
                                             <a href="{{ category.get_url }}" class="category-nav-item">
-                                                {% if category.image %}<img src="{{ category.image.url }}" class="nav-cat-img">{% endif %}
+                                                {% if category.image %}<img src="{{ category.image.url }}" class="nav-cat-img" alt="{{ category.category_name }}">{% endif %}
                                                 <span class="cat-text">{{ category.category_name }}</span>
                                             </a>
                                         </div>
@@ -315,7 +315,7 @@
                                 {% if not category.parent %}
                                     <a href="{{ category.get_url }}" class="dropdown-item py-2 d-flex align-items-center">
                                         {% if category.image %}
-                                            <img src="{{ category.image.url }}" style="width: 25px; height: 25px; object-fit: cover; margin-{% if LANGUAGE_CODE == 'ar' %}left{% else %}right{% endif %}: 10px; border-radius: 4px;">
+                                            <img src="{{ category.image.url }}" style="width: 25px; height: 25px; object-fit: cover; margin-{% if LANGUAGE_CODE == 'ar' %}left{% else %}right{% endif %}: 10px; border-radius: 4px;" alt="{{ category.category_name }}">
                                         {% endif %}
                                         <span>{{ category.category_name }}</span>
                                     </a>
