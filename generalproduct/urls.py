@@ -119,9 +119,9 @@ urlpatterns += i18n_patterns(
     path('social-auth/', include('social_django.urls', namespace='social')),
     path('orders/', include('orders.urls')),
     
-    # Set prefix_default_language=False if you want the default language (e.g., English) 
-    # to NOT have a prefix (e.g., just /store/ instead of /en/store/)
-    prefix_default_language=True 
+    # Set prefix_default_language=False so the default language (English) 
+    # does NOT redirect (e.g. https://maktubtoys.com/ instead of /en/), allowing search engines to index directly.
+    prefix_default_language=False 
 )
 
 # 3. Static and Media files
