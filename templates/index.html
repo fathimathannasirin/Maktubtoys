@@ -301,8 +301,8 @@
                 <a href="{{ category.get_url }}" style="text-decoration: none; width: 100%;">
                     <div class="category-card-go">
                         <div class="cat-circle-container">
-                            {% if category.cat_image %}
-                                <img src="{{ category.cat_image.url }}" alt="{{ category.category_name }} - MAKTUB Toys">
+                            {% if category.image %}
+                                <img src="{{ category.image.url }}" alt="{{ category.category_name }} - MAKTUB Toys">
                             {% else %}
                                 <img src="{% static 'images/maktub.jpeg' %}" alt="{{ category.category_name }} - MAKTUB Toys">
                             {% endif %}
