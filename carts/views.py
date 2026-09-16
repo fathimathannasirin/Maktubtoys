@@ -189,6 +189,8 @@ def remove_cart_item(request,product_id, cart_item_id):
     return redirect('cart')
 
 def cart(request, total=0, quantity=0, cart_items=None):
+    delivery_charge = Decimal('0')
+    grand_total = Decimal('0')
     try:
         if request.user.is_authenticated:
             cart_items=CartItem.objects.filter(user=request.user, is_active=True)
@@ -202,20 +204,25 @@ def cart(request, total=0, quantity=0, cart_items=None):
         if cart_items.exists():
             delivery_charge = Decimal('20.0')  # Flat Delivery Charge of 20 QAR
             grand_total = total + delivery_charge
+        else:
+            grand_total = total
     except ObjectDoesNotExist:
-        pass 
+        cart_items = CartItem.objects.none()
+        grand_total = total
 
     context= {
         'total' : total,
         'quantity': quantity,
         'cart_items':cart_items,
-        'delivery_charge': delivery_charge if cart_items.exists() else 0,
-        'grand_total': grand_total if cart_items.exists() else total,
+        'delivery_charge': delivery_charge,
+        'grand_total': grand_total,
     }
     return render(request, 'store/cart.html',context)
 
 @login_required(login_url='login')
 def checkout(request, total=0,quantity=0,cart_items=None):
+    delivery_charge = Decimal('0')
+    grand_total = Decimal('0')
     try:
         if request.user.is_authenticated:
             cart_items=CartItem.objects.filter(user=request.user, is_active=True)
@@ -229,15 +236,18 @@ def checkout(request, total=0,quantity=0,cart_items=None):
         if cart_items.exists():
             delivery_charge = Decimal('20.0')  # Flat Delivery Charge of 20 QAR
             grand_total = total + delivery_charge
+        else:
+            grand_total = total
 
     except ObjectDoesNotExist:
-        pass 
+        cart_items = CartItem.objects.none()
+        grand_total = total
 
     context= {
         'total' : total,
         'quantity': quantity,
         'cart_items':cart_items,
-        'delivery_charge': delivery_charge if cart_items.exists() else 0,
-        'grand_total': grand_total if cart_items.exists() else total,
+        'delivery_charge': delivery_charge,
+        'grand_total': grand_total,
     }
     return render(request,'store/checkout.html',context)

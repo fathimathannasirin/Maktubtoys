@@ -104,7 +104,7 @@ urlpatterns = [
     path('sitemap.xml', sitemap_xml, name='sitemap'),
     path('admin_tools/', include('admin_tools.urls')),
     # path('admin/', include('admin_honeypot.urls', namespace='admin_honeypot')),  # Disabled
-    path('i18n/', include('django.conf.urls.i18n')),  # Required for language switching
+    path('i18n/setlang/', views.set_language, name='set_language'),
 ]
 
 

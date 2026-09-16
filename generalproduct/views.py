@@ -1,11 +1,77 @@
+from urllib.parse import urlsplit, urlunsplit
+
+from django.conf import settings
 from django.contrib.admin.views.decorators import staff_member_required
 from django.db.models import Sum
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.template.response import TemplateResponse
+from django.urls import translate_url
+from django.utils.http import url_has_allowed_host_and_scheme
+from django.utils.translation import check_for_language, get_language_from_path
 from Accounts.models import Account
 from home.models import SectionOfferBanner
 from orders.models import Order
 from store.models import Category, Product, ReviewRating
+
+
+LANGUAGE_QUERY_PARAMETER = 'language'
+
+
+def _strip_language_prefix(url):
+    """Remove /<lang> from a URL so it can be resolved in the default language."""
+    parsed = urlsplit(url)
+    path = parsed.path or '/'
+    lang = get_language_from_path(path)
+    if lang:
+        path = path[len(f'/{lang}'):] or '/'
+        if not path.startswith('/'):
+            path = '/' + path
+    return urlunsplit((parsed.scheme, parsed.netloc, path, parsed.query, parsed.fragment))
+
+
+def set_language(request):
+    """
+    Switch language and redirect.
+
+    Django's built-in view cannot translate /ar/... back to unprefixed English
+    URLs when prefix_default_language=False, so the user stays on Arabic.
+    """
+    next_url = request.POST.get('next', request.GET.get('next'))
+    if (
+        next_url or request.accepts('text/html')
+    ) and not url_has_allowed_host_and_scheme(
+        url=next_url,
+        allowed_hosts={request.get_host()},
+        require_https=request.is_secure(),
+    ):
+        next_url = request.META.get('HTTP_REFERER')
+        if not url_has_allowed_host_and_scheme(
+            url=next_url,
+            allowed_hosts={request.get_host()},
+            require_https=request.is_secure(),
+        ):
+            next_url = '/'
+
+    response = HttpResponseRedirect(next_url) if next_url else HttpResponse(status=204)
+    if request.method == 'POST':
+        lang_code = request.POST.get(LANGUAGE_QUERY_PARAMETER)
+        if lang_code and check_for_language(lang_code):
+            if next_url:
+                next_url = _strip_language_prefix(next_url)
+                next_url = translate_url(next_url, lang_code)
+                response = HttpResponseRedirect(next_url)
+            response.set_cookie(
+                settings.LANGUAGE_COOKIE_NAME,
+                lang_code,
+                max_age=settings.LANGUAGE_COOKIE_AGE,
+                path=settings.LANGUAGE_COOKIE_PATH,
+                domain=settings.LANGUAGE_COOKIE_DOMAIN,
+                secure=settings.LANGUAGE_COOKIE_SECURE,
+                httponly=settings.LANGUAGE_COOKIE_HTTPONLY,
+                samesite=settings.LANGUAGE_COOKIE_SAMESITE,
+            )
+    return response
 
 
 def home(request):
