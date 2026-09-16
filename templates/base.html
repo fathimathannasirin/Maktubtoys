@@ -6,16 +6,21 @@
     <meta name="msvalidate.01" content="972B805AFA0D4DB28AF3F6548C428BA0" />
     <meta name="google-site-verification" content="-eBLWd8nwFfeSyHt1MiOZ8Mk2y2xnd2JeQs1-R8z8Vo" />
     <meta charset="utf-8">
-    <meta name="robots" content="index, follow" />
-    <meta http-equiv="pragma" content="no-cache" />
-    <meta http-equiv="cache-control" content="max-age=604800" />
+    <meta name="robots" content="{% block meta_robots %}index, follow{% endblock %}" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="{% trans 'Shop kids toys online at MAKTUB Toys. Discover high-quality, fun, and educational toys, games, and gifts for children of all ages.' %}">
-    <meta name="keywords" content="{% trans 'MAKTUB Toys, kids toys, online toy shopping, educational toys, baby toys, children games' %}">
+    <meta name="description" content="{% block meta_description %}{% trans 'Bringing quality, innovation, and joy to homes across Qatar. Shop premium toys, lifestyle tech, and family essentials at MAKTUB Toys.' %}{% endblock %}">
+    <link rel="canonical" href="{% block canonical_url %}{{ request.scheme }}://{{ request.get_host }}{{ request.path }}{% endblock %}">
 
-    
+    <title>{% block title %}{% trans "MAKTUB Toys | Premium Toys & Essentials in Qatar" %}{% endblock %}</title>
 
-    <title>{% trans "Shop Kids Toys Online | MAKTUB Toys - Best Toys for Kids" %}</title>
+    <meta property="og:site_name" content="MAKTUB Toys">
+    <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+    <meta property="og:url" content="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}">
+    <meta property="og:title" content="{% block og_title %}{% trans "MAKTUB Toys | Premium Toys & Essentials in Qatar" %}{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}{% trans 'Bringing quality, innovation, and joy to homes across Qatar. Shop premium toys, lifestyle tech, and family essentials at MAKTUB Toys.' %}{% endblock %}">
+    <meta property="og:image" content="{% block og_image %}{{ request.scheme }}://{{ request.get_host }}{% static 'images/maktub.jpeg' %}{% endblock %}">
+    <meta property="og:locale" content="{% if LANGUAGE_CODE == 'ar' %}ar_QA{% else %}en_QA{% endif %}">
+    <meta name="twitter:card" content="summary_large_image">
 
     <link rel="icon" type="image/png" href="{% static 'images/maktub.png' %}">
     <link rel="shortcut icon" type="image/png" href="{% static 'images/maktub.png' %}">
@@ -123,7 +128,7 @@
     {% endif %}
 </head>
 <body>
-<h1 class="sr-only">{% trans "MAKTUB Toys - Shop Kids Toys Online" %}</h1>
+<h1 class="sr-only">{% block seo_h1 %}{% trans "MAKTUB Toys - Shop Kids Toys Online" %}{% endblock %}</h1>
 {% include 'includes/navbar.html' %}
 
 {% if announcements %}
@@ -196,6 +201,7 @@
   ]
 }
 </script>
+{% block extra_structured_data %}{% endblock %}
 
 </body>
 </html>
