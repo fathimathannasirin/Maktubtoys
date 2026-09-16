@@ -321,9 +321,6 @@
                             <div class="d-flex align-items-center justify-content-between">
                                           <a href="{% url 'store' %}?category={{ category.slug }}{% if request.GET.age %}&age={{ request.GET.age }}{% endif %}{% if request.GET.age_mode %}&age_mode={{ request.GET.age_mode }}{% endif %}{% if request.GET.age_value %}&age_value={{ request.GET.age_value }}{% endif %}{% if request.GET.min_age %}&min_age={{ request.GET.min_age }}{% endif %}{% if request.GET.max_age %}&max_age={{ request.GET.max_age }}{% endif %}{% if request.GET.inner_keyword %}&inner_keyword={{ request.GET.inner_keyword|urlencode }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}" 
                                    class="sidebar-parent-text {% if request.GET.category == category.slug %}active-filter{% endif %}">
-                                    {% if category.image %}
-                                        <img src="{{ category.image.url }}" class="side-child-img" alt="{{ category.category_name }}">
-                                    {% endif %}
                                     {% if request.LANGUAGE_CODE == 'ar' %}{{ category.category_name_ar }}{% else %}{{ category.category_name }}{% endif %}
                                 </a>
 
