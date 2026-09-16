@@ -1,6 +1,12 @@
 {% extends "base.html" %}
 {% load i18n %}{% load l10n %}{% load static %}
 
+{% block title %}{% if selected_category %}{{ selected_category.category_name }} | {% trans "MAKTUB Toys" %}{% elif request.GET.keyword %}{% blocktrans with keyword=request.GET.keyword %}Search results for "{{ keyword }}" | MAKTUB Toys{% endblocktrans %}{% else %}{% trans "Shop All Products" %} | {% trans "MAKTUB Toys" %}{% endif %}{% endblock %}
+{% block og_title %}{% if selected_category %}{{ selected_category.category_name }} | {% trans "MAKTUB Toys" %}{% elif request.GET.keyword %}{% blocktrans with keyword=request.GET.keyword %}Search results for "{{ keyword }}" | MAKTUB Toys{% endblocktrans %}{% else %}{% trans "Shop All Products" %} | {% trans "MAKTUB Toys" %}{% endif %}{% endblock %}
+{% block meta_description %}{% if selected_category %}{% blocktrans with category=selected_category.category_name %}Shop {{ category }} at MAKTUB Toys. Premium toys and family essentials delivered across Qatar.{% endblocktrans %}{% else %}{% trans "Browse premium toys, lifestyle tech, and family essentials at MAKTUB Toys. Fast delivery across Qatar." %}{% endif %}{% endblock %}
+{% block og_description %}{% if selected_category %}{% blocktrans with category=selected_category.category_name %}Shop {{ category }} at MAKTUB Toys. Premium toys and family essentials delivered across Qatar.{% endblocktrans %}{% else %}{% trans "Browse premium toys, lifestyle tech, and family essentials at MAKTUB Toys. Fast delivery across Qatar." %}{% endif %}{% endblock %}
+{% block meta_robots %}{% if request.GET.keyword %}noindex, follow{% else %}index, follow{% endif %}{% endblock %}
+
 {% block content %}
 {% get_current_language as LANGUAGE_CODE %}
 

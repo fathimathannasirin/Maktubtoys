@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% load i18n %}
 
+{% block meta_robots %}noindex, nofollow{% endblock %}
+
 {% block content %}
 <section class="section-content padding-y bg-light" {% if request.LANGUAGE_CODE == 'ar' %}dir="rtl" style="text-align: right;"{% endif %}>
     <div class="container" style="max-width: 900px;">

@@ -71,3 +71,6 @@ celerybeat.pid
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
+
+# graft's local graph cache — regenerable, not committed (run `graft build`).
+/graft/

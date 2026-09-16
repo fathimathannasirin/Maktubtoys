@@ -1,6 +1,9 @@
 {% extends "base.html" %}
 {% load i18n %}{% load l10n %}{% load static %}
 
+{% block title %}{% trans "MAKTUB Toys | Premium Toys & Essentials in Qatar" %}{% endblock %}
+{% block og_title %}{% trans "MAKTUB Toys | Premium Toys & Essentials in Qatar" %}{% endblock %}
+
 {% block content %}
 {% get_current_language as LANGUAGE_CODE %}
 
@@ -296,7 +299,9 @@
         {% for banner in banners %}
             <div class="carousel-item{% if forloop.first %} active{% endif %}" data-index="{{ forloop.counter0 }}">
                 {% if banner.link %}<a href="{{ banner.link }}">{% endif %}
+                {% if banner.image %}
                 <img src="{{ banner.image.url }}" alt="{{ banner.title|default:'Banner' }}" class="d-block w-100 carousel-image">
+                {% endif %}
                 {% if banner.link %}</a>{% endif %}
             </div>
         {% endfor %}
@@ -367,7 +372,7 @@
         <div class="item-5-fixed">
             <div class="go-mini-card">
                 <div class="img-wrap-go">
-                    <a href="{{ product.get_url }}"><img src="{{ product.images.url }}" alt="{{ product.product_name }}"></a>
+                    <a href="{{ product.get_url }}">{% if product.images %}<img src="{{ product.images.url }}" alt="{{ product.product_name }}">{% else %}<img src="{% static 'images/maktub.jpeg' %}" alt="{{ product.product_name }}">{% endif %}</a>
                 </div>
                 <div class="product-info-container">
                     <h6 class="product-name-go">{{ product.product_name }}</h6>
@@ -385,7 +390,12 @@
             <div class="dynamic-selection-section">
                 <div class="section-header-go">
                     <h4>{% trans "Selection of" %} {{ parent_cat.category_name }}</h4>
+<<<<<<< HEAD
                     <a href="{{ parent_cat.get_url }}" class="view-all-link">{% trans "View All" %}</a>
+=======
+                    <a href="{{ parent_cat.get_url }}" class="view-all-link">{% trans "View All" %}</a> 
+                    {% if parent_cat.image %}<img src="{{ parent_cat.image.url }}" alt="{{ parent_cat.category_name }}">{% endif %}
+>>>>>>> 15f49410336fab7168b8d6bfb1318c5b9b48f0f1
                 </div>
                 <div class="slider-container-go">
                     {% for product in products %}
@@ -393,7 +403,7 @@
                             <div class="item-5-fixed">
                                 <div class="go-mini-card">
                                     <div class="img-wrap-go">
-                                        <a href="{{ product.get_url }}"><img src="{{ product.images.url }}" alt="{{ product.product_name }}"></a>
+                                        <a href="{{ product.get_url }}">{% if product.images %}<img src="{{ product.images.url }}" alt="{{ product.product_name }}">{% else %}<img src="{% static 'images/maktub.jpeg' %}" alt="{{ product.product_name }}">{% endif %}</a>
                                     </div>
                                     <div class="product-info-container">
                                         <h6 class="product-name-go">{{ product.product_name }}</h6>
@@ -409,7 +419,7 @@
                 {% if parent_cat.section_offer_banner %}
                 <div class="between-section-offer">
                     {% if parent_cat.section_offer_banner.link %}<a href="{{ parent_cat.section_offer_banner.link }}">{% endif %}
-                    <img src="{{ parent_cat.section_offer_banner.image.url }}" alt="Offer Banner">
+                    {% if parent_cat.section_offer_banner.image %}<img src="{{ parent_cat.section_offer_banner.image.url }}" alt="Offer Banner">{% endif %}
                     {% if parent_cat.section_offer_banner.link %}</a>{% endif %}
                 </div>
                 {% endif %}
@@ -421,7 +431,7 @@
     <div class="bottom-promo-cards">
         {% for banner in promo_banners %}
             <a href="{{ banner.link_url|default:'#' }}" class="promo-card-item">
-                <img src="{{ banner.image.url }}" alt="{{ banner.title|default:'MAKTUB Toys Special Offer' }}"
+                {% if banner.image %}<img src="{{ banner.image.url }}" alt="{{ banner.title|default:'MAKTUB Toys Special Offer' }}">{% endif %}
             </a>
         {% endfor %}
     </div>
@@ -441,7 +451,7 @@
                     <div class="go-mini-card">
                         <div class="img-wrap-go">
                             <a href="{{ product.get_url }}">
-                                <img src="{{ product.images.url }}" alt="{{ product.product_name }}">
+                                {% if product.images %}<img src="{{ product.images.url }}" alt="{{ product.product_name }}">{% else %}<img src="{% static 'images/maktub.jpeg' %}" alt="{{ product.product_name }}">{% endif %}
                             </a>
                         </div>
                         <div class="product-info-container">
@@ -469,7 +479,7 @@
                             <div class="item-5-fixed">
                                 <div class="go-mini-card">
                                     <div class="img-wrap-go">
-                                        <a href="{{ product.get_url }}"><img src="{{ product.images.url }}" alt="{{ product.product_name }}"></a>
+                                        <a href="{{ product.get_url }}">{% if product.images %}<img src="{{ product.images.url }}" alt="{{ product.product_name }}">{% else %}<img src="{% static 'images/maktub.jpeg' %}" alt="{{ product.product_name }}">{% endif %}</a>
                                     </div>
                                     <div class="product-info-container">
                                         <h6 class="product-name-go">{{ product.product_name }}</h6>
@@ -499,7 +509,7 @@
                             <div class="item-5-fixed">
                                 <div class="go-mini-card">
                                     <div class="img-wrap-go">
-                                        <a href="{{ product.get_url }}"><img src="{{ product.images.url }}" alt="{{ product.product_name }}"></a>
+                                        <a href="{{ product.get_url }}">{% if product.images %}<img src="{{ product.images.url }}" alt="{{ product.product_name }}">{% else %}<img src="{% static 'images/maktub.jpeg' %}" alt="{{ product.product_name }}">{% endif %}</a>
                                     </div>
                                     <div class="product-info-container">
                                         <h6 class="product-name-go">{{ product.product_name }}</h6>
