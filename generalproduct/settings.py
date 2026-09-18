@@ -254,12 +254,11 @@ LOGIN_REDIRECT_URL = 'dashboard' # or 'home'
 
 SESSION_EXPIRE_SECONDS = 3600 #1 hour
 SESSION_EXPIRE_AFTER_LAST_ACTIVITY = True
-SESSION_TIMEOUT_REDIRECT = 'en/accounts/login'
+SESSION_TIMEOUT_REDIRECT = 'login'
 
 
-# This ensures that if a user goes to /store/, 
-# Django redirects them to /en/store/ instead of a 404
-PREFIX_DEFAULT_LANGUAGE = True
+# English uses no URL prefix (/store/, not /en/store/). Arabic still uses /ar/.
+PREFIX_DEFAULT_LANGUAGE = False
 
 X_FRAME_OPTIONS = config('X_FRAME_OPTIONS', default='SAMEORIGIN' if DEBUG else 'DENY')
 SILENCED_SYSTEM_CHECKS = ['admin_tools.W001']

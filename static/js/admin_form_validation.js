@@ -20,7 +20,7 @@
             const pathArray = window.location.pathname.split('/');
             const productId = !isNaN(pathArray[pathArray.length - 3]) ? pathArray[pathArray.length - 3] : '';
 
-            // IMPROVEMENT 1: Use a relative URL so it works regardless of /en/ or /ar/
+            // IMPROVEMENT 1: Use a relative URL so it works with /ar/ and unprefixed English paths
             // This ensures your fetch doesn't fail if the language changes
             const url = `/store/check-unique/?field=${fieldName}&value=${encodeURIComponent(value)}&product_id=${productId}`;
 

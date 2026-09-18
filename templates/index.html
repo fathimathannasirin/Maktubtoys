@@ -390,12 +390,7 @@
             <div class="dynamic-selection-section">
                 <div class="section-header-go">
                     <h4>{% trans "Selection of" %} {{ parent_cat.category_name }}</h4>
-<<<<<<< HEAD
                     <a href="{{ parent_cat.get_url }}" class="view-all-link">{% trans "View All" %}</a>
-=======
-                    <a href="{{ parent_cat.get_url }}" class="view-all-link">{% trans "View All" %}</a> 
-                    {% if parent_cat.image %}<img src="{{ parent_cat.image.url }}" alt="{{ parent_cat.category_name }}">{% endif %}
->>>>>>> 15f49410336fab7168b8d6bfb1318c5b9b48f0f1
                 </div>
                 <div class="slider-container-go">
                     {% for product in products %}

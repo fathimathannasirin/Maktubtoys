@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.http import HttpResponse
 from django.urls import path, include
+from django.views.generic import RedirectView
 from . import views
 from django.conf import settings
 from django.conf.urls.static import static
@@ -105,6 +106,9 @@ urlpatterns = [
     path('admin_tools/', include('admin_tools.urls')),
     # path('admin/', include('admin_honeypot.urls', namespace='admin_honeypot')),  # Disabled
     path('i18n/setlang/', views.set_language, name='set_language'),
+    # English has no URL prefix. Send leftover /en/... links to the real paths.
+    path('en/', RedirectView.as_view(url='/', permanent=True, query_string=True)),
+    path('en/<path:rest>', RedirectView.as_view(url='/%(rest)s', permanent=True, query_string=True)),
 ]
 
 
