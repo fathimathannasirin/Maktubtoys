@@ -126,9 +126,9 @@
         {% if request.GET.command == 'verification' %}
         <div class="alert alert-info shadow-sm mb-4 text-center" role="alert" style="max-width: 900px; width: 90%; border-radius: 12px; border-left: 5px solid #3167eb;">
             <i class="fa fa-envelope mr-2"></i>
-            {% trans "Thank you for registering with us. We have sent you a verification email to" %} <strong>{{ request.GET.email }}</strong>
+            {% trans "Thank you for registering with us. We sent a 6-digit verification code to" %} <strong>{{ request.GET.email }}</strong>
             <br>
-            {% trans "Already verified?" %} <a href="{% url 'login' %}" class="alert-link ml-1">{% trans "Login here" %}</a>
+            {% trans "Enter the code to complete registration." %} <a href="{% url 'verify_otp' %}" class="alert-link ml-1">{% trans "Verify OTP" %}</a>
         </div>
         {% else %}
             <div class="login-card">

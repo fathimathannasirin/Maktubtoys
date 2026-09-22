@@ -14,12 +14,48 @@ from django.core.mail import EmailMessage
 from django.http import HttpResponse
 from django.urls import reverse
 from urllib.parse import urlencode
+import secrets
+import time
 
 from carts.views import _cart_id
 import requests
 from orders.models import Order, OrderProduct, ReturnRequest
 
-# Create your views here.
+OTP_EXPIRY_SECONDS = 600
+OTP_RESEND_SECONDS = 60
+
+
+def _generate_otp():
+    return f"{secrets.randbelow(1000000):06d}"
+
+
+def _send_registration_otp(request, user):
+    otp = _generate_otp()
+    request.session['registration_otp'] = otp
+    request.session['registration_user_id'] = user.id
+    request.session['registration_email'] = user.email
+    request.session['registration_otp_expires'] = int(time.time()) + OTP_EXPIRY_SECONDS
+    request.session['registration_otp_sent_at'] = int(time.time())
+    request.session['registration_otp_attempts'] = 0
+    mail_subject = 'Your MAKTUB Toys verification code'
+    message = render_to_string('accounts/account_verification_email.html', {
+        'user': user,
+        'otp': otp,
+    })
+    send_email = EmailMessage(mail_subject, message, to=[user.email])
+    send_email.send()
+
+
+def _clear_registration_otp(request):
+    for key in (
+        'registration_otp',
+        'registration_user_id',
+        'registration_email',
+        'registration_otp_expires',
+        'registration_otp_sent_at',
+        'registration_otp_attempts',
+    ):
+        request.session.pop(key, None)
 
 def register(request):
     if request.method == 'POST':
@@ -46,19 +82,9 @@ def register(request):
             profile.save()
 
 
-            current_site = get_current_site(request)
-            mail_subject = 'please activate your account'
-            message = render_to_string('accounts/account_verification_email.html',{
-                'user': user,
-                'domain': current_site,
-                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-                'token': default_token_generator.make_token(user)
-            })
-            to_email = email
-            send_email = EmailMessage(mail_subject, message, to=[to_email])
-            send_email.send()
-            messages.success(request, 'Thankyou for registering with us. We have sent a verification email to your email address. Please verify it.')
-            return redirect(f"{reverse('login')}?{urlencode({'command': 'verification', 'email': email})}")
+            _send_registration_otp(request, user)
+            messages.success(request, 'We sent a 6-digit verification code to your email. Enter it to complete registration.')
+            return redirect('verify_otp')
     else:
         form = RegistrationForm()
     context={
@@ -149,6 +175,53 @@ def activate(request, uidb64, token):
     else:
         messages.error(request, 'Invalid activation link')
         return redirect('register')
+
+
+def verify_otp(request):
+    user_id = request.session.get('registration_user_id')
+    email = request.session.get('registration_email')
+    if not user_id or not email:
+        messages.error(request, 'Please register first to receive a verification code.')
+        return redirect('register')
+
+    user = get_object_or_404(Account, pk=user_id, email=email)
+
+    if request.method == 'POST':
+        if request.POST.get('resend') == '1':
+            sent_at = int(request.session.get('registration_otp_sent_at') or 0)
+            if int(time.time()) - sent_at < OTP_RESEND_SECONDS:
+                messages.error(request, 'Please wait a moment before requesting a new code.')
+                return redirect('verify_otp')
+            _send_registration_otp(request, user)
+            messages.success(request, 'A new verification code has been sent to your email.')
+            return redirect('verify_otp')
+
+        entered_otp = ''.join(ch for ch in request.POST.get('otp', '') if ch.isdigit())
+        stored_otp = request.session.get('registration_otp')
+        expires_at = int(request.session.get('registration_otp_expires') or 0)
+        attempts = int(request.session.get('registration_otp_attempts') or 0)
+
+        if int(time.time()) > expires_at:
+            messages.error(request, 'This code has expired. Request a new one.')
+            return redirect('verify_otp')
+
+        if attempts >= 5:
+            messages.error(request, 'Too many incorrect attempts. Request a new code.')
+            return redirect('verify_otp')
+
+        if entered_otp == stored_otp:
+            user.is_active = True
+            user.save()
+            _clear_registration_otp(request)
+            auth.login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+            messages.success(request, 'Registration completed. Welcome to MAKTUB Toys.')
+            return redirect('home')
+
+        request.session['registration_otp_attempts'] = attempts + 1
+        messages.error(request, 'Invalid verification code. Please try again.')
+        return redirect('verify_otp')
+
+    return render(request, 'accounts/verify_otp.html', {'email': email})
     
 def dashboard(request):
     orders = Order.objects.order_by('-created_at').filter(user_id=request.user.id, is_ordered=True)
