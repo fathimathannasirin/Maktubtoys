@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-17 11:18+0530\n"
+"POT-Creation-Date: 2026-09-27 20:27+0530\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,683 +18,20 @@ msgstr ""
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
 "&& n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
 
-#: .\templates\accounts\Change_Password.html:21
-msgid "Change Your Password"
-msgstr "غيّر كلمة المرور الخاصة بك"
-
-#: .\templates\accounts\Change_Password.html:30
-#: .\templates\accounts\Change_Password.html:31
-msgid "Current Password"
-msgstr "كلمة المرور الحالية"
-
-#: .\templates\accounts\Change_Password.html:35
-#: .\templates\accounts\Change_Password.html:36
-msgid "Create New Password"
-msgstr "إنشاء كلمة مرور جديدة"
-
-#: .\templates\accounts\Change_Password.html:40
-#: .\templates\accounts\resetPassword.html:96
-msgid "Confirm Password"
-msgstr "تأكيد كلمة المرور"
-
-#: .\templates\accounts\Change_Password.html:41
-#: .\templates\accounts\resetPassword.html:95
-msgid "Confirm New Password"
-msgstr "تأكيد كلمة المرور الجديدة"
-
-#: .\templates\accounts\Change_Password.html:45
-#: .\templates\accounts\forgotPassword.html:101
-msgid "Submit"
-msgstr "إرسال"
-
-#: .\templates\accounts\account_verification_email.html:4
-#: .\templates\accounts\reset_password_email.html:4
-#: .\templates\orders\order_received_email.html:3
-msgid "Hi"
-msgstr "مرحبا"
-
-#: .\templates\accounts\account_verification_email.html:6
-msgid "Please click on the link below to confirm your registration."
-msgstr "يرجى النقر على الرابط أدناه لتأكيد تسجيلك"
-
-#: .\templates\accounts\account_verification_email.html:9
-msgid "If you think it's not you, please ignore this email."
-msgstr "إذا كنت تعتقد أن الأمر لا يخصك، يرجى تجاهل هذا البريد الإلكتروني"
-
-#: .\templates\accounts\dashboard.html:20
-msgid "Logged in as:"
-msgstr ":تم تسجيل الدخول باسم"
-
-
-#: .\templates\accounts\dashboard.html:28
-msgid "Total Orders"
-msgstr "إجمالي الطلبات"
-
-#: .\templates\accounts\dashboard.html:30
-msgid "View Orders"
-msgstr "عرض الطلبات"
-
-#: .\templates\accounts\edit_profile.html:19
-msgid "Edit Your Profile"
-msgstr "تعديل ملفك الشخصي"
-
-#: .\templates\accounts\edit_profile.html:30
-msgid "Profile Image"
-msgstr "صورة الملف الشخصي"
-
-#: .\templates\accounts\edit_profile.html:54 .\templates\store\checkout.html:18
-msgid "First Name"
-msgstr "الاسم الأول"
-
-#: .\templates\accounts\edit_profile.html:58 .\templates\store\checkout.html:22
-msgid "Last Name"
-msgstr "الاسم الأخير"
-
-#: .\templates\accounts\edit_profile.html:65 .\templates\store\checkout.html:32
-msgid "Phone Number"
-msgstr "رقم الهاتف"
-
-#: .\templates\accounts\edit_profile.html:69
-msgid "Profile Picture"
-msgstr "صورة الملف الشخصي"
-
-#: .\templates\accounts\edit_profile.html:74 .\templates\store\checkout.html:38
-msgid "Address Line 1"
-msgstr "العنوان 1"
-
-#: .\templates\store\checkout.html:175
-msgid "Choose your area in Qatar"
-msgstr "اختر منطقتك في قطر"
-
-#: .\templates\store\checkout.html:180
-msgid "Select the area closest to your delivery location."
-msgstr "اختر المنطقة الأقرب لموقع التوصيل."
-
-#: .\templates\accounts\edit_profile.html:79 .\templates\store\checkout.html:42
-msgid "Address Line 2"
-msgstr "السطر الثاني من العنوان"
-
-#: .\templates\accounts\edit_profile.html:85 .\templates\store\checkout.html:48
-msgid "Street No."
-msgstr "رقم الشارع"
-
-#: .\templates\accounts\edit_profile.html:89 .\templates\store\checkout.html:52
-msgid "Building No."
-msgstr "رقم المبنى"
-
-#: .\templates\accounts\edit_profile.html:93 .\templates\store\checkout.html:56
-msgid "Zone No."
-msgstr "رقم المنطقة"
-
-#: .\templates\accounts\edit_profile.html:97
-msgid "Save Changes"
-msgstr "حفظ التغييرات"
-
-#: .\templates\accounts\forgotPassword.html:83
-msgid "Forgot Password"
-msgstr "نسيت كلمة المرور"
-
-#: .\templates\accounts\forgotPassword.html:84
-#: .\templates\accounts\login.html:118
-#: .\templates\accounts\resetPassword.html:84
-msgid "Don't have an account?"
-msgstr "لا تملك حسابًا؟"
-
-#: .\templates\accounts\forgotPassword.html:84
-#: .\templates\accounts\login.html:118 .\templates\includes\navbar.html:212
-msgid "Register"
-msgstr "تسجيل جديد"
-
-#: .\templates\accounts\forgotPassword.html:91
-#: .\templates\accounts\login.html:125
-msgid "Email Address"
-msgstr "عنوان البريد الإلكتروني"
-
-#: .\templates\accounts\forgotPassword.html:97
-#: .\templates\accounts\resetPassword.html:102
-msgid "Got password?"
-msgstr "هل لديك كلمة المرور؟"
-
-#: .\templates\accounts\forgotPassword.html:97
-#: .\templates\accounts\login.html:117 .\templates\accounts\login.html:137
-#: .\templates\accounts\resetPassword.html:102
-msgid "Login"
-msgstr "تسجيل الدخول"
-
-#: .\templates\accounts\login.html:102
-msgid ""
-"Thank you for registering with us. We have sent you a verification email to"
-msgstr "شكرًا لتسجيلك معنا. لقد أرسلنا لك بريدًا إلكترونيًا للتحقق على"
-
-#: .\templates\accounts\login.html:104
-msgid "Already verified?"
-msgstr ""
-
-#: .\templates\accounts\login.html:104
-msgid "Login here"
-msgstr "تم التحقق بالفعل؟"
-
-#: .\templates\accounts\login.html:130
-msgid "Password"
-msgstr "كلمة المرور"
-
-
-#: .\templates\accounts\login.html:133
-msgid "Forgot password?"
-msgstr "نسيت كلمة المرور"
-
-
-#: .\templates\accounts\login.html:141
-msgid "Secure login provided by"
-msgstr "تسجيل دخول آمن مقدم من"
-
-#: .\templates\accounts\my_orders.html:20
-msgid "Your order history"
-msgstr "تاريخ طلباتك"
-
-#: .\templates\accounts\my_orders.html:28
-#: .\templates\accounts\order_detail.html:16
-msgid "Order #"
-msgstr "الطلب رقم"
-
-#: .\templates\accounts\my_orders.html:29
-msgid "Billing Name"
-msgstr "اسم الفاتورة"
-
-#: .\templates\accounts\my_orders.html:30
-#: .\templates\orders\track_order.html:37
-msgid "Phone"
-msgstr "هاتف"
-
-#: .\templates\accounts\my_orders.html:31
-msgid "Order Total"
-msgstr "إجمالي الطلب"
-
-#: .\templates\accounts\my_orders.html:32
-#: .\templates\accounts\order_detail.html:17
-msgid "Date"
-msgstr "تاريخ"
-
-#: .\templates\accounts\order_detail.html:15
-msgid "Invoice"
-msgstr "فاتورة"
-
-#: .\templates\accounts\order_detail.html:23
-msgid "Ship To:"
-msgstr ":اشحن إلى"
-
-#: .\templates\accounts\order_detail.html:26
-msgid "Bldg:"
-msgstr ":مبنى"
-
-#: .\templates\accounts\order_detail.html:26
-msgid "St:"
-msgstr ":رقم الشارع"
-
-#: .\templates\accounts\order_detail.html:26
-msgid "Zone:"
-msgstr ":المنطقة"
-
-#: .\templates\accounts\order_detail.html:27
-msgid "Phone:"
-msgstr ":الهاتف"
-
-#: .\templates\accounts\order_detail.html:30
-msgid "Order Info:"
-msgstr ":معلومات الطلب"
-
-#: .\templates\accounts\order_detail.html:31
-msgid "Status:"
-msgstr ":الحالة"
-
-#: .\templates\accounts\order_detail.html:32
-msgid "Payment:"
-msgstr ":الدفع"
-
-#: .\templates\accounts\order_detail.html:39
-msgid "Product Details"
-msgstr "تفاصيل المنتج"
-
-#: .\templates\accounts\order_detail.html:40
-msgid "Unit Price"
-msgstr "سعر الوحدة"
-
-#: .\templates\accounts\order_detail.html:41 .\templates\store\cart.html:22
-#: .\templates\store\checkout.html:77
-msgid "Quantity"
-msgstr "الكمية"
-
-#: .\templates\accounts\order_detail.html:42 .\templates\store\cart.html:87
-msgid "Total"
-msgstr "الإجمالي"
-
-#: .\templates\accounts\order_detail.html:66
-msgid "No items found."
-msgstr ".لم يتم العثور على عناصر"
-
-#: .\templates\accounts\order_detail.html:75
-msgid "Subtotal:"
-msgstr ":المجموع الفرعي"
-
-#: .\templates\accounts\order_detail.html:79
-msgid "Tax:"
-msgstr ":الضريبة"
-
-#: .\templates\accounts\order_detail.html:83
-msgid "Grand Total:"
-msgstr ":المجموع الكلي"
-
-#: .\templates\accounts\order_detail.html:90
-msgid "Print Invoice"
-msgstr "طباعة الفاتورة"
-
-#: .\templates\accounts\order_detail.html:91
-msgid "Back"
-msgstr "عودة"
-
-#: .\templates\accounts\register.html:93
-msgid "Already have an account?"
-msgstr "هل لديك حساب بالفعل؟"
-
-#: .\templates\accounts\register.html:93 .\templates\includes\navbar.html:210
-msgid "Sign in"
-msgstr "تسجيل الدخول"
-
-#: .\templates\accounts\register.html:125
-msgid "Create account"
-msgstr "إنشاء حساب"
-
-#: .\templates\accounts\register.html:133
-msgid "By signing up, I agree to"
-msgstr "من خلال الاشتراك، أوافق على"
-
-#: .\templates\accounts\register.html:133
-msgid "Terms of Use"
-msgstr "شروط الاستخدام"
-
-#: .\templates\accounts\register.html:133
-msgid "and"
-msgstr "و"
-
-#: .\templates\accounts\register.html:133
-msgid "Privacy Policy"
-msgstr "سياسة الخصوصية"
-
-#: .\templates\accounts\resetPassword.html:83
-#: .\templates\accounts\resetPassword.html:106
-msgid "Reset Password"
-msgstr "سياسة الخصوصية"
-
-#: .\templates\accounts\resetPassword.html:91
-msgid "New Password"
-msgstr "كلمة مرور جديدة"
-
-#: .\templates\accounts\resetPassword.html:92
-msgid "Enter Password"
-msgstr "أدخل كلمة المرور"
-
-#: .\templates\accounts\reset_password_email.html:6
-msgid "As requested, please click on the link below to reset your password."
-msgstr ".كما هو مطلوب، يرجى النقر على الرابط أدناه لإعادة تعيين كلمة المرور الخاصة بك"
-
-#: .\templates\accounts\reset_password_email.html:9
-msgid "if you think it's not you, please ignore thil email."
-msgstr ""
-
-#: .\templates\base.html:11
-msgid "General Products | One of the Best Online Shopping Platform"
-msgstr ".إذا كنت تعتقد أنه ليس لك، يرجى تجاهل هذا البريد الإلكتروني"
-
-#: .\templates\includes\alerts.html:8
-msgid "Important"
-msgstr "مهم"
-
-#: .\templates\includes\dashboard_sidebar.html:5
-#: .\templates\includes\navbar.html:219
 msgid "Dashboard"
-msgstr ""
+msgstr "لوحة التحكم"
 
-#: .\templates\includes\dashboard_sidebar.html:6
-msgid "My Orders"
-msgstr "طلباتي"
+msgid "Applications"
+msgstr "التطبيقات"
 
-#: .\templates\includes\dashboard_sidebar.html:7
-msgid "Edit Profile"
-msgstr "تعديل الملف الشخصي"
+msgid "Administration"
+msgstr "الإدارة"
 
-#: .\templates\includes\dashboard_sidebar.html:8
-msgid "Change Password"
-msgstr "تغيير كلمة المرور"
+msgid "English"
+msgstr "الإنجليزية"
 
-#: .\templates\includes\dashboard_sidebar.html:11
-msgid "Log out"
-msgstr "تسجيل الخروج"
-
-#: .\templates\includes\footer.html:7
-msgid "2026 General Products"
-msgstr "2026 منتجات عامة "
-
-#: .\templates\includes\footer.html:10
-msgid "info@pixsellz.io"
-msgstr ""
-
-#: .\templates\includes\footer.html:12
-msgid "Doha, Qatar"
-msgstr "الدوحة، قطر"
-
-#: .\templates\includes\hero_and_cats.html:6
-#: .\templates\store\product_detail.html:37
-msgid "General Products"
-msgstr "المنتجات العامة"
-
-#: .\templates\includes\hero_and_cats.html:6
-msgid "daily essential Products"
-msgstr "المنتجات الأساسية اليومية"
-
-#: .\templates\includes\hero_and_cats.html:7
-msgid "best Quality products delivered directly to your home."
-msgstr ".أفضل المنتجات ذات الجودة تصل مباشرةً إلى منزلك"
-
-#: .\templates\includes\hero_and_cats.html:8 .\templates\index.html:171
-msgid "Shop Now"
-msgstr "تسوق الآن"
-
-#: .\templates\includes\hero_and_cats.html:19
-msgid "Our Top Categories"
-msgstr "أهم الفئات لدينا"
-
-#: .\templates\includes\navbar.html:130
-msgid "Language"
-msgstr "اللغة"
-
-#: .\templates\includes\navbar.html:148
-msgid "Contact us"
-msgstr "اتصل بنا"
-
-#: .\templates\includes\navbar.html:149
-msgid "Customer Support"
-msgstr "دعم العملاء"
-
-#: .\templates\includes\navbar.html:169
-msgid "All category"
-msgstr "جميع الفئات"
-
-#: .\templates\includes\navbar.html:189 .\templates\store\store.html:30
-msgid "Our Products"
-msgstr "منتجاتنا"
-
-#: .\templates\includes\navbar.html:193
-msgid "Search products..."
-msgstr "البحث عن المنتجات..."
-
-#: .\templates\includes\navbar.html:208
-msgid "Welcome!"
-msgstr "مرحباً بك!"
-
-#: .\templates\includes\navbar.html:217
-msgid "Welcome"
-msgstr "مرحباً"
-
-#: .\templates\includes\navbar.html:221
-msgid "Logout"
-msgstr "تسجيل الخروج"
-
-#: .\templates\index.html:108
-msgid "SHOP NOW"
-msgstr "تسوق الآن"
-
-#: .\templates\index.html:116
-msgid "Our Top Category"
-msgstr "فئتنا الأولى"
-
-#: .\templates\index.html:135
-msgid "Top Trending Products"
-msgstr "أكثر المنتجات رواجًا"
-
-#: .\templates\index.html:136 .\templates\index.html:186
-msgid "View All"
-msgstr "عرض الكل"
-
-#: .\templates\index.html:145 .\templates\index.html:196
-#: .\templates\store\cart.html:66 .\templates\store\cart.html:67
-#: .\templates\store\cart.html:84 .\templates\store\cart.html:88
-#: .\templates\store\checkout.html:106 .\templates\store\product_detail.html:53
-#: .\templates\store\store.html:75
-msgid "QAR"
-msgstr "ريال"
-
-#: .\templates\index.html:155 .\templates\index.html:197
-#: .\templates\store\product_detail.html:112
-msgid "ADD TO CART"
-msgstr "أضف إلى السلة"
-
-#: .\templates\index.html:169
-msgid "Top Offer"
-msgstr "أفضل عرض"
-
-#: .\templates\index.html:185
-msgid "Selection of"
-msgstr "اختيار"
-
-#: .\templates\orders\order_complete.html:10
-msgid "Thank you for your order!"
-msgstr "شكراً لطلبك!"
-
-#: .\templates\orders\order_complete.html:11
-msgid "Your order has been placed successfully."
-msgstr "تم تقديم طلبك بنجاح."
-
-#: .\templates\orders\order_complete.html:14
-#: .\templates\orders\order_received_email.html:12
-msgid "Order Number"
-msgstr "رقم الطلب"
-
-#: .\templates\orders\order_complete.html:15
-#: .\templates\orders\order_received_email.html:14
-#: .\templates\orders\track_order.html:14 .\templates\store\checkout.html:118
-msgid "Payment Method"
-msgstr "طريقة الدفع"
-
-#: .\templates\orders\order_complete.html:15
-#: .\templates\orders\track_order.html:14
-msgid "Cash on Delivery"
-msgstr "الدفع عند الاستلام"
-
-#: .\templates\orders\order_complete.html:18
-#, python-format
-msgid ""
-"Please keep <strong>%(order.order_total)s QAR</strong> ready for the "
-"delivery agent."
-msgstr "يرجى تجهيز <strong>%(order.order_total)s ريال قطري</strong> لمندوب التوصيل."
-
-#: .\templates\orders\order_complete.html:22 .\templates\store\cart.html:12
-#: .\templates\store\cart.html:95 .\templates\store\checkout.html:127
-msgid "Continue Shopping"
-msgstr "مواصلة التسوق"
-
-#: .\templates\orders\order_received_email.html:5
-msgid "Thank you for your order! Your order #"
-msgstr "#شكراً لطلبك! رقم طلبك"
-
-#: .\templates\orders\order_received_email.html:7
-msgid "LIVE TRACKING"
-msgstr "التتبع المباشر"
-
-#: .\templates\orders\order_received_email.html:8
-msgid ""
-"You can follow the status of your delivery at any time by clicking the link "
-"below:"
-msgstr ":يمكنك متابعة حالة توصيلك في أي وقت من خلال النقر على الرابط أدناه"
-
-
-#: .\templates\orders\order_received_email.html:11
-msgid "ORDER SUMMARY"
-msgstr "ملخص الطلب"
-
-#: .\templates\orders\order_received_email.html:13
-#: .\templates\orders\track_order.html:43
-msgid "Total Amount"
-msgstr "المبلغ الإجمالي"
-
-#: .\templates\orders\order_received_email.html:14
-#: .\templates\store\checkout.html:121
-msgid "Cash on Delivery (COD)"
-msgstr "الدفع عند الاستلام"
-
-#: .\templates\orders\order_received_email.html:16
-msgid "We will contact you shortly to confirm the delivery time."
-msgstr "سنتواصل معك قريبًا لتأكيد موعد التسليم."
-
-#: .\templates\orders\order_received_email.html:18
-msgid "Thank you for shopping with us!"
-msgstr "!شكراً لتسوقك معنا"
-
-#: .\templates\orders\track_order.html:10
-msgid "Order Tracking ID"
-msgstr "رقم تتبع الطلب"
-
-#: .\templates\orders\track_order.html:13
-msgid "Estimated Status"
-msgstr "الحالة المقدرةب"
-
-#: .\templates\orders\track_order.html:18
-msgid "Received"
-msgstr "تم الاستلام"
-
-#: .\templates\orders\track_order.html:20
-msgid "Accepted"
-msgstr "مقبول"
-
-#: .\templates\orders\track_order.html:22
-msgid "Packed"
-msgstr "معبأ"
-
-#: .\templates\orders\track_order.html:24
-msgid "On the Way"
-msgstr "في الطريق"
-
-#: .\templates\orders\track_order.html:26
-msgid "Delivered"
-msgstr "تم التسليم"
-
-#: .\templates\orders\track_order.html:32
-msgid "Delivery Address"
-msgstr "عنوان التوصيل"
-
-#: .\templates\orders\track_order.html:36
-msgid "Bldg"
-msgstr ":مبنى"
-
-#: .\templates\orders\track_order.html:36
-msgid "Zone"
-msgstr ":المنطقة"
-
-#: .\templates\orders\track_order.html:41
-msgid "Order Summary"
-msgstr "ملخص الطلب"
-
-#: .\templates\orders\track_order.html:42
-msgid "Total Items"
-msgstr "إجمالي العناصر"
-
-#: .\templates\orders\track_order.html:48
-msgid "Return to Store"
-msgstr "العودة إلى المتجر"
-
-#: .\templates\store\cart.html:9
-msgid "Your Shopping Cart is Empty"
-msgstr "عربة التسوق الخاصة بك فارغة"
-
-#: .\templates\store\cart.html:21 .\templates\store\checkout.html:76
-msgid "Product"
-msgstr "منتج"
-
-#: .\templates\store\cart.html:23 .\templates\store\checkout.html:78
-msgid "Price"
-msgstr "السعر"
-
-#: .\templates\store\cart.html:71
-msgid "Are you sure you want to remove this item?"
-msgstr "هل أنت متأكد أنك تريد إزالة هذا العنصر؟"
-
-#: .\templates\store\cart.html:71
-msgid "Remove"
-msgstr "إزالة"
-
-#: .\templates\store\cart.html:83
-msgid "Sub Total"
-msgstr "المجموع الفرعي"
-
-msgid "Delivery"
-msgstr "التوصيل"
-
-#: .\templates\store\cart.html:94
-msgid "Checkout"
-msgstr "الدفع"
-
-#: .\templates\store\checkout.html:13
-msgid "Billing Address"
-msgstr "عنوان الفاتورة"
-
-#: .\templates\store\checkout.html:28
-msgid "Email"
-msgstr "البريد الإلكتروني"
-
-#: .\templates\store\checkout.html:61
-msgid "Order Note"
-msgstr "ملاحظة الطلب"
-
-#: .\templates\store\checkout.html:107
-msgid "QAR each"
-msgstr "ريال قطري لكل"
-
-#: .\templates\store\checkout.html:122
-msgid "Pay in cash upon receiving your order at your doorstep."
-msgstr "ادفع نقدًا عند استلام طلبك عند باب منزلك"
-
-#: .\templates\store\checkout.html:126
-msgid "Complete Order"
-msgstr "إكمال الطلب"
-
-#: .\templates\store\product_detail.html:20
-#: .\templates\store\product_detail.html:26
-msgid "Product Image"
-msgstr "صورة المنتج"
-
-#: .\templates\store\product_detail.html:48
-#: .\templates\store\product_detail.html:183
-msgid "reviews"
-msgstr "مراجعات"
-
-#: .\templates\store\product_detail.html:54
-msgid "In Stock"
-msgstr "متوفر في المخزن"
-
-#: .\templates\store\product_detail.html:70
-msgid "Select"
-msgstr "اختر"
-
-#: .\templates\store\product_detail.html:76
-msgid "Choose up to"
-msgstr "اختر حتى"
-
-#: .\templates\store\product_detail.html:97
-msgid "Selections made:"
-msgstr ":الاختيارات التي تم تحديدها"
-
-#: .\templates\store\product_detail.html:108
-msgid "Notify Me When Available"
-msgstr "أعلمني عند التوافر"
-
-#: .\templates\store\product_detail.html:119
-msgid "Fast Delivery in Qatar"
-msgstr "المنتجات العامة"
-
-msgid "Delivery 20 QAR"
-msgstr "التوصيل 20 ريال"
-
-msgid "Free delivery"
-msgstr "توصيل مجاني"
+msgid "Arabic"
+msgstr "العربية"
 
 msgid "Same-day delivery if you order before 7:00 PM."
 msgstr "توصيل في نفس اليوم إذا طلبت قبل الساعة 7:00 مساءً."
@@ -702,109 +39,1849 @@ msgstr "توصيل في نفس اليوم إذا طلبت قبل الساعة 7:
 msgid "Ordered after 7:00 PM. Delivery is tomorrow."
 msgstr "تم الطلب بعد الساعة 7:00 مساءً. التوصيل غداً."
 
+msgid "Delivery 20 QAR"
+msgstr "التوصيل 20 ريال"
+
 msgid "Free delivery. Expected tomorrow."
 msgstr "توصيل مجاني. متوقع غداً."
 
+#, python-format
 msgid "Free delivery. Expected in %(days)s day(s)."
 msgstr "توصيل مجاني. متوقع خلال %(days)s يوم/أيام."
 
+msgid "Free delivery"
+msgstr "توصيل مجاني"
 
-#: .\templates\store\product_detail.html:121
+msgid "Change Your Password"
+msgstr "غيّر كلمة المرور الخاصة بك"
+
+msgid "Current Password"
+msgstr "كلمة المرور الحالية"
+
+msgid "Create New Password"
+msgstr "إنشاء كلمة مرور جديدة"
+
+msgid "Confirm Password"
+msgstr "تأكيد كلمة المرور"
+
+msgid "Confirm New Password"
+msgstr "تأكيد كلمة المرور الجديدة"
+
+msgid "Submit"
+msgstr "إرسال"
+
+msgid "Hi"
+msgstr "مرحبا"
+
+msgid "Use this verification code to complete your MAKTUB Toys registration:"
+msgstr ""
+
+msgid ""
+"This code expires in 10 minutes. If you did not create an account, please "
+"ignore this email."
+msgstr ""
+
+msgid "Contact Information"
+msgstr "معلومات الاتصال"
+
+msgid "MAKTUB Toys"
+msgstr "مكتوب تويز"
+
+msgid "We are here to help! Reach out to us through any of the channels below."
+msgstr ""
+
+msgid "Location"
+msgstr "الموقع"
+
+msgid "Call or WhatsApp"
+msgstr "اتصال أو واتساب"
+
+msgid "Available Saturday – Saturday"
+msgstr ""
+
+msgid "Email Us"
+msgstr "راسلنا عبر البريد"
+
+msgid "We aim to respond to all inquiries within 24 hours."
+msgstr ""
+
+msgid "Legal Business Name:"
+msgstr ""
+
+#, fuzzy
+#| msgid "Register"
+msgid "Registered In:"
+msgstr "تسجيل جديد"
+
+msgid "Contact Us"
+msgstr "اتصل بنا"
+
+msgid "Welcome back"
+msgstr "مرحباً بعودتك"
+
+msgid "Edit Profile"
+msgstr "تعديل الملف الشخصي"
+
+msgid "Total Orders"
+msgstr "إجمالي الطلبات"
+
+#, fuzzy
+#| msgid "View Orders"
+msgid "View Order History"
+msgstr "عرض الطلبات"
+
+#, fuzzy
+#| msgid "Product Details"
+msgid "Contact Details"
+msgstr "تفاصيل المنتج"
+
+msgid "Quick Actions"
+msgstr "إجراءات سريعة"
+
+msgid "My Orders"
+msgstr "طلباتي"
+
+msgid "Change Password"
+msgstr "تغيير كلمة المرور"
+
+msgid "Edit Your Profile"
+msgstr "تعديل ملفك الشخصي"
+
+msgid "Profile Image"
+msgstr "صورة الملف الشخصي"
+
+msgid "First Name"
+msgstr "الاسم الأول"
+
+msgid "Last Name"
+msgstr "الاسم الأخير"
+
+msgid "Phone Number"
+msgstr "رقم الهاتف"
+
+msgid "Profile Picture"
+msgstr "صورة الملف الشخصي"
+
+msgid "Address Line 1"
+msgstr "العنوان 1"
+
+msgid "Address Line 2"
+msgstr "السطر الثاني من العنوان"
+
+msgid "Street No."
+msgstr "رقم الشارع"
+
+msgid "Building No."
+msgstr "رقم المبنى"
+
+msgid "Zone No."
+msgstr "رقم المنطقة"
+
+msgid "Save Changes"
+msgstr "حفظ التغييرات"
+
+#, fuzzy
+#| msgid "Reset Password"
+msgid "Reset your password"
+msgstr "سياسة الخصوصية"
+
+msgid "Enter your email and we'll help you get back into your account."
+msgstr ""
+
+msgid "Forgot Password"
+msgstr "نسيت كلمة المرور"
+
+msgid "Don't have an account?"
+msgstr "لا تملك حسابًا؟"
+
+msgid "Register"
+msgstr "تسجيل جديد"
+
+msgid "Email Address"
+msgstr "عنوان البريد الإلكتروني"
+
+msgid "Got password?"
+msgstr "هل لديك كلمة المرور؟"
+
+msgid "Login"
+msgstr "تسجيل الدخول"
+
+msgid "Secure login provided by"
+msgstr "تسجيل دخول آمن مقدم من"
+
+#, fuzzy
+#| msgid ""
+#| "Thank you for registering with us. We have sent you a verification email "
+#| "to"
+msgid ""
+"Thank you for registering with us. We sent a 6-digit verification code to"
+msgstr "شكرًا لتسجيلك معنا. لقد أرسلنا لك بريدًا إلكترونيًا للتحقق على"
+
+msgid "Enter the code to complete registration."
+msgstr ""
+
+msgid "Verify OTP"
+msgstr "تحقق من رمز OTP"
+
+msgid "Sign in to continue shopping with MAKTUB Toys."
+msgstr ""
+
+msgid "Fast checkout"
+msgstr "إتمام سريع للطلب"
+
+msgid "Secure payments"
+msgstr "مدفوعات آمنة"
+
+msgid "Friendly support"
+msgstr "دعم ودود"
+
+msgid "Password"
+msgstr "كلمة المرور"
+
+msgid "Forgot password?"
+msgstr "نسيت كلمة المرور"
+
+#, fuzzy
+#| msgid "Your order history"
+msgid "Your Order History"
+msgstr "تاريخ طلباتك"
+
+msgid "Track and manage your past purchases"
+msgstr ""
+
+#, fuzzy
+#| msgid "My Orders"
+msgid "Orders"
+msgstr "طلباتي"
+
+#, fuzzy
+#| msgid "Order Total"
+msgid "Order Details"
+msgstr "إجمالي الطلب"
+
+#, fuzzy
+#| msgid "Items found"
+msgid "Items Purchased"
+msgstr "عناصر تم العثور عليها"
+
+#, fuzzy
+#| msgid "Status:"
+msgid "Status"
+msgstr ":الحالة"
+
+msgid "Total Amount"
+msgstr "المبلغ الإجمالي"
+
+#, fuzzy
+#| msgid "Return to Store"
+msgid "Return Status"
+msgstr "العودة إلى المتجر"
+
+msgid "Action"
+msgstr "إجراء"
+
+msgid "New"
+msgstr "جديد"
+
+msgid "Accepted"
+msgstr "مقبول"
+
+#, fuzzy
+#| msgid "Complete Order"
+msgid "Completed"
+msgstr "إكمال الطلب"
+
+msgid "Cancelled"
+msgstr "ملغى"
+
+msgid "ID"
+msgstr "المعرف"
+
+msgid "Eligible"
+msgstr "مؤهل"
+
+#, fuzzy
+#| msgid "View Orders"
+msgid "View Details"
+msgstr "عرض الطلبات"
+
+msgid "Return"
+msgstr "إرجاع"
+
+#, fuzzy
+#| msgid "No results found"
+msgid "No orders found"
+msgstr "لم يتم العثور على نتائج"
+
+msgid "You haven't placed any orders yet."
+msgstr ""
+
+#, fuzzy
+#| msgid "Continue Shopping"
+msgid "Start Shopping"
+msgstr "مواصلة التسوق"
+
+msgid "Invoice"
+msgstr "فاتورة"
+
+msgid "Order #"
+msgstr "الطلب رقم"
+
+msgid "Date"
+msgstr "تاريخ"
+
+msgid "Ship To:"
+msgstr ":اشحن إلى"
+
+msgid "Bldg:"
+msgstr ":مبنى"
+
+msgid "St:"
+msgstr ":رقم الشارع"
+
+msgid "Zone:"
+msgstr ":المنطقة"
+
+msgid "Phone:"
+msgstr ":الهاتف"
+
+msgid "Order Info:"
+msgstr ":معلومات الطلب"
+
+msgid "Status:"
+msgstr ":الحالة"
+
+msgid "Payment:"
+msgstr ":الدفع"
+
+#, fuzzy
+#| msgid "Return to Store"
+msgid "Return & Refund"
+msgstr "العودة إلى المتجر"
+
+#, fuzzy
+#| msgid "Return to Store"
+msgid "Return Item"
+msgstr "العودة إلى المتجر"
+
+msgid "The return period for this order has expired."
+msgstr ""
+
+msgid "Return Request ID"
+msgstr ""
+
+msgid "Return Reason"
+msgstr ""
+
+msgid "Request Date"
+msgstr ""
+
+#, fuzzy
+#| msgid "Estimated Status"
+msgid "Refund Status"
+msgstr "الحالة المقدرةب"
+
+msgid "Refund Date"
+msgstr ""
+
+msgid "Refund Amount"
+msgstr ""
+
+msgid "Admin Remarks"
+msgstr ""
+
+msgid "Description"
+msgstr "الوصف"
+
+msgid "Uploaded Images"
+msgstr ""
+
+msgid "Return Timeline"
+msgstr ""
+
+msgid "Product Details"
+msgstr "تفاصيل المنتج"
+
+msgid "Unit Price"
+msgstr "سعر الوحدة"
+
+msgid "Quantity"
+msgstr "الكمية"
+
+msgid "Total"
+msgstr "الإجمالي"
+
+msgid "No items found."
+msgstr ".لم يتم العثور على عناصر"
+
+msgid "Subtotal:"
+msgstr ":المجموع الفرعي"
+
+#, fuzzy
+#| msgid "Delivery Address"
+msgid "Delivery Charge:"
+msgstr "عنوان التوصيل"
+
+msgid "Grand Total:"
+msgstr ":المجموع الكلي"
+
+msgid "Back"
+msgstr "عودة"
+
+#, fuzzy
+#| msgid "Create account"
+msgid "Create your account"
+msgstr "إنشاء حساب"
+
+msgid "Join MAKTUB Toys for fast shopping, secure checkout, and great support."
+msgstr ""
+
+msgid "Quick sign up"
+msgstr ""
+
+#, fuzzy
+#| msgid "Order Tracking ID"
+msgid "Order tracking"
+msgstr "رقم تتبع الطلب"
+
+msgid "Exclusive offers"
+msgstr ""
+
+msgid "Already have an account?"
+msgstr "هل لديك حساب بالفعل؟"
+
+msgid "Sign in"
+msgstr "تسجيل الدخول"
+
+msgid "Please fix the following:"
+msgstr ""
+
+msgid "Create account"
+msgstr "إنشاء حساب"
+
+msgid "By signing up, I agree to"
+msgstr "من خلال الاشتراك، أوافق على"
+
+msgid "Terms of Use"
+msgstr "شروط الاستخدام"
+
+msgid "and"
+msgstr "و"
+
+msgid "Privacy Policy"
+msgstr "سياسة الخصوصية"
+
+#, fuzzy
+#| msgid "Create New Password"
+msgid "Set a new password"
+msgstr "إنشاء كلمة مرور جديدة"
+
+msgid "Choose a strong password to secure your account."
+msgstr ""
+
+msgid "Reset Password"
+msgstr "سياسة الخصوصية"
+
+msgid "New Password"
+msgstr "كلمة مرور جديدة"
+
+msgid "Enter Password"
+msgstr "أدخل كلمة المرور"
+
+msgid "As requested, please click on the link below to reset your password."
+msgstr ""
+".كما هو مطلوب، يرجى النقر على الرابط أدناه لإعادة تعيين كلمة المرور الخاصة بك"
+
+msgid "if you think it's not you, please ignore thil email."
+msgstr ""
+
+msgid "Return & Refund Policy"
+msgstr ""
+
+#, fuzzy
+#| msgid "Last Name"
+msgid "Last updated:"
+msgstr "الاسم الأخير"
+
+msgid "Definitions and Key Terms"
+msgstr ""
+
+msgid ""
+"To help explain things as clearly as possible in this Return & Refund "
+"Policy, every time any of these terms are referenced, they are strictly "
+"defined as:"
+msgstr ""
+
+msgid "Company:"
+msgstr ""
+
+msgid ""
+"When this policy mentions Company, we, us, or our, it refers to MAKTUB Toys, "
+"which is responsible for your information under this Return & Refund Policy."
+msgstr ""
+
+#, fuzzy
+#| msgid "Customer Support"
+msgid "Customer:"
+msgstr "دعم العملاء"
+
+msgid ""
+"Refers to the company, organization, or person that signs up to use the "
+"MAKTUB Toys Service to manage relationships with consumers or service users."
+msgstr ""
+
+msgid "Device:"
+msgstr ""
+
+msgid ""
+"Any internet-connected device such as a phone, tablet, computer, or any "
+"other device that can be used to visit MAKTUB Toys and use the services."
+msgstr ""
+
+msgid "Service:"
+msgstr ""
+
+msgid ""
+"Refers to the service provided by MAKTUB Toys as described in the relative "
+"terms (if available) and on this platform."
+msgstr ""
+
+msgid "You:"
+msgstr ""
+
+msgid "A person or entity registered with MAKTUB Toys to use the Services."
+msgstr ""
+
+msgid "Return & Refund Overview"
+msgstr ""
+
+msgid ""
+"Thanks for shopping at MAKTUB Toys. We appreciate your business and want to "
+"ensure you have a rewarding experience while exploring, evaluating, and "
+"purchasing our products."
+msgstr ""
+
+msgid ""
+"By placing an order or making a purchase at MAKTUB Toys, you agree to the "
+"terms set forth below along with MAKTUB Toys' Privacy Policy."
+msgstr ""
+
+msgid ""
+"If there is something wrong with the product or service you bought, or if "
+"you are not satisfied with it, you have 2 weeks from the date of purchase to "
+"request a return and refund."
+msgstr ""
+
+msgid "Guidelines for Returns"
+msgstr ""
+
+msgid "The product must be returned in its original packaging as delivered."
+msgstr ""
+
+msgid "Refunds"
+msgstr ""
+
+msgid ""
+"At MAKTUB Toys, every product is thoroughly inspected, checked for defects, "
+"and packaged with utmost care."
+msgstr ""
+
+msgid "Inventory & Order Cancellation:"
+msgstr ""
+
+msgid ""
+"If a product is out of stock or fails quality checks, we may need to cancel "
+"your order. You will be notified in advance. If you paid online (not Cash on "
+"Delivery), a full refund will be processed once our team confirms the "
+"cancellation."
+msgstr ""
+
+msgid "Transit Damage:"
+msgstr ""
+
+msgid ""
+"We ensure secure packaging to prevent damage during shipping. Please note "
+"that MAKTUB Toys is not liable for damages caused during transit or "
+"transportation."
+msgstr ""
+
+msgid "Processing Time:"
+msgstr ""
+
+msgid ""
+"Once we receive and inspect your returned product to ensure it meets our "
+"guidelines, we will proceed with the refund. Refunds may take up to 7 "
+"working days to process."
+msgstr ""
+
+msgid "Shipping Costs for Returns"
+msgstr ""
+
+msgid "MAKTUB Toys is not responsible for return shipping costs."
+msgstr ""
+
+msgid ""
+"The customer must cover all return shipping fees, even if the item "
+"originally qualified for free shipping."
+msgstr ""
+
+msgid "Your Consent"
+msgstr ""
+
+msgid ""
+"By using our website or app, registering an account, or making a purchase, "
+"you hereby consent to our Return & Refund Policy and agree to its terms."
+msgstr ""
+
+#, fuzzy
+#| msgid "Change Your Password"
+msgid "Changes to Our Policy"
+msgstr "غيّر كلمة المرور الخاصة بك"
+
+msgid ""
+"Should we update or amend this document, changes will be prominently posted "
+"on this page. Continued use of the Service indicates agreement to the "
+"updated policy. If you do not agree to any updated terms, you may delete "
+"your account."
+msgstr ""
+
+msgid ""
+"If you have any questions or are not completely satisfied with a product or "
+"service, please contact us:"
+msgstr ""
+
+#, fuzzy
+#| msgid "Email"
+msgid "Email:"
+msgstr "البريد الإلكتروني"
+
+msgid "Phone / WhatsApp:"
+msgstr ""
+
+msgid "Shipping & Delivery Policy"
+msgstr ""
+
+msgid "Fast and reliable delivery across the State of Qatar."
+msgstr ""
+
+#, fuzzy
+#| msgid "Delivery Address"
+msgid "Delivery Coverage"
+msgstr "عنوان التوصيل"
+
+msgid ""
+"We currently offer fast delivery service across all areas in Qatar (Doha, Al "
+"Rayyan, Al Wakra, Lusail, Al Khor, and surrounding regions)."
+msgstr ""
+
+msgid "Processing & Delivery Times"
+msgstr ""
+
+#, fuzzy
+#| msgid "Cash on Delivery"
+msgid "Standard Delivery:"
+msgstr "الدفع عند الاستلام"
+
+msgid "Delivered within 24 to 48 hours from order confirmation."
+msgstr ""
+
+#, fuzzy
+#| msgid "Delivery"
+msgid "Same-Day Delivery:"
+msgstr "التوصيل"
+
+msgid "Available for select orders placed before 12:00 PM."
+msgstr ""
+
+#, fuzzy
+#| msgid "Delivery"
+msgid "Delivery Fees"
+msgstr "التوصيل"
+
+msgid ""
+"Standard shipping fees apply at checkout based on your delivery area. Free "
+"shipping offers may apply during special promotional periods or for orders "
+"above a specified threshold."
+msgstr ""
+
+msgid "Address Accuracy"
+msgstr ""
+
+msgid ""
+"To ensure smooth delivery, please provide accurate address details including "
+"Zone, Street, and Building numbers (Blue Plate details)."
+msgstr ""
+
+#, fuzzy
+#| msgid "Order Tracking ID"
+msgid "Order Tracking & Support"
+msgstr "رقم تتبع الطلب"
+
+msgid ""
+"Once your order is dispatched, our delivery representative or customer "
+"support team will contact you via phone or WhatsApp. For shipping updates, "
+"contact us at +974-71292725 or email Sales@maktubqatar.com."
+msgstr ""
+
+#, fuzzy
+#| msgid "Terms of Use"
+msgid "Terms of Service"
+msgstr "شروط الاستخدام"
+
+msgid "Please read these terms carefully before using our platform."
+msgstr ""
+
+msgid "TERMS AND CONDITIONS"
+msgstr ""
+
+msgid "MAKTUB Toys  •  Mobile Application & Services"
+msgstr ""
+
+msgid ""
+"These Terms and Conditions (\"Terms\", \"Terms and Conditions\") govern your "
+"relationship with the MAKTUB Toys mobile application (the \"Service\") "
+"operated by MAKTUB Toys (\"us\", \"we\", or \"our\"). Please read these "
+"Terms and Conditions carefully before using our MAKTUB Toys mobile "
+"application (the \"Service\")."
+msgstr ""
+
+msgid ""
+"Your access to and use of the Service is conditioned on your acceptance of "
+"and compliance with these Terms. These Terms apply to all visitors, users, "
+"and others who access or use the Service."
+msgstr ""
+
+msgid ""
+"By accessing or using the Service you agree to be bound by these Terms. If "
+"you disagree with any part of the terms then you may not access the Service."
+msgstr ""
+
+msgid "Purchases"
+msgstr ""
+
+msgid ""
+"If you wish to purchase any product or service made available through the "
+"Service (\"Purchase\"), you may be asked to supply certain information "
+"relevant to your Purchase including, without limitation, your credit card "
+"number, the expiration date of your credit card, your billing address, and "
+"your shipping information."
+msgstr ""
+
+msgid ""
+"You represent and warrant that: (i) you have the legal right to use any "
+"credit card(s) or other payment method(s) in connection with any Purchase; "
+"and that (ii) the information you supply to us is true, correct, and "
+"complete."
+msgstr ""
+
+msgid ""
+"By submitting such information, you grant us the right to provide the "
+"information to third parties for purposes of facilitating the completion of "
+"Purchases."
+msgstr ""
+
+msgid ""
+"We reserve the right to refuse or cancel your order at any time for certain "
+"reasons including but not limited to: product or service availability, "
+"errors in the description or price of the product or service, error in your "
+"order, or other reasons."
+msgstr ""
+
+msgid ""
+"We reserve the right to refuse or cancel your order if fraud or an "
+"unauthorized or illegal transaction is suspected."
+msgstr ""
+
+msgid "Helium balloons are non-refundable and non-exchangeable."
+msgstr ""
+
+msgid "Referrals"
+msgstr ""
+
+msgid ""
+"A customer can receive an offer after referring other users with the "
+"condition that the referred customers are new users that make an order. The "
+"offer that the customer receives is in the form of a cashback that is "
+"received on the customer's wallet."
+msgstr ""
+
+msgid ""
+"Should the referred customer return or cancel that order, we reserve the "
+"right to reverse the cashback that was granted to the customer."
+msgstr ""
+
+msgid "Wallet Credit Expiry"
+msgstr ""
+
+msgid ""
+"All wallet credits issued to the customer will expire one (1) year from the "
+"date of issuance, unless otherwise stated. Any unused balance after the "
+"expiry date will be automatically forfeited and cannot be reinstated or "
+"refunded."
+msgstr ""
+
+msgid "Availability, Errors, and Inaccuracies"
+msgstr ""
+
+msgid ""
+"We are constantly updating our offerings of products and services on the "
+"Service. The products or services available on our Service may be mispriced, "
+"described inaccurately, or unavailable, and we may experience delays in "
+"updating information on the Service and in our advertising on other websites."
+msgstr ""
+
+msgid ""
+"We cannot and do not guarantee the accuracy or completeness of any "
+"information, including prices, product images, specifications, availability, "
+"and services. We reserve the right to change or update information and to "
+"correct errors, inaccuracies, or omissions at any time without prior notice."
+msgstr ""
+
+msgid "Contests, Sweepstakes, and Promotions"
+msgstr ""
+
+msgid ""
+"Any contests, sweepstakes, or other promotions (collectively, "
+"\"Promotions\") made available through the Service may be governed by rules "
+"that are separate from these Terms. If you participate in any Promotions, "
+"please review the applicable rules as well as our Privacy Policy. If the "
+"rules for a Promotion conflict with these Terms, the Promotion rules will "
+"apply."
+msgstr ""
+
+msgid "Accounts"
+msgstr ""
+
+msgid ""
+"When you create an account with us, you must provide us information that is "
+"accurate, complete, and current at all times. Failure to do so constitutes a "
+"breach of the Terms, which may result in immediate termination of your "
+"account on our Service."
+msgstr ""
+
+msgid ""
+"You are responsible for safeguarding the password that you use to access the "
+"Service and for any activities or actions under your password, whether your "
+"password is with our Service or a third-party service."
+msgstr ""
+
+msgid ""
+"You agree not to disclose your password to any third party. You must notify "
+"us immediately upon becoming aware of any breach of security or unauthorized "
+"use of your account."
+msgstr ""
+
+msgid ""
+"You may not use as a username the name of another person or entity or that "
+"is not lawfully available for use, a name or trademark that is subject to "
+"any rights of another person or entity other than you without appropriate "
+"authorization, or a name that is otherwise offensive, vulgar, or obscene."
+msgstr ""
+
+msgid "Data Deletion Request"
+msgstr ""
+
+msgid ""
+"At MAKTUB Toys, we respect your privacy and your right to manage your "
+"personal data. If you wish to have your personal data deleted from our "
+"systems, please follow these steps:"
+msgstr ""
+
+#, fuzzy
+#| msgid "Contact us"
+msgid "Step 1: Contact Us:"
+msgstr "اتصل بنا"
+
+msgid "Send your data deletion request via email to:"
+msgstr ""
+
+msgid ""
+"Please use the subject line: \"Data Deletion Request\". Include your "
+"registered email address, username/account ID, and any relevant details to "
+"verify your identity."
+msgstr ""
+
+msgid "Step 2: Verification:"
+msgstr ""
+
+msgid ""
+"We will verify your identity using the information provided. Additional "
+"verification may be requested if necessary to ensure account security."
+msgstr ""
+
+msgid "Step 3: Processing:"
+msgstr ""
+
+msgid ""
+"Once verification is complete, we will process your data deletion request "
+"promptly and within 14 business days."
+msgstr ""
+
+msgid "Step 4: Confirmation:"
+msgstr ""
+
+msgid ""
+"After your personal data has been successfully deleted, you will receive a "
+"confirmation email from us."
+msgstr ""
+
+msgid ""
+"If you have any questions regarding the data deletion process, please reach "
+"out to us at info@maktubtrading.com."
+msgstr ""
+
+#, fuzzy
+#| msgid "Privacy Policy"
+msgid "Copyright Policy"
+msgstr "سياسة الخصوصية"
+
+msgid ""
+"We respect the intellectual property rights of others. It is our policy to "
+"respond to any claim that Content posted on the Service infringes the "
+"copyright or other intellectual property infringement (\"Infringement\") of "
+"any person."
+msgstr ""
+
+msgid ""
+"If you are a copyright owner, or authorized on behalf of one, and you "
+"believe that the copyrighted work has been copied in a way that constitutes "
+"copyright infringement that is taking place through the Service, you must "
+"submit your notice in writing to the attention of \"Copyright Infringement\" "
+"at info@maktubtrading.com and include in your notice a detailed description "
+"of the alleged Infringement."
+msgstr ""
+
+msgid ""
+"You may be held accountable for damages (including costs and attorneys' "
+"fees) for misrepresenting that any Content is infringing your copyright."
+msgstr ""
+
+msgid "Intellectual Property"
+msgstr ""
+
+msgid ""
+"The Service and its original content, features, and functionality are and "
+"will remain the exclusive property of MAKTUB Toys and its licensors. The "
+"Service is protected by copyright, trademark, and other laws of both local "
+"and foreign countries. Our trademarks and trade dress may not be used in "
+"connection with any product or service without the prior written consent of "
+"MAKTUB Toys."
+msgstr ""
+
+msgid "Links To Other Web Sites"
+msgstr ""
+
+msgid ""
+"Our Service may contain links to third-party websites or services that are "
+"not owned or controlled by MAKTUB Toys."
+msgstr ""
+
+msgid ""
+"MAKTUB Toys has no control over, and assumes no responsibility for, the "
+"content, privacy policies, or practices of any third-party websites or "
+"services. You further acknowledge and agree that MAKTUB Toys shall not be "
+"responsible or liable, directly or indirectly, for any damage or loss caused "
+"or alleged to be caused by or in connection with use of or reliance on any "
+"such content, goods, or services available on or through any such websites "
+"or services."
+msgstr ""
+
+msgid ""
+"We strongly advise you to read the terms and conditions and privacy policies "
+"of any third-party websites or services that you visit."
+msgstr ""
+
+msgid "Termination"
+msgstr ""
+
+msgid ""
+"We may terminate or suspend your account immediately, without prior notice "
+"or liability, for any reason whatsoever, including without limitation if you "
+"breach the Terms."
+msgstr ""
+
+msgid ""
+"Upon termination, your right to use the Service will immediately cease. If "
+"you wish to terminate your account, you may simply discontinue using the "
+"Service."
+msgstr ""
+
+msgid "Limitation Of Liability"
+msgstr ""
+
+msgid ""
+"In no event shall MAKTUB Toys, nor its directors, employees, partners, "
+"agents, suppliers, or affiliates, be liable for any indirect, incidental, "
+"special, consequential, or punitive damages, including without limitation, "
+"loss of profits, data, use, goodwill, or other intangible losses, resulting "
+"from (i) your access to or use of or inability to access or use the Service; "
+"(ii) any conduct or content of any third party on the Service; (iii) any "
+"content obtained from the Service; and (iv) unauthorized access, use, or "
+"alteration of your transmissions or content, whether based on warranty, "
+"contract, tort (including negligence) or any other legal theory, whether or "
+"not we have been informed of the possibility of such damage, and even if a "
+"remedy set forth herein is found to have failed of its essential purpose."
+msgstr ""
+
+msgid "Disclaimer"
+msgstr ""
+
+msgid ""
+"Your use of the Service is at your sole risk. The Service is provided on an "
+"\"AS IS\" and \"AS AVAILABLE\" basis. The Service is provided without "
+"warranties of any kind, whether express or implied, including, but not "
+"limited to, implied warranties of merchantability, fitness for a particular "
+"purpose, non-infringement, or course of performance."
+msgstr ""
+
+msgid ""
+"MAKTUB Toys, its subsidiaries, affiliates, and its licensors do not warrant "
+"that a) the Service will function uninterrupted, secure, or available at any "
+"particular time or location; b) any errors or defects will be corrected; c) "
+"the Service is free of viruses or other harmful components; or d) the "
+"results of using the Service will meet your requirements."
+msgstr ""
+
+msgid "Governing Law"
+msgstr ""
+
+msgid ""
+"These Terms shall be governed and construed in accordance with the laws of "
+"the corresponding country of where the order is dispatched, without regard "
+"to its conflict of law provisions."
+msgstr ""
+
+msgid ""
+"Our failure to enforce any right or provision of these Terms will not be "
+"considered a waiver of those rights. If any provision of these Terms is held "
+"to be invalid or unenforceable by a court, the remaining provisions of these "
+"Terms will remain in effect. These Terms constitute the entire agreement "
+"between us regarding our Service, and supersede and replace any prior "
+"agreements we might have between us regarding the Service."
+msgstr ""
+
+#, fuzzy
+#| msgid "Save Changes"
+msgid "Changes"
+msgstr "حفظ التغييرات"
+
+msgid ""
+"We reserve the right, at our sole discretion, to modify or replace these "
+"Terms at any time. If a revision is material, we will try to provide at "
+"least 30 days' notice prior to any new terms taking effect. What constitutes "
+"a material change will be determined at our sole discretion."
+msgstr ""
+
+msgid ""
+"By continuing to access or use our Service after those revisions become "
+"effective, you agree to be bound by the revised terms. If you do not agree "
+"to the new terms, please stop using the Service."
+msgstr ""
+
+msgid "If you have any questions about these Terms, please contact us at"
+msgstr ""
+
+msgid "Verify your email"
+msgstr ""
+
+msgid "We sent a 6-digit code to"
+msgstr ""
+
+#, fuzzy
+#| msgid "Please click on the link below to confirm your registration."
+msgid "Enter it below to complete registration."
+msgstr "يرجى النقر على الرابط أدناه لتأكيد تسجيلك"
+
+msgid "Verification code"
+msgstr ""
+
+msgid "Verify and continue"
+msgstr ""
+
+msgid "Didn't get the code?"
+msgstr ""
+
+msgid "Resend OTP"
+msgstr ""
+
+#, python-format
+msgid "Models in the %(name)s application"
+msgstr ""
+
+msgid "Model name"
+msgstr ""
+
+msgid "Add link"
+msgstr ""
+
+msgid "Change or view list link"
+msgstr ""
+
+msgid "Add"
+msgstr ""
+
+msgid "You don't have permission to view or edit anything."
+msgstr ""
+
+msgid "Toggle navigation"
+msgstr ""
+
+msgid "Sidebar"
+msgstr ""
+
+msgid "Start typing to filter..."
+msgstr ""
+
+#, fuzzy
+#| msgid "Filter Categories"
+msgid "Filter navigation items"
+msgstr "تصفية الفئات"
+
+#, fuzzy
+#| msgid "Search products..."
+msgid "Search parcels"
+msgstr "البحث عن المنتجات..."
+
+#, fuzzy
+#| msgid "Filter Categories"
+msgid "Filter parcels"
+msgstr "تصفية الفئات"
+
+msgid "Refresh board"
+msgstr ""
+
+msgid "Search parcels, customers, phone, or order #"
+msgstr ""
+
+#, fuzzy
+#| msgid "Search Result"
+msgid "Search"
+msgstr "نتائج البحث"
+
+msgid "All statuses"
+msgstr ""
+
+msgid "Warehouse"
+msgstr ""
+
+msgid "All warehouses"
+msgstr ""
+
+#, fuzzy
+#| msgid "No results found"
+msgid "No warehouses found"
+msgstr "لم يتم العثور على نتائج"
+
+msgid "Apply filters"
+msgstr ""
+
+msgid "Clear"
+msgstr ""
+
+msgid "ago"
+msgstr ""
+
+#, fuzzy
+#| msgid "Change Password"
+msgid "Change status"
+msgstr "تغيير كلمة المرور"
+
+#, fuzzy
+#| msgid "Delivery"
+msgid "Delivery Date:"
+msgstr "التوصيل"
+
+#, fuzzy
+#| msgid "Order #"
+msgid "Order:"
+msgstr "الطلب رقم"
+
+msgid "Warehouse:"
+msgstr ""
+
+#, fuzzy
+#| msgid "Items found"
+msgid "Item Count:"
+msgstr "عناصر تم العثور عليها"
+
+msgid "Updated by:"
+msgstr ""
+
+msgid "Since:"
+msgstr ""
+
+msgid "No parcels here"
+msgstr ""
+
+msgid ""
+"Use search or filters to find parcels, or wait for items to enter this stage."
+msgstr ""
+
+#, python-format
+msgid "Showing %(visible)s of %(total)s parcels"
+msgstr ""
+
+msgid "Parcel pagination"
+msgstr ""
+
+#, fuzzy
+#| msgid "First Name"
+msgid "First"
+msgstr "الاسم الأول"
+
+msgid "Previous"
+msgstr "السابق"
+
+msgid "Next"
+msgstr "التالي"
+
+#, fuzzy
+#| msgid "Last Name"
+msgid "Last"
+msgstr "الاسم الأخير"
+
+msgid "Download"
+msgstr ""
+
+msgid "Info"
+msgstr ""
+
+msgid "Sku"
+msgstr ""
+
+msgid "Image"
+msgstr ""
+
+#, fuzzy
+#| msgid "Last Name"
+msgid "Name"
+msgstr "الاسم الأخير"
+
+#, fuzzy
+#| msgid "Items found"
+msgid "Item Code"
+msgstr "عناصر تم العثور عليها"
+
+msgid "Qty"
+msgstr ""
+
+msgid "Weight"
+msgstr ""
+
+msgid "History"
+msgstr ""
+
+msgid "Created By System"
+msgstr ""
+
+msgid "No admin history yet."
+msgstr ""
+
+msgid "Related Talabats"
+msgstr ""
+
+msgid ""
+"Bringing quality, innovation, and joy to homes across Qatar. Shop premium "
+"toys, lifestyle tech, and family essentials at MAKTUB Toys."
+msgstr ""
+
+msgid "MAKTUB Toys | Premium Toys & Essentials in Qatar"
+msgstr ""
+
+msgid "MAKTUB Toys - Shop Kids Toys Online"
+msgstr ""
+
+msgid "Notification"
+msgstr ""
+
+msgid "OK"
+msgstr ""
+
+msgid "Notice"
+msgstr ""
+
+#, fuzzy
+#| msgid "Total Orders"
+msgid "Track Order"
+msgstr "إجمالي الطلبات"
+
+msgid "Log out"
+msgstr "تسجيل الخروج"
+
+msgid "MAKTUB Toys Logo"
+msgstr "شعار مكتوب تويز"
+
+msgid ""
+"Bringing quality, innovation, and joy to homes across Qatar. At MAKTUB Toys, "
+"we curate premium toys, lifestyle tech, and essentials to keep your family "
+"smiling every step of the way."
+msgstr ""
+"نجلب الجودة والابتكار والبهجة إلى المنازل في قطر. في مكتوب تويز نختار ألعاباً مميزة وتقنية أسلوب حياة ومستلزمات أساسية لتبقى عائلتك سعيدة في كل خطوة."
+
+msgid "SHOP BY CATEGORY"
+msgstr "تسوق حسب الفئة"
+
+msgid "All Products"
+msgstr "جميع المنتجات"
+
+msgid "CUSTOMER SUPPORT"
+msgstr "دعم العملاء"
+
+msgid "Refund Policy"
+msgstr "سياسة الاسترجاع"
+
+msgid "Shipping Policy"
+msgstr "سياسة الشحن"
+
+msgid "GET IN TOUCH"
+msgstr "تواصل معنا"
+
+msgid ""
+"Building 30, Street 882 (Al Sana St), Zone 26 Najma, Al Doha Municipality, "
+"Doha, Qatar"
+msgstr ""
+"المبنى 30، شارع 882 (شارع الصناء)، المنطقة 26 النجمة، بلدية الدوحة، الدوحة، قطر"
+
+msgid "MAKTUB Toys. All Rights Reserved."
+msgstr "مكتوب تويز. جميع الحقوق محفوظة."
+
+msgid "daily essential Products"
+msgstr "المنتجات الأساسية اليومية"
+
+msgid "best Quality products delivered directly to your home."
+msgstr ".أفضل المنتجات ذات الجودة تصل مباشرةً إلى منزلك"
+
+msgid "Shop Now"
+msgstr "تسوق الآن"
+
+msgid "Our Top Categories"
+msgstr "أهم الفئات لدينا"
+
+msgid "Language"
+msgstr "اللغة"
+
+msgid "Contact us"
+msgstr "اتصل بنا"
+
+msgid "All category"
+msgstr "جميع الفئات"
+
+msgid "Our Products"
+msgstr "منتجاتنا"
+
+msgid "Search products..."
+msgstr "البحث عن المنتجات..."
+
+msgid "Welcome"
+msgstr "مرحباً"
+
+#, python-format
+msgid "Hi, %(name)s"
+msgstr "مرحباً، %(name)s"
+
+msgid "Profile"
+msgstr "الملف الشخصي"
+
+msgid "Logout"
+msgstr "تسجيل الخروج"
+
+msgid "Categories"
+msgstr "الفئات"
+
+msgid "View All Products"
+msgstr "عرض جميع المنتجات"
+
+msgid "Store"
+msgstr "المتجر"
+
+msgid "Search..."
+msgstr "بحث..."
+
+msgid "SHOP NOW"
+msgstr "تسوق الآن"
+
+msgid "Shop by Age"
+msgstr "تسوق حسب العمر"
+
+msgid "Top Trending Products"
+msgstr "أكثر المنتجات رواجًا"
+
+msgid "View All"
+msgstr "عرض الكل"
+
+msgid "ADD TO CART"
+msgstr "أضف إلى السلة"
+
+msgid "Selection of"
+msgstr "اختيار"
+
+msgid "Featured Products"
+msgstr "المنتجات المميزة"
+
+msgid "Thank you for your order!"
+msgstr "شكراً لطلبك!"
+
+msgid "Your order has been placed successfully."
+msgstr "تم تقديم طلبك بنجاح."
+
+msgid "Order Number"
+msgstr "رقم الطلب"
+
+msgid "Payment Method"
+msgstr "طريقة الدفع"
+
+msgid "Cash on Delivery"
+msgstr "الدفع عند الاستلام"
+
+#, python-format
+msgid ""
+"Please keep <strong>%(order.order_total)s QAR</strong> ready for the "
+"delivery agent."
+msgstr ""
+"يرجى تجهيز <strong>%(order.order_total)s ريال قطري</strong> لمندوب التوصيل."
+
+#, fuzzy
+#| msgid "Order Note"
+msgid "Ordered Items"
+msgstr "ملاحظة الطلب"
+
+msgid "Product"
+msgstr "منتج"
+
+msgid "Continue Shopping"
+msgstr "مواصلة التسوق"
+
+msgid "Thank you for your order! Your order #"
+msgstr "#شكراً لطلبك! رقم طلبك"
+
+msgid "LIVE TRACKING"
+msgstr "التتبع المباشر"
+
+msgid ""
+"You can follow the status of your delivery at any time by clicking the link "
+"below:"
+msgstr ":يمكنك متابعة حالة توصيلك في أي وقت من خلال النقر على الرابط أدناه"
+
+msgid "ORDER SUMMARY"
+msgstr "ملخص الطلب"
+
+msgid "Cash on Delivery (COD)"
+msgstr "الدفع عند الاستلام"
+
+msgid "We will contact you shortly to confirm the delivery time."
+msgstr "سنتواصل معك قريبًا لتأكيد موعد التسليم."
+
+msgid "Thank you for shopping with us!"
+msgstr "!شكراً لتسوقك معنا"
+
+msgid "Return Request"
+msgstr ""
+
+#, fuzzy
+#| msgid "Order #"
+msgid "Order"
+msgstr "الطلب رقم"
+
+msgid "A return request already exists for this order."
+msgstr ""
+
+msgid "Request ID"
+msgstr ""
+
+#, fuzzy
+#| msgid "Back to Store"
+msgid "Back to Order"
+msgstr "العودة إلى المتجر"
+
+#, fuzzy
+#| msgid "Select Options"
+msgid "Select a reason"
+msgstr "اختر الخيارات"
+
+msgid "Upload Images (Optional)"
+msgstr ""
+
+msgid "Up to 5 images. Allowed formats: JPG, PNG, WEBP."
+msgstr ""
+
+#, fuzzy
+#| msgid "Return to Store"
+msgid "Return Policy Notice"
+msgstr "العودة إلى المتجر"
+
+msgid "I understand that return shipping charges are my responsibility."
+msgstr ""
+
+msgid "I agree to the return and refund terms listed above."
+msgstr ""
+
+msgid "Submit Return Request"
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
+msgid "Track Your Order"
+msgstr ""
+
+msgid "Track"
+msgstr ""
+
+#, fuzzy
+#| msgid "Order Note"
+msgid "Order Placed"
+msgstr "ملاحظة الطلب"
+
+#, fuzzy
+#| msgid "Confirm Password"
+msgid "Confirmed"
+msgstr "تأكيد كلمة المرور"
+
+msgid "On the Way"
+msgstr "في الطريق"
+
+msgid "Delivered"
+msgstr "تم التسليم"
+
+#, fuzzy
+#| msgid "Order Tracking ID"
+msgid "Tracking ID"
+msgstr "رقم تتبع الطلب"
+
+msgid "Delivery Address"
+msgstr "عنوان التوصيل"
+
+msgid "Phone"
+msgstr "هاتف"
+
+#, fuzzy
+#| msgid "Order Summary"
+msgid "Payment Summary"
+msgstr "ملخص الطلب"
+
+msgid "Total Items"
+msgstr "إجمالي العناصر"
+
+#, fuzzy
+#| msgid "Payment Method"
+msgid "Method"
+msgstr "طريقة الدفع"
+
+msgid "Your Shopping Cart is Empty"
+msgstr "عربة التسوق الخاصة بك فارغة"
+
+msgid "Price"
+msgstr "السعر"
+
+msgid "QAR"
+msgstr "ريال"
+
+#, fuzzy
+#| msgid "QAR each"
+msgid "each"
+msgstr "ريال قطري لكل"
+
+msgid "Are you sure you want to remove this item?"
+msgstr "هل أنت متأكد أنك تريد إزالة هذا العنصر؟"
+
+msgid "Remove"
+msgstr "إزالة"
+
+msgid "Sub Total"
+msgstr "المجموع الفرعي"
+
+msgid "Delivery"
+msgstr "التوصيل"
+
+msgid "Checkout"
+msgstr "الدفع"
+
+msgid "Billing Address"
+msgstr "عنوان الفاتورة"
+
+msgid "Email"
+msgstr "البريد الإلكتروني"
+
+msgid "Choose your area in Qatar"
+msgstr "اختر منطقتك في قطر"
+
+msgid "Select the area closest to your delivery location."
+msgstr "اختر المنطقة الأقرب لموقع التوصيل."
+
+#, fuzzy
+#| msgid "Address Line 2"
+msgid "Address Line 2 (Optional)"
+msgstr "السطر الثاني من العنوان"
+
+#, fuzzy
+#| msgid "Street No."
+msgid "Street"
+msgstr "رقم الشارع"
+
+#, fuzzy
+#| msgid "Building No."
+msgid "Building"
+msgstr "رقم المبنى"
+
+msgid "Zone"
+msgstr ":المنطقة"
+
+msgid "Order Note"
+msgstr "ملاحظة الطلب"
+
+#, fuzzy
+#| msgid "Subtotal:"
+msgid "Subtotal"
+msgstr ":المجموع الفرعي"
+
+msgid "Pay in cash upon receiving your order at your doorstep."
+msgstr "ادفع نقدًا عند استلام طلبك عند باب منزلك"
+
+msgid "Complete Order"
+msgstr "إكمال الطلب"
+
+msgid "Product Image"
+msgstr "صورة المنتج"
+
+msgid "reviews"
+msgstr "مراجعات"
+
+msgid "In Stock"
+msgstr "متوفر في المخزن"
+
+msgid "Select"
+msgstr "اختر"
+
+msgid "Choose up to"
+msgstr "اختر حتى"
+
+msgid "Selections made:"
+msgstr ":الاختيارات التي تم تحديدها"
+
+msgid "Notify Me When Available"
+msgstr "أعلمني عند التوافر"
+
+msgid "Fast Delivery in Qatar"
+msgstr "المنتجات العامة"
+
 msgid "7 Days Easy Return"
 msgstr "إرجاع سهل خلال 7 أيام"
 
-#: .\templates\store\product_detail.html:137
-msgid "Write Your Review"
-msgstr "اكتب مراجعتك"
-
-#: .\templates\store\product_detail.html:139
-msgid "How do you rate this product?"
-msgstr "كيف تُقيّم هذا المنتج؟"
-
-#: .\templates\store\product_detail.html:154
-msgid "Review Title:"
-msgstr ":عنوان المراجعة"
-
-#: .\templates\store\product_detail.html:157
-msgid "Review:"
-msgstr "مراجعة"
-
-#: .\templates\store\product_detail.html:162
-msgid "Submit Review"
-msgstr "إرسال التقييم"
-
-#: .\templates\store\product_detail.html:164
-msgid "You must purchase this to post a review."
-msgstr "يجب عليك شراء هذا لتتمكن من كتابة تقييم."
-
-#: .\templates\store\product_detail.html:167
-msgid "You must be logged in to post a review."
-msgstr "يجب أن تقوم بتسجيل الدخول لنشر تقييم."
-
-#: .\templates\store\product_detail.html:167
-msgid "Login now"
-msgstr "تسجيل الدخول الآن"
-
-#: .\templates\store\product_detail.html:175
 msgid "Customer Reviews"
 msgstr "تقييمات العملاء"
 
-#: .\templates\store\product_detail.html:230
+#, fuzzy
+#| msgid "Write Your Review"
+msgid "Write a Review"
+msgstr "اكتب مراجعتك"
+
+msgid "Purchased this item? You can review it after buying!"
+msgstr ""
+
+#, fuzzy
+#| msgid "Login now"
+msgid "Login to Review"
+msgstr "تسجيل الدخول الآن"
+
+msgid "Write Your Review"
+msgstr "اكتب مراجعتك"
+
+msgid "How do you rate this product?"
+msgstr "كيف تُقيّم هذا المنتج؟"
+
+msgid "Review Title:"
+msgstr ":عنوان المراجعة"
+
+msgid "e.g. Amazing quality!"
+msgstr ""
+
+msgid "Review:"
+msgstr "مراجعة"
+
+msgid "Write your experience here..."
+msgstr ""
+
+msgid "Submit Review"
+msgstr "إرسال التقييم"
+
+msgid "More from"
+msgstr ""
+
+msgid "Sorry, this product is currently out of stock!"
+msgstr ""
+
 msgid "Please select"
 msgstr "يرجى الاختيار"
 
-#: .\templates\store\product_detail.html:230
 msgid "option for"
 msgstr "خيار لـ"
 
-#: .\templates\store\product_detail.html:233
 msgid "You must select exactly"
 msgstr "يجب أن تختار بالضبط"
 
-#: .\templates\store\product_detail.html:233
 msgid "options for"
 msgstr "خيار لـ"
 
-#: .\templates\store\product_detail.html:250
 msgid "Limit reached! You can only select"
 msgstr "تم الوصول إلى الحد! يمكنك فقط الاختيار"
 
-#: .\templates\store\product_detail.html:250
 msgid "items."
 msgstr ".عناصر"
 
-#: .\templates\store\store.html:28
+#, python-format
+msgid "Search results for \"%(keyword)s\" | MAKTUB Toys"
+msgstr "نتائج البحث عن \"%(keyword)s\" | مكتوب تويز"
+
+msgid "Shop All Products"
+msgstr "تسوق جميع المنتجات"
+
+#, python-format
+msgid ""
+"Shop %(category)s at MAKTUB Toys. Premium toys and family essentials "
+"delivered across Qatar."
+msgstr ""
+"تسوق %(category)s في مكتوب تويز. ألعاب ومستلزمات عائلية مميزة تُوصَّل في قطر."
+
+msgid ""
+"Browse premium toys, lifestyle tech, and family essentials at MAKTUB Toys. "
+"Fast delivery across Qatar."
+msgstr ""
+"تصفح ألعاباً مميزة وتقنية أسلوب حياة ومستلزمات العائلة في مكتوب تويز. توصيل سريع في قطر."
+
+msgid "Curated Collection"
+msgstr "مجموعة مختارة"
+
 msgid "Search Result"
 msgstr "نتائج البحث"
 
-#: .\templates\store\store.html:40
+msgid ""
+"Discover quality essentials, everyday favorites, and fresh arrivals in one "
+"elegant shopping experience."
+msgstr ""
+"اكتشف مستلزمات عالية الجودة والمفضلات اليومية والوصولات الجديدة في تجربة تسوق أنيقة."
+
+msgid "Fast Delivery"
+msgstr "توصيل سريع"
+
 msgid "Filter Categories"
 msgstr "تصفية الفئات"
 
-#: .\templates\store\store.html:61
+msgid "All Categories"
+msgstr "جميع الفئات"
+
+msgid "Filter by Age"
+msgstr "التصفية حسب العمر"
+
+msgid "All Ages"
+msgstr "جميع الأعمار"
+
+msgid "Clear All Filters"
+msgstr "مسح جميع عوامل التصفية"
+
 msgid "Items found"
 msgstr "عناصر تم العثور عليها"
 
-#: .\templates\store\store.html:79
+msgid "Sort by"
+msgstr "ترتيب حسب"
+
+msgid "Latest Items"
+msgstr "أحدث المنتجات"
+
+msgid "Price: Low to High"
+msgstr "السعر: من الأقل إلى الأعلى"
+
+msgid "Price: High to Low"
+msgstr "السعر: من الأعلى إلى الأقل"
+
+#, python-format
+msgid "Showing products for ages under %(selected_age)s"
+msgstr "عرض المنتجات للأعمار أقل من %(selected_age)s"
+
+#, python-format
+msgid "Showing products for ages above %(selected_age)s"
+msgstr "عرض المنتجات للأعمار أكبر من %(selected_age)s"
+
+#, python-format
+msgid "Showing products for ages %(min_age)s to %(max_age)s"
+msgstr "عرض المنتجات للأعمار من %(min_age)s إلى %(max_age)s"
+
+#, python-format
+msgid "Showing products for age %(selected_age)s"
+msgstr "عرض المنتجات للعمر %(selected_age)s"
+
 msgid "Out of Stock"
 msgstr "نفد من المخزون"
 
-#: .\templates\store\store.html:83
 msgid "Select Options"
 msgstr "اختر الخيارات"
 
-#: .\templates\store\store.html:87
 msgid "Add to Cart"
 msgstr "أضف إلى السلة"
 
-#: .\templates\store\store.html:98
 msgid "No results found"
 msgstr "لم يتم العثور على نتائج"
 
-#: .\templates\store\store.html:99
-msgid "Sorry, we couldn't find what you're looking for."
-msgstr ".عذراً، لم نتمكن من العثور على ما تبحث عنه"
+msgid ""
+"Try adjusting your search, age group, or category filter to find what you "
+"are looking for."
+msgstr "جرّب تعديل البحث أو الفئة العمرية أو تصنيف الفئة للعثور على ما تبحث عنه."
 
-#: .\templates\store\store.html:101
 msgid "Back to Store"
 msgstr "العودة إلى المتجر"
+
+#~ msgid "If you think it's not you, please ignore this email."
+#~ msgstr "إذا كنت تعتقد أن الأمر لا يخصك، يرجى تجاهل هذا البريد الإلكتروني"
+
+#~ msgid "Logged in as:"
+#~ msgstr ":تم تسجيل الدخول باسم"
+
+#~ msgid "Login here"
+#~ msgstr "تم التحقق بالفعل؟"
+
+#~ msgid "Billing Name"
+#~ msgstr "اسم الفاتورة"
+
+#~ msgid "Tax:"
+#~ msgstr ":الضريبة"
+
+#~ msgid "Print Invoice"
+#~ msgstr "طباعة الفاتورة"
+
+#~ msgid "General Products | One of the Best Online Shopping Platform"
+#~ msgstr ".إذا كنت تعتقد أنه ليس لك، يرجى تجاهل هذا البريد الإلكتروني"
+
+#~ msgid "Important"
+#~ msgstr "مهم"
+
+#~ msgid "2026 General Products"
+#~ msgstr "2026 منتجات عامة "
+
+#~ msgid "Doha, Qatar"
+#~ msgstr "الدوحة، قطر"
+
+#~ msgid "Welcome!"
+#~ msgstr "مرحباً بك!"
+
+#~ msgid "Our Top Category"
+#~ msgstr "فئتنا الأولى"
+
+#~ msgid "Top Offer"
+#~ msgstr "أفضل عرض"
+
+#~ msgid "Received"
+#~ msgstr "تم الاستلام"
+
+#~ msgid "Packed"
+#~ msgstr "معبأ"
+
+#~ msgid "Bldg"
+#~ msgstr ":مبنى"
+
+#~ msgid "You must purchase this to post a review."
+#~ msgstr "يجب عليك شراء هذا لتتمكن من كتابة تقييم."
+
+#~ msgid "You must be logged in to post a review."
+#~ msgstr "يجب أن تقوم بتسجيل الدخول لنشر تقييم."
+
+#~ msgid "Sorry, we couldn't find what you're looking for."
+#~ msgstr ".عذراً، لم نتمكن من العثور على ما تبحث عنه"

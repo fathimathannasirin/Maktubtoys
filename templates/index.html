@@ -342,13 +342,10 @@
 
     {# --- 2. SHOP BY AGE --- #}
     <div class="shop-by-age-section">
-        <div class="shop-by-age-title">Shop by Age</div>
+        <div class="shop-by-age-title">{% trans "Shop by Age" %}</div>
         <div class="age-pills-container">
-            <a href="#" class="age-pill" style="background-color: #f7b05b;">DOLL</a>
-            <a href="#" class="age-pill" style="background-color: #f3807d;">LAMP</a>
             <a href="{% url 'store' %}?min_age=1&max_age=3" class="age-pill" style="background-color: #4ecdc4;">1-3Y</a>
             <a href="{% url 'store' %}?min_age=3&max_age=6" class="age-pill" style="background-color: #45b7d1;">3-6Y</a>
-            <a href="#" class="age-pill" style="background-color: #f99846;">SALE</a>
         </div>
     </div>
 

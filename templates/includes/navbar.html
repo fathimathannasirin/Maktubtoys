@@ -293,7 +293,7 @@
             <div class="row align-items-center">
                 <div class="col-lg-2 col-md-3 col-5">
                     <a href="{% url 'home' %}" class="brand-wrap">
-                        <img class="logo" src="{% static 'images/maktub_navbar_692x250_larger_transparent.png' %}" alt="MAKTUB Toys Logo" style="max-height: 70px; width: auto;">
+                        <img class="logo" src="{% static 'images/maktub_navbar_692x250_larger_transparent.png' %}" alt="{% trans 'MAKTUB Toys Logo' %}" style="max-height: 70px; width: auto;">
                     </a>
                 </div>
 
@@ -343,7 +343,7 @@
                                     <a href="{% url 'register' %}">{% trans "Register" %}</a>
                                 </div>
                             {% else %}
-                                <small class="title d-block">Hi, {{user.first_name}}</small>
+                                <small class="title d-block">{% blocktrans with name=user.first_name %}Hi, {{ name }}{% endblocktrans %}</small>
                                 <div class="user-links d-flex justify-content-end">
                                     <a href="{% url 'dashboard' %}">{% trans "Profile" %}</a>
                                     <span class="sep">|</span>
