@@ -1,0 +1,5 @@
+{% extends "admin/change_form.html" %}
+{% block extrahead %}
+{{ block.super }}
+<meta name="warehousing-product-lookup" content="{{ product_lookup_url }}" data-returnable="{{ product_lookup_returnable|default:'1' }}">
+{% endblock %}

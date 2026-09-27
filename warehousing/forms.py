@@ -19,14 +19,14 @@ class PurchaseItemInlineForm(forms.ModelForm):
         model = PurchaseItem
         fields = ('product_code', 'product', 'old_upc', 'quantity', 'unit_cost', 'received_quantity')
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, supplier_id=None, **kwargs):
         super().__init__(*args, **kwargs)
 
-        product_qs = Product.objects.all()
-        if self.instance and self.instance.pk and self.instance.purchase:
-            purchase = self.instance.purchase
-            if purchase.supplier:
-                product_qs = product_qs.filter(supplier=purchase.supplier)
+        product_qs = Product.objects.all().order_by('product_name')
+        if not supplier_id and self.instance and self.instance.pk and self.instance.purchase:
+            supplier_id = self.instance.purchase.supplier_id
+        if supplier_id:
+            product_qs = product_qs.filter(supplier_id=supplier_id)
 
         self.fields['product'].queryset = product_qs
         self.fields['product_code'].queryset = product_qs
@@ -68,20 +68,22 @@ class ReturnItemInlineForm(forms.ModelForm):
         model = ReturnItem
         fields = ('product_code', 'product', 'old_upc', 'quantity', 'unit_cost', 'notes')
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, supplier_id=None, warehouse_id=None, **kwargs):
         super().__init__(*args, **kwargs)
-        product_qs = Product.objects.all()
+        product_qs = Product.objects.all().order_by('product_name')
 
         if self.instance and self.instance.pk and self.instance.return_record:
             return_rec = self.instance.return_record
-            if return_rec.supplier or return_rec.warehouse:
-                # Only products actually purchased from this supplier/warehouse can be returned.
-                purchased_items = PurchaseItem.objects.all()
-                if return_rec.supplier:
-                    purchased_items = purchased_items.filter(purchase__supplier=return_rec.supplier)
-                if return_rec.warehouse:
-                    purchased_items = purchased_items.filter(purchase__warehouse=return_rec.warehouse)
-                product_qs = product_qs.filter(id__in=purchased_items.values_list('product_id', flat=True).distinct())
+            supplier_id = supplier_id or return_rec.supplier_id
+            warehouse_id = warehouse_id or return_rec.warehouse_id
+
+        if supplier_id or warehouse_id:
+            purchased_items = PurchaseItem.objects.all()
+            if supplier_id:
+                purchased_items = purchased_items.filter(purchase__supplier_id=supplier_id)
+            if warehouse_id:
+                purchased_items = purchased_items.filter(purchase__warehouse_id=warehouse_id)
+            product_qs = product_qs.filter(id__in=purchased_items.values_list('product_id', flat=True).distinct())
 
         self.fields['product'].queryset = product_qs
         self.fields['product_code'].queryset = product_qs

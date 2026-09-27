@@ -186,8 +186,10 @@ class PurchaseItem(models.Model):
         return f"{self.purchase.purchase_number} - {self.product.product_name}"
 
     def save(self, *args, **kwargs):
-        if self.product and hasattr(self.product, 'cost_price'):
-            self.unit_cost = self.product.cost_price
+        if self.product_id and not self.unit_cost:
+            cost = getattr(self.product, 'cost_price', None)
+            if cost:
+                self.unit_cost = cost
 
         old_item = None
         old_received = 0

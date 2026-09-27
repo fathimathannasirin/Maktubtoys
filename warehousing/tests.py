@@ -64,3 +64,34 @@ class PurchaseOrderDocumentTests(TestCase):
         self.assertContains(print_response, 'OUTBOUND')
         self.assertEqual(pdf_response['Content-Type'], 'application/pdf')
         self.assertIn(return_record.return_number, pdf_response['Content-Disposition'])
+
+
+class PurchaseProductLookupTests(TestCase):
+    def setUp(self):
+        self.user = get_user_model().objects.create_superuser(
+            'Lookup', 'Admin', 'lookup-admin@example.com', 'admin', 'password'
+        )
+        category = Category.objects.create(category_name='Lookup Cat', slug='lookup-cat')
+        self.supplier = Supplier.objects.create(name='Lookup Supplier')
+        other_supplier = Supplier.objects.create(name='Other Supplier')
+        self.own_product = Product.objects.create(
+            product_name='Red Truck', slug='red-truck', price=Decimal('30.00'),
+            cost_price=Decimal('12.50'), images='photos/products/test.png', stock=1,
+            category=category, supplier=self.supplier, product_code='RT-100',
+        )
+        Product.objects.create(
+            product_name='Blue Car', slug='blue-car', price=Decimal('40.00'),
+            cost_price=Decimal('18.00'), images='photos/products/test.png', stock=1,
+            category=category, supplier=other_supplier, product_code='BC-200',
+        )
+        self.client.force_login(self.user)
+
+    def test_lookup_returns_only_selected_supplier_products(self):
+        url = reverse('admin:warehousing_purchase_product_lookup')
+        response = self.client.get(url, {'supplier_id': self.supplier.id, 'q': 'red'})
+        self.assertEqual(response.status_code, 200)
+        names = [item['name'] for item in response.json()['products']]
+        self.assertIn('Red Truck', names)
+        self.assertNotIn('Blue Car', names)
+        truck = next(item for item in response.json()['products'] if item['name'] == 'Red Truck')
+        self.assertEqual(truck['cost_price'], 12.5)

@@ -13,6 +13,7 @@ from reportlab.platypus import Image as ReportLabImage, Paragraph, SimpleDocTemp
 
 from .forms import PurchaseItemInlineForm, ReturnItemInlineForm
 from .models import Purchase, PurchaseItem, Return, ReturnItem, Supplier, Warehouse
+from .views import lookup_products
 
 
 class WarehouseInline(admin.TabularInline):
@@ -56,7 +57,7 @@ class WarehouseAdmin(admin.ModelAdmin):
         }),
         ('Shipping', {
             'fields': ('delivery_days',),
-            'description': 'Own warehouse always delivers the same day before 7:00 PM, or the next day after 7:00 PM. For other warehouses, this is the number of days from the order date.',
+            'description': 'Own warehouse always delivers the same when ordered by 19:00. Orders after 19:00 move to the next day. For other warehouses, this is the number of days from the order date.',
         }),
     )
 
@@ -94,8 +95,21 @@ class PurchaseItemInline(admin.TabularInline):
     fields = ('product_code', 'product', 'old_upc', 'quantity', 'unit_cost', 'received_quantity')
 
     class Media:
-        js = ('js/purchaseitem_code_sync.js',)
+        js = ('js/warehousing_product_search.js',)
         css = {'all': ('css/custom.css',)}
+
+    def get_formset(self, request, obj=None, **kwargs):
+        supplier_id = getattr(obj, 'supplier_id', None)
+        if request.method == 'POST':
+            supplier_id = request.POST.get('supplier') or supplier_id
+
+        class BoundForm(PurchaseItemInlineForm):
+            def __init__(self, *args, **inner_kwargs):
+                inner_kwargs['supplier_id'] = supplier_id
+                super().__init__(*args, **inner_kwargs)
+
+        kwargs['form'] = BoundForm
+        return super().get_formset(request, obj, **kwargs)
 
 
 @admin.register(Purchase)
@@ -113,10 +127,17 @@ class PurchaseAdmin(admin.ModelAdmin):
     def get_urls(self):
         urls = super().get_urls()
         purchase_urls = [
+            path('lookup-products/', self.admin_site.admin_view(lookup_products), name='warehousing_purchase_product_lookup'),
             path('<int:object_id>/purchase-order/print/', self.admin_site.admin_view(self.print_purchase_order), name='warehousing_purchase_print'),
             path('<int:object_id>/purchase-order/pdf/', self.admin_site.admin_view(self.purchase_order_pdf), name='warehousing_purchase_pdf'),
         ]
         return purchase_urls + urls
+
+    def changeform_view(self, request, object_id=None, form_url='', extra_context=None):
+        extra_context = extra_context or {}
+        extra_context['product_lookup_url'] = reverse('admin:warehousing_purchase_product_lookup')
+        extra_context['product_lookup_returnable'] = '0'
+        return super().changeform_view(request, object_id, form_url, extra_context)
 
     def purchase_order_links(self, obj):
         print_url = reverse('admin:warehousing_purchase_print', args=[obj.pk])
@@ -239,8 +260,24 @@ class ReturnItemInline(admin.TabularInline):
     fields = ('product_code', 'product', 'old_upc', 'quantity', 'unit_cost', 'notes')
 
     class Media:
-        js = ('js/returnitem_code_sync.js',)
+        js = ('js/warehousing_product_search.js',)
         css = {'all': ('css/custom.css',)}
+
+    def get_formset(self, request, obj=None, **kwargs):
+        supplier_id = getattr(obj, 'supplier_id', None)
+        warehouse_id = getattr(obj, 'warehouse_id', None)
+        if request.method == 'POST':
+            supplier_id = request.POST.get('supplier') or supplier_id
+            warehouse_id = request.POST.get('warehouse') or warehouse_id
+
+        class BoundForm(ReturnItemInlineForm):
+            def __init__(self, *args, **inner_kwargs):
+                inner_kwargs['supplier_id'] = supplier_id
+                inner_kwargs['warehouse_id'] = warehouse_id
+                super().__init__(*args, **inner_kwargs)
+
+        kwargs['form'] = BoundForm
+        return super().get_formset(request, obj, **kwargs)
 
 
 @admin.register(Return)
@@ -258,10 +295,17 @@ class ReturnAdmin(admin.ModelAdmin):
     def get_urls(self):
         urls = super().get_urls()
         return_urls = [
+            path('lookup-products/', self.admin_site.admin_view(lookup_products), name='warehousing_return_product_lookup'),
             path('<int:object_id>/return-document/print/', self.admin_site.admin_view(self.print_return_document), name='warehousing_return_print'),
             path('<int:object_id>/return-document/pdf/', self.admin_site.admin_view(self.return_document_pdf), name='warehousing_return_pdf'),
         ]
         return return_urls + urls
+
+    def changeform_view(self, request, object_id=None, form_url='', extra_context=None):
+        extra_context = extra_context or {}
+        extra_context['product_lookup_url'] = reverse('admin:warehousing_return_product_lookup')
+        extra_context['product_lookup_returnable'] = '1'
+        return super().changeform_view(request, object_id, form_url, extra_context)
 
     def return_document_links(self, obj):
         print_url = reverse('admin:warehousing_return_print', args=[obj.pk])
