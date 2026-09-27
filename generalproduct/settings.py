@@ -101,6 +101,7 @@ LANGUAGES = [
 ]
 
 MIDDLEWARE = [
+    'generalproduct.middleware.MarkHttpsBehindProxyMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -229,16 +230,20 @@ DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default=EMAIL_HOST_USER or 'we
 SERVER_EMAIL = DEFAULT_FROM_EMAIL
 
 # Add this to the bottom of settings.py
-CSRF_TRUSTED_ORIGINS = [
-    'http://localhost:8000',
-    'http://127.0.0.1:8000',
-    'http://187.52.124.127',
-    'https://187.52.124.127',
-    'http://maktubtoys.com',
-    'https://maktubtoys.com',
-    'http://www.maktubtoys.com',
-    'https://www.maktubtoys.com',
-]
+USE_X_FORWARDED_HOST = config('USE_X_FORWARDED_HOST', default=True, cast=bool)
+USE_X_FORWARDED_PORT = True
+CSRF_TRUSTED_ORIGINS = _split_csv(config(
+    'CSRF_TRUSTED_ORIGINS',
+    default=(
+        'https://maktubtoys.com,https://www.maktubtoys.com,'
+        'https://187.52.124.127,http://187.52.124.127,'
+        'http://localhost:8000,http://127.0.0.1:8000,'
+        'https://localhost:8000,https://127.0.0.1:8000'
+    ),
+))
+CSRF_COOKIE_SAMESITE = 'Lax'
+SESSION_COOKIE_SAMESITE = 'Lax'
+CSRF_COOKIE_HTTPONLY = False
 
 SECURE_SSL_REDIRECT = config('SECURE_SSL_REDIRECT', default=(not DEBUG and not RUNNING_TESTS), cast=bool)
 SESSION_COOKIE_SECURE = config('SESSION_COOKIE_SECURE', default=not DEBUG, cast=bool)
