@@ -9,11 +9,20 @@
 
 <style>
     /* --- 1. HERO CAROUSEL --- */
-    .banner-carousel { position: relative; margin: 20px 40px; overflow: hidden; border-radius: 10px; }
-    .carousel-inner { position: relative; width: 100%; height: 420px; }
-    .carousel-item { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 0.6s ease-in-out; }
-    .carousel-item.active { opacity: 1; position: relative; }
-    .carousel-image { object-fit: cover; height: 100%; width: 100%; image-rendering: -webkit-optimize-contrast; }
+    .banner-carousel { position: relative; margin: 20px 40px; overflow: hidden; border-radius: 10px; background: #faf7f2; }
+    .carousel-inner { position: relative; width: 100%; height: auto; }
+    .carousel-item { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; pointer-events: none; transition: opacity 0.6s ease-in-out; }
+    .carousel-item.active { opacity: 1; position: relative; height: auto; pointer-events: auto; }
+    .carousel-item a { display: block; line-height: 0; }
+    .carousel-image {
+        display: block;
+        width: 100%;
+        height: auto;
+        max-height: 420px;
+        object-fit: contain;
+        object-position: center;
+        background: #faf7f2;
+    }
     .carousel-control { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.4); color: #fff; border: none; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; cursor: pointer; z-index: 5; }
     .carousel-control.prev { left: 16px; }
     .carousel-control.next { right: 16px; }
@@ -232,9 +241,9 @@
         width: 100%; 
         height: auto; 
         max-height: 400px; 
-        object-fit: cover; 
+        object-fit: contain; 
         display: block; 
-        image-rendering: -webkit-optimize-contrast; 
+        background: #faf7f2;
     }
 
     .bottom-promo-cards { 
@@ -285,8 +294,14 @@
         .category-item-go { flex: 0 0 calc(50% - 8px); min-width: calc(50% - 8px); max-width: none; }
         .cat-circle-container { width: 80px; height: 80px; }
         .img-wrap-go { height: 160px; }
-        .carousel-inner, .hero-section { height: 260px; min-height: 260px; }
-        .between-section-offer img { max-height: 160px; }
+        .carousel-inner { height: auto; min-height: 0; }
+        .hero-section { height: auto; min-height: 220px; }
+        .banner-carousel { margin: 12px; }
+        .carousel-image { max-height: none; }
+        .carousel-control { width: 36px; height: 36px; font-size: 1.1rem; }
+        .carousel-control.prev { left: 8px; }
+        .carousel-control.next { right: 8px; }
+        .between-section-offer img { max-height: none; object-fit: contain; }
         .bottom-promo-cards { flex-direction: column; }
         .section-header-go h4 { font-size: 1.2rem; }
     }
