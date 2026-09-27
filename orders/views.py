@@ -12,6 +12,7 @@ from django.db import transaction
 from django.db.models import ExpressionWrapper, F, FloatField, Sum
 from .forms import OrderForm, ReturnRequestForm
 from .models import Order, OrderProduct, Parcel, ReturnRequest, ReturnRequestImage
+from .qatar_areas import QATAR_AREAS
 from store.models import Product
 from warehousing.models import ProductWarehouseStock
 from django.template.loader import render_to_string
@@ -324,6 +325,7 @@ def place_order(request, total=0, quantity=0):
                 'total': total,
                 'delivery_charge': delivery_charge,
                 'grand_total': grand_total,
+                'qatar_areas': QATAR_AREAS,
             }
             return render(request, 'store/checkout.html', context)
 

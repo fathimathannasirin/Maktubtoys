@@ -6,6 +6,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from decimal import Decimal
+from orders.qatar_areas import QATAR_AREAS
 
 # Create your views here.
 def _cart_id(request):
@@ -249,5 +250,6 @@ def checkout(request, total=0,quantity=0,cart_items=None):
         'cart_items':cart_items,
         'delivery_charge': delivery_charge,
         'grand_total': grand_total,
+        'qatar_areas': QATAR_AREAS,
     }
     return render(request,'store/checkout.html',context)

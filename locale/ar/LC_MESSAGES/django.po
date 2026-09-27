@@ -102,6 +102,14 @@ msgstr "صورة الملف الشخصي"
 msgid "Address Line 1"
 msgstr "العنوان 1"
 
+#: .\templates\store\checkout.html:175
+msgid "Choose your area in Qatar"
+msgstr "اختر منطقتك في قطر"
+
+#: .\templates\store\checkout.html:180
+msgid "Select the area closest to your delivery location."
+msgstr "اختر المنطقة الأقرب لموقع التوصيل."
+
 #: .\templates\accounts\edit_profile.html:79 .\templates\store\checkout.html:42
 msgid "Address Line 2"
 msgstr "السطر الثاني من العنوان"

@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load i18n %}{% load l10n %}{% load static %}
+{% get_current_language as LANGUAGE_CODE %}
 
 {% block meta_robots %}noindex, nofollow{% endblock %}
 
@@ -172,26 +173,9 @@
                                     required
                                 >
                                     <option value="" disabled {% if not request.POST.address_line_1 %}selected{% endif %}>{% trans "Choose your area in Qatar" %}</option>
-                                    <option value="Al Wukair" {% if request.POST.address_line_1 == 'Al Wukair' %}selected{% endif %}>Al Wukair</option>
-                                    <option value="Al Wakra" {% if request.POST.address_line_1 == 'Al Wakra' %}selected{% endif %}>Al Wakra</option>
-                                    <option value="Al Thumama" {% if request.POST.address_line_1 == 'Al Thumama' %}selected{% endif %}>Al Thumama</option>
-                                    <option value="Doha" {% if request.POST.address_line_1 == 'Doha' %}selected{% endif %}>Doha</option>
-                                    <option value="Lusail" {% if request.POST.address_line_1 == 'Lusail' %}selected{% endif %}>Lusail</option>
-                                    <option value="Al Rayyan" {% if request.POST.address_line_1 == 'Al Rayyan' %}selected{% endif %}>Al Rayyan</option>
-                                    <option value="Umm Salal Ali" {% if request.POST.address_line_1 == 'Umm Salal Ali' %}selected{% endif %}>Umm Salal Ali</option>
-                                    <option value="Al Khor" {% if request.POST.address_line_1 == 'Al Khor' %}selected{% endif %}>Al Khor</option>
-                                    <option value="Mesaieed" {% if request.POST.address_line_1 == 'Mesaieed' %}selected{% endif %}>Mesaieed</option>
-                                    <option value="Muaither" {% if request.POST.address_line_1 == 'Muaither' %}selected{% endif %}>Muaither</option>
-                                    <option value="Al Gharrafa" {% if request.POST.address_line_1 == 'Al Gharrafa' %}selected{% endif %}>Al Gharrafa</option>
-                                    <option value="Al Sadd" {% if request.POST.address_line_1 == 'Al Sadd' %}selected{% endif %}>Al Sadd</option>
-                                    <option value="West Bay" {% if request.POST.address_line_1 == 'West Bay' %}selected{% endif %}>West Bay</option>
-                                    <option value="The Pearl" {% if request.POST.address_line_1 == 'The Pearl' %}selected{% endif %}>The Pearl</option>
-                                    <option value="Madinat Khalifa" {% if request.POST.address_line_1 == 'Madinat Khalifa' %}selected{% endif %}>Madinat Khalifa</option>
-                                    <option value="Industrial Area" {% if request.POST.address_line_1 == 'Industrial Area' %}selected{% endif %}>Industrial Area</option>
-                                    <option value="Najma" {% if request.POST.address_line_1 == 'Najma' %}selected{% endif %}>Najma</option>
-                                    <option value="Abu Hamour" {% if request.POST.address_line_1 == 'Abu Hamour' %}selected{% endif %}>Abu Hamour</option>
-                                    <option value="Old Airport" {% if request.POST.address_line_1 == 'Old Airport' %}selected{% endif %}>Old Airport</option>
-                                    <option value="Al Dafna" {% if request.POST.address_line_1 == 'Al Dafna' %}selected{% endif %}>Al Dafna</option>
+                                    {% for area_en, area_ar in qatar_areas %}
+                                    <option value="{{ area_en }}" {% if request.POST.address_line_1 == area_en %}selected{% endif %}>{% if LANGUAGE_CODE == 'ar' %}{{ area_ar }}{% else %}{{ area_en }}{% endif %}</option>
+                                    {% endfor %}
                                 </select>
                                 <small class="text-muted d-block mt-1">{% trans "Select the area closest to your delivery location." %}</small>
                             </div>
