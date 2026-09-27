@@ -83,8 +83,10 @@ class Warehouse(models.Model):
 
     def get_delivery_date(self, ordered_at=None):
         ordered_at = timezone.localtime(ordered_at or timezone.now())
-        cutoff_days = 0 if ordered_at.time() <= time(19, 0) else 1
-        return ordered_at.date() + timedelta(days=self.delivery_days + cutoff_days)
+        if self.code == 'OWN':
+            cutoff_days = 0 if ordered_at.time() <= time(19, 0) else 1
+            return ordered_at.date() + timedelta(days=cutoff_days)
+        return ordered_at.date() + timedelta(days=self.delivery_days)
 
 
 class ProductWarehouseStock(models.Model):

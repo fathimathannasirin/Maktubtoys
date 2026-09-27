@@ -123,6 +123,10 @@
                                 </div>
                                 <figcaption class="info">
                                     <a href="{{ cart_item.product.get_url }}" class="title text-dark font-weight-bold">{{ cart_item.product.product_name }}</a>
+                                    {% include 'includes/delivery_badge.html' with product=cart_item.product %}
+                                    {% if cart_item.delivery_estimate %}
+                                    <p class="small mb-0" style="color:#481616;">{{ cart_item.delivery_estimate.message }} ({{ cart_item.delivery_estimate.eta_date|date:"d M Y" }})</p>
+                                    {% endif %}
                                     <p class="text-muted small">
                                         {% if cart_item.variations.all %}
                                             {% for item in cart_item.variations.all %}
@@ -173,12 +177,18 @@
                         <dd class="text-right">{{ total|unlocalize }} {% trans "QAR" %}</dd>
                     </dl>
                     <dl class="dlist-align">
-                        <dt>Delivery Charge:</dt>
-                        <dd class="text-right">QAR {{ delivery_charge }}</dd>
+                        <dt>{% trans "Delivery" %}:</dt>
+                        <dd class="text-right">
+                            {% if is_free_delivery %}
+                                {% trans "Free delivery" %}
+                            {% else %}
+                                {{ delivery_charge|unlocalize }} {% trans "QAR" %}
+                            {% endif %}
+                        </dd>
                     </dl>
                     <dl class="dlist-align">
                         <dt class="font-weight-bold text-dark">{% trans "Total" %}:</dt>
-                        <dd class="text-right text-dark h5"><strong>{{ total|unlocalize }} {% trans "QAR" %} </strong></dd>
+                        <dd class="text-right text-dark h5"><strong>{{ grand_total|unlocalize }} {% trans "QAR" %} </strong></dd>
                     </dl>
                     <hr>
                     <p class="text-center mb-3">

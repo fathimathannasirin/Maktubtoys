@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from decimal import Decimal
 from orders.qatar_areas import QATAR_AREAS
+from store.delivery import cart_delivery_charge, get_delivery_estimate
 
 # Create your views here.
 def _cart_id(request):
@@ -189,67 +190,48 @@ def remove_cart_item(request,product_id, cart_item_id):
     cart_item.delete()
     return redirect('cart')
 
-def cart(request, total=0, quantity=0, cart_items=None):
+def _cart_checkout_context(request):
+    total = Decimal('0')
+    quantity = 0
     delivery_charge = Decimal('0')
     grand_total = Decimal('0')
+    cart_items = CartItem.objects.none()
     try:
         if request.user.is_authenticated:
-            cart_items=CartItem.objects.filter(user=request.user, is_active=True)
+            cart_items = CartItem.objects.filter(user=request.user, is_active=True).select_related(
+                'product__warehouse'
+            )
         else:
             cart = Cart.objects.get(cart_id=_cart_id(request))
-            cart_items = CartItem.objects.filter(cart=cart, is_active=True).order_by('id')
+            cart_items = CartItem.objects.filter(cart=cart, is_active=True).select_related(
+                'product__warehouse'
+            ).order_by('id')
         for cart_item in cart_items:
-            total += (cart_item.product.price * cart_item.quantity)
+            total += cart_item.product.price * cart_item.quantity
             quantity += cart_item.quantity
-
+            cart_item.delivery_estimate = get_delivery_estimate(cart_item.product)
         if cart_items.exists():
-            delivery_charge = Decimal('20.0')  # Flat Delivery Charge of 20 QAR
-            grand_total = total + delivery_charge
-        else:
-            grand_total = total
+            delivery_charge = cart_delivery_charge(cart_items)
+        grand_total = total + delivery_charge
     except ObjectDoesNotExist:
         cart_items = CartItem.objects.none()
         grand_total = total
-
-    context= {
-        'total' : total,
+    return {
+        'total': total,
         'quantity': quantity,
-        'cart_items':cart_items,
+        'cart_items': cart_items,
         'delivery_charge': delivery_charge,
+        'is_free_delivery': delivery_charge == 0,
         'grand_total': grand_total,
     }
-    return render(request, 'store/cart.html',context)
+
+
+def cart(request):
+    return render(request, 'store/cart.html', _cart_checkout_context(request))
+
 
 @login_required(login_url='login')
-def checkout(request, total=0,quantity=0,cart_items=None):
-    delivery_charge = Decimal('0')
-    grand_total = Decimal('0')
-    try:
-        if request.user.is_authenticated:
-            cart_items=CartItem.objects.filter(user=request.user, is_active=True)
-        else:
-            cart = Cart.objects.get(cart_id=_cart_id(request))
-            cart_items = CartItem.objects.filter(cart=cart, is_active=True).order_by('id')
-        for cart_item in cart_items:
-            total += (cart_item.product.price * cart_item.quantity)
-            quantity += cart_item.quantity
-
-        if cart_items.exists():
-            delivery_charge = Decimal('20.0')  # Flat Delivery Charge of 20 QAR
-            grand_total = total + delivery_charge
-        else:
-            grand_total = total
-
-    except ObjectDoesNotExist:
-        cart_items = CartItem.objects.none()
-        grand_total = total
-
-    context= {
-        'total' : total,
-        'quantity': quantity,
-        'cart_items':cart_items,
-        'delivery_charge': delivery_charge,
-        'grand_total': grand_total,
-        'qatar_areas': QATAR_AREAS,
-    }
-    return render(request,'store/checkout.html',context)
+def checkout(request):
+    context = _cart_checkout_context(request)
+    context['qatar_areas'] = QATAR_AREAS
+    return render(request, 'store/checkout.html', context)

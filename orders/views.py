@@ -16,9 +16,9 @@ from .qatar_areas import QATAR_AREAS
 from store.models import Product
 from warehousing.models import ProductWarehouseStock
 from django.template.loader import render_to_string
-import datetime
 from django.core.mail import EmailMessage, get_connection
 from django.conf import settings
+from store.delivery import cart_delivery_charge, get_delivery_estimate, order_delivery_type
 
 
 ALLOWED_RETURN_IMAGE_EXTENSIONS = {'.jpg', '.jpeg', '.png', '.webp'}
@@ -166,8 +166,7 @@ def place_order(request, total=0, quantity=0):
     if not cart_items:
         return redirect('store')
     now = timezone.localtime()
-    cutoff_time = datetime.time(19, 0, 0) # 7:00 PM
-    delivery_type = "Same-Day Delivery"
+    warehouses_used = []
     for item in cart_items:
         if item.quantity > item.product.stock:
             messages.error(
@@ -183,17 +182,16 @@ def place_order(request, total=0, quantity=0):
                 f"Sorry, {item.product.product_name} is not available in the required warehouse quantity.",
             )
             return redirect('cart')
-        if any(warehouse.code != 'OWN' for warehouse, _ in supplying_warehouses) or now.time() > cutoff_time:
-            delivery_type = "2-Day Delivery"
-            break
+        warehouses_used.extend(warehouse for warehouse, _quantity in supplying_warehouses)
+
+    delivery_type = order_delivery_type(warehouses_used, now)
+    delivery_charge = cart_delivery_charge(cart_items)
 
     grand_total = 0
-    delivery_charge = Decimal('20.0')
     for cart_item in cart_items:
         total += (cart_item.product.price * cart_item.quantity)
         quantity += cart_item.quantity
-    
-    
+
     grand_total = total + delivery_charge
 
     if request.method == 'POST':
@@ -319,11 +317,14 @@ def place_order(request, total=0, quantity=0):
             return redirect(f'/orders/order_complete/?order_number={order_number}')
         else:
             # If form is invalid, stay on checkout and show errors
+            for item in cart_items:
+                item.delivery_estimate = get_delivery_estimate(item.product)
             context = {
                 'form': form,
                 'cart_items': cart_items,
                 'total': total,
                 'delivery_charge': delivery_charge,
+                'is_free_delivery': delivery_charge == 0,
                 'grand_total': grand_total,
                 'qatar_areas': QATAR_AREAS,
             }

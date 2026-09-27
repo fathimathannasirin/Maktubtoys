@@ -1,11 +1,7 @@
 import re
-from datetime import time
 from urllib.parse import urlencode
 
 from django.shortcuts import render,get_object_or_404,redirect
-from django.http import JsonResponse
-from django.urls import reverse
-from django.utils import timezone
 from store.models import Product
 from category.models import Category
 from carts.models import CartItem
@@ -18,30 +14,7 @@ from store.forms import ReviewForm
 from django.contrib import messages
 from orders.models import OrderProduct
 from django.views.decorators.csrf import csrf_exempt
-
-DELIVERY_CUTOFF_TIME = time(19, 0, 0)  # 7:00 PM
-
-
-def _get_delivery_estimate(product):
-    """Return the product's warehouse-configured delivery estimate."""
-    now = timezone.localtime()
-    is_before_cutoff = now.time() <= DELIVERY_CUTOFF_TIME
-    warehouse = product.warehouse
-    delivery_days = warehouse.delivery_days if warehouse else 2
-    eta_date = warehouse.get_delivery_date(now) if warehouse else now.date()
-    if not is_before_cutoff:
-        message = f"Ordered after 7:00 PM, delivery is expected in {delivery_days + 1} day(s)."
-    elif delivery_days == 0:
-        message = 'Same-Day Delivery: order before 7:00 PM to get it today.'
-    else:
-        message = f'{delivery_days}-Day Delivery: order before 7:00 PM to receive it in {delivery_days} day(s).'
-
-    return {
-        'is_before_cutoff': is_before_cutoff,
-        'delivery_days': delivery_days,
-        'eta_date': eta_date,
-        'message': message,
-    }
+from store.delivery import get_delivery_estimate
 
 
 # views.py
@@ -116,7 +89,7 @@ def store(request, category_slug=None):
     selected_age_mode = None
     
     # 1. Start with base available products QuerySet
-    products = Product.objects.filter(is_available=True)
+    products = Product.objects.filter(is_available=True).select_related('warehouse')
 
     # 2. Category Filtering (Handles both URL path parameter & GET request parameter)
     category_param = category_slug or request.GET.get('category')
@@ -233,7 +206,11 @@ def store(request, category_slug=None):
 
 def product_detail(request, category_slug, product_slug):
     try:
-        single_product = get_object_or_404(Product, category__slug=category_slug, slug=product_slug)
+        single_product = get_object_or_404(
+            Product.objects.select_related('warehouse'),
+            category__slug=category_slug,
+            slug=product_slug,
+        )
         in_cart = CartItem.objects.filter(cart__cart_id=_cart_id(request), product=single_product).exists()
     except Exception as e:
         raise e
@@ -258,24 +235,24 @@ def product_detail(request, category_slug, product_slug):
         related_products = Product.objects.filter(
             Q(category=category) | Q(category__parent=category.parent), 
             is_available=True
-        ).exclude(id=single_product.id).distinct()[:10]
+        ).exclude(id=single_product.id).select_related('warehouse').distinct()[:10]
     else:
         subcategories = category.children.all()
         if subcategories.exists():
             related_products = Product.objects.filter(
                 Q(category=category) | Q(category__in=subcategories), 
                 is_available=True
-            ).exclude(id=single_product.id).distinct()[:10]
+            ).exclude(id=single_product.id).select_related('warehouse').distinct()[:10]
         else:
             related_products = Product.objects.filter(
                 category=category, 
                 is_available=True
-            ).exclude(id=single_product.id)[:10]
+            ).exclude(id=single_product.id).select_related('warehouse')[:10]
 
     # Featured / Recommended Products
     recommended_products = Product.objects.filter(
         is_available=True
-    ).exclude(id=single_product.id).order_by('-created_date')[:10]
+    ).exclude(id=single_product.id).select_related('warehouse').order_by('-created_date')[:10]
 
     context = {
         'single_product': single_product,
@@ -285,7 +262,7 @@ def product_detail(request, category_slug, product_slug):
         'product_gallery': product_gallery,
         'related_products': related_products,
         'recommended_products': recommended_products,
-        'delivery_estimate': _get_delivery_estimate(single_product),
+        'delivery_estimate': get_delivery_estimate(single_product),
     }
     return render(request, 'store/product_detail.html', context)
 

@@ -481,7 +481,10 @@
                     <i class="fa fa-undo mr-2"></i> {% trans "7 Days Easy Return" %}
                 </p>
                 {% if delivery_estimate %}
-                <p class="small mb-0 mt-2" style="color: #481616; font-weight: 600;">
+                <p class="small mb-1 mt-2" style="color: #481616; font-weight: 700;">
+                    {{ delivery_estimate.charge_label }}
+                </p>
+                <p class="small mb-0" style="color: #481616; font-weight: 600;">
                     <i class="fa fa-clock-o mr-2"></i>
                     {{ delivery_estimate.message }}
                     <span class="text-muted">({{ delivery_estimate.eta_date|date:"d M Y" }})</span>
@@ -649,6 +652,7 @@
                     <div class="product-info-container">
                         <h6 class="product-name-go">{{ product.product_name }}</h6>
                         <p class="product-price-go">QAR {{ product.price|floatformat:2 }}</p>
+                        {% include 'includes/delivery_badge.html' with product=product %}
                         <a href="{% url 'add_cart' product.id %}" class="btn btn-block btn-add-go btn-add-cart-link" data-stock="{{ product.stock }}">{% trans "ADD TO CART" %}</a>
                     </div>
                 </div>
@@ -682,6 +686,7 @@
                     <div class="product-info-container">
                         <h6 class="product-name-go">{{ product.product_name }}</h6>
                         <p class="product-price-go">QAR {{ product.price|floatformat:2 }}</p>
+                        {% include 'includes/delivery_badge.html' with product=product %}
                         <a href="{% url 'add_cart' product.id %}" class="btn btn-block btn-add-go btn-add-cart-link" data-stock="{{ product.stock }}">{% trans "ADD TO CART" %}</a>
                     </div>
                 </div>

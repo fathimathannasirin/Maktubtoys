@@ -625,6 +625,9 @@ msgstr "إزالة"
 msgid "Sub Total"
 msgstr "المجموع الفرعي"
 
+msgid "Delivery"
+msgstr "التوصيل"
+
 #: .\templates\store\cart.html:94
 msgid "Checkout"
 msgstr "الدفع"
@@ -686,6 +689,25 @@ msgstr "أعلمني عند التوافر"
 #: .\templates\store\product_detail.html:119
 msgid "Fast Delivery in Qatar"
 msgstr "المنتجات العامة"
+
+msgid "Delivery 20 QAR"
+msgstr "التوصيل 20 ريال"
+
+msgid "Free delivery"
+msgstr "توصيل مجاني"
+
+msgid "Same-day delivery if you order before 7:00 PM."
+msgstr "توصيل في نفس اليوم إذا طلبت قبل الساعة 7:00 مساءً."
+
+msgid "Ordered after 7:00 PM. Delivery is tomorrow."
+msgstr "تم الطلب بعد الساعة 7:00 مساءً. التوصيل غداً."
+
+msgid "Free delivery. Expected tomorrow."
+msgstr "توصيل مجاني. متوقع غداً."
+
+msgid "Free delivery. Expected in %(days)s day(s)."
+msgstr "توصيل مجاني. متوقع خلال %(days)s يوم/أيام."
+
 
 #: .\templates\store\product_detail.html:121
 msgid "7 Days Easy Return"

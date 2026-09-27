@@ -95,6 +95,14 @@ class PlaceOrderFlowTests(TestCase):
 			stock=10,
 			category=category,
 		)
+		own_warehouse = Warehouse.objects.get(code='OWN')
+		self.product.warehouse = own_warehouse
+		self.product.save(update_fields=['warehouse'])
+		ProductWarehouseStock.objects.create(
+			product=self.product,
+			warehouse=own_warehouse,
+			quantity=10,
+		)
 
 		CartItem.objects.create(user=self.user, product=self.product, quantity=1, is_active=True)
 

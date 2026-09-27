@@ -1,0 +1,5 @@
+{% if product.warehouse.code == 'OWN' %}
+<p class="mb-1" style="font-size:0.75rem;font-weight:700;color:#6D001F;">{% trans "Delivery 20 QAR" %}</p>
+{% else %}
+<p class="mb-1" style="font-size:0.75rem;font-weight:700;color:#2e7d32;">{% trans "Free delivery" %}</p>
+{% endif %}

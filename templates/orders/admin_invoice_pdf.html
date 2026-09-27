@@ -196,7 +196,7 @@
             <table class="summary-table">
                 <tr>
                     <td>Delivery Charge</td>
-                    <td>QAR {{ order.delivery_charge|default:"20.00"|floatformat:2 }}</td>
+                    <td>QAR {{ order.delivery_charge|default:"0.00"|floatformat:2 }}</td>
                 </tr>
                 {% if order.payment and order.payment.amount_paid %}
                 <tr>

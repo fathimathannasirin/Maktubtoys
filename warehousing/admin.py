@@ -56,7 +56,7 @@ class WarehouseAdmin(admin.ModelAdmin):
         }),
         ('Shipping', {
             'fields': ('delivery_days',),
-            'description': 'Set 0 for same-day delivery when ordered by 19:00. Orders after 19:00 move to the next day.',
+            'description': 'Own warehouse always delivers the same day before 7:00 PM, or the next day after 7:00 PM. For other warehouses, this is the number of days from the order date.',
         }),
     )
 
@@ -68,7 +68,7 @@ class WarehouseAdmin(admin.ModelAdmin):
     def get_readonly_fields(self, request, obj=None):
         readonly_fields = super().get_readonly_fields(request, obj)
         if obj is not None and obj.code == 'OWN':
-            readonly_fields = tuple(readonly_fields) + ('code', 'supplier')
+            readonly_fields = tuple(readonly_fields) + ('code', 'supplier', 'delivery_days')
         return readonly_fields
 
     def change_view(self, request, object_id, form_url='', extra_context=None):

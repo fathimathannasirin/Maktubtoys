@@ -229,6 +229,10 @@
                                         <figcaption class="info">
                                             <p class="title text-dark mb-0 font-weight-bold">{{ cart_item.product.product_name }}</p>
                                             <small class="text-muted">x {{ cart_item.quantity }}</small>
+                                            {% include 'includes/delivery_badge.html' with product=cart_item.product %}
+                                            {% if cart_item.delivery_estimate %}
+                                            <small class="d-block" style="color:#481616;">{{ cart_item.delivery_estimate.message }} ({{ cart_item.delivery_estimate.eta_date|date:"d M Y" }})</small>
+                                            {% endif %}
                                         </figcaption>
                                     </figure>
                                 </td>
@@ -253,10 +257,16 @@
                     </div>
                     <div class="row mb-3">
                         <div class="col-6">
-                            <strong>{% trans "Delivery Charge" %}:</strong>
+                            <strong>{% trans "Delivery" %}:</strong>
                         </div>
                         <div class="col-6 text-right">
-                            <var class="price">{{ delivery_charge|unlocalize }} {% trans "QAR" %}</var>
+                            <var class="price">
+                                {% if is_free_delivery %}
+                                    {% trans "Free delivery" %}
+                                {% else %}
+                                    {{ delivery_charge|unlocalize }} {% trans "QAR" %}
+                                {% endif %}
+                            </var>
                         </div>
                     </div>
                     <div class="row mb-3" style="border-top: 2px solid #eee; padding-top: 10px;">

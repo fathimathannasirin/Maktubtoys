@@ -75,7 +75,7 @@ def set_language(request):
 
 
 def home(request):
-    products = Product.objects.filter(is_available=True).order_by('created_date')
+    products = Product.objects.filter(is_available=True).select_related('warehouse').order_by('created_date')
     categories = Category.objects.all().select_related('parent')
     parent_categories = [category for category in categories if category.parent_id is None]
 

@@ -445,6 +445,7 @@
                             <div class="price-wrap">
                                 <span class="price">QAR {{ product.price|floatformat:2 }}</span>
                             </div>
+                            {% include 'includes/delivery_badge.html' with product=product %}
                             <div class="action-wrap">
                                 {% if product.stock <= 0 %}
                                     <button class="btn btn-block btn-danger disabled" style="border-radius: 8px; font-weight: 700; font-size: 0.8rem;"> 
