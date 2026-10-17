@@ -119,7 +119,11 @@
                         <td data-label="{% trans 'Product' %}">
                             <figure class="itemside">
                                 <div class="aside">
-                                    <img src="{{ cart_item.product.images.url }}" class="img-sm">
+                                    {% if cart_item.product.images %}
+                                    <img src="{{ cart_item.product.images.url }}" class="img-sm" alt="{{ cart_item.product.product_name }}">
+                                    {% else %}
+                                    <img src="{% static 'images/newlogo1.png' %}" class="img-sm" alt="{{ cart_item.product.product_name }}">
+                                    {% endif %}
                                 </div>
                                 <figcaption class="info">
                                     <a href="{{ cart_item.product.get_url }}" class="title text-dark font-weight-bold">{{ cart_item.product.product_name }}</a>

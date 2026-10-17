@@ -16,6 +16,13 @@ from .models import Purchase, PurchaseItem, Return, ReturnItem, Supplier, Wareho
 from .views import lookup_products
 
 
+def _invoice_logo():
+    logo_path = settings.BASE_DIR / 'static' / 'images' / 'newlogo.png'
+    if logo_path.exists():
+        return ReportLabImage(str(logo_path), width=28 * mm, height=28 * mm)
+    return None
+
+
 class WarehouseInline(admin.TabularInline):
     model = Warehouse
     extra = 1
@@ -175,10 +182,10 @@ class PurchaseAdmin(admin.ModelAdmin):
 
         document = SimpleDocTemplate(response, pagesize=A4, rightMargin=10 * mm, leftMargin=10 * mm, topMargin=10 * mm, bottomMargin=10 * mm)
         styles = getSampleStyleSheet()
-        logo_path = settings.BASE_DIR / 'static' / 'images' / 'maktub_h60.png'
         brand_header = [Paragraph('<b>MAKTUB Toys</b><br/>Warehousing Document', styles['Title'])]
-        if logo_path.exists():
-            brand_header.insert(0, ReportLabImage(str(logo_path), width=55 * mm, height=12 * mm))
+        logo = _invoice_logo()
+        if logo:
+            brand_header.insert(0, logo)
         document_header = [[brand_header, Paragraph(
             f'<para align="right"><b>ID:</b> {purchase.purchase_number}<br/>'
             f'<b>Warehouse:</b> {purchase.warehouse.name}<br/>'
@@ -342,14 +349,18 @@ class ReturnAdmin(admin.ModelAdmin):
         response['Content-Disposition'] = f'attachment; filename="{return_record.return_number}.pdf"'
         document = SimpleDocTemplate(response, pagesize=A4, rightMargin=12 * mm, leftMargin=12 * mm, topMargin=12 * mm, bottomMargin=12 * mm)
         styles = getSampleStyleSheet()
-        story = [
+        story = []
+        logo = _invoice_logo()
+        if logo:
+            story.extend([logo, Spacer(1, 3 * mm)])
+        story.extend([
             Paragraph('MAKTUB Toys - Purchase Return', styles['Title']),
             Paragraph(f'<b>Return ID:</b> {return_record.return_number}', styles['Normal']),
             Paragraph(f'<b>Type:</b> {return_record.document_type}', styles['Normal']),
             Paragraph(f'<b>Supplier:</b> {return_record.supplier.name}', styles['Normal']),
             Paragraph(f'<b>Warehouse:</b> {return_record.warehouse.name}', styles['Normal']),
             Spacer(1, 5 * mm),
-        ]
+        ])
         rows = [['Product', 'UPC', 'SKU', 'Count', 'Unit Cost', 'Final']]
         for item in context['items']:
             rows.append([item.product.product_name, item.product.upc or '-', item.product.sku or '-', str(item.quantity), f'{item.unit_cost:.2f}', f'{item.line_total:.2f}'])

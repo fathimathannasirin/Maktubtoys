@@ -7,7 +7,7 @@ class Category(models.Model):
     category_name = models.CharField(max_length=100)
     slug=models.SlugField(max_length=50,unique=True)
     image = models.ImageField(upload_to='photos/categories', blank=True)
-    description=models.TextField(max_length=225,blank=True)
+    description=models.TextField(max_length=10000, blank=True)
     parent = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True, related_name='children')
 
     class Meta:

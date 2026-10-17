@@ -46,7 +46,7 @@
 
                     <div class="form-group">
                         <label for="id_description">{% trans "Description" %}</label>
-                        <textarea id="id_description" name="description" class="form-control" rows="5" required>{{ form.description.value|default_if_none:'' }}</textarea>
+                        <textarea id="id_description" name="description" class="form-control" rows="5" maxlength="10000" required>{{ form.description.value|default_if_none:'' }}</textarea>
                         {% if form.description.errors %}<small class="text-danger">{{ form.description.errors|striptags }}</small>{% endif %}
                     </div>
 

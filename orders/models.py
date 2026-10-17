@@ -247,7 +247,7 @@ class ReturnRequest(models.Model):
     customer = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='return_requests')
     return_request_id = models.CharField(max_length=40, unique=True, editable=False)
     reason = models.CharField(max_length=100, choices=RETURN_REASON_CHOICES)
-    description = models.TextField()
+    description = models.TextField(max_length=10000)
     status = models.CharField(max_length=32, choices=STATUS_CHOICES, default='Return Requested')
     refund_status = models.CharField(max_length=16, choices=REFUND_STATUS_CHOICES, default='Pending')
     resolution_type = models.CharField(max_length=20, choices=RESOLUTION_CHOICES, default='none')

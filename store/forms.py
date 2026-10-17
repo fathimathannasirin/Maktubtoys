@@ -30,7 +30,7 @@ class ProductForm(forms.ModelForm):
         widgets = {
             'product_name': forms.TextInput(attrs={'class': 'form-control'}),
             'slug': forms.TextInput(attrs={'class': 'form-control'}),
-            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'maxlength': '10000'}),
             'price': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01', 'id': 'id_price'}),
             'cost_price': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01', 'id': 'id_cost_price'}),
             'images': forms.FileInput(attrs={'class': 'form-control'}),

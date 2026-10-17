@@ -219,7 +219,7 @@
             background: #F5F2EB !important;
             box-shadow: none;
         }
-        .logo { max-height: 50px !important; }
+        .logo { max-height: 70px !important; }
         .widget-header .title { font-size: 0.7rem; color: #6D001F !important; }
         .widget-header a { color: #6D001F !important; }
         .border-left { border-left: 1px solid rgba(109, 0, 31, 0.2) !important; }
@@ -293,7 +293,7 @@
             <div class="row align-items-center">
                 <div class="col-lg-2 col-md-3 col-5">
                     <a href="{% url 'home' %}" class="brand-wrap">
-                        <img class="logo" src="{% static 'images/maktub_navbar_692x250_larger_transparent.png' %}" alt="{% trans 'MAKTUB Toys Logo' %}" style="max-height: 70px; width: auto;">
+                        <img class="logo" src="{% static 'images/newlogo3.png' %}" alt="{% trans 'MAKTUB Toys Logo' %}" style="max-height: 70px; width: auto;">
                     </a>
                 </div>
 
@@ -312,7 +312,7 @@
                                                 {% if category.image %}
                                                     <img src="{{ category.image.url }}" class="nav-cat-img" alt="{{ category.category_name }}">
                                                 {% else %}
-                                                    <img src="{% static 'images/maktub.jpeg' %}" class="nav-cat-img" alt="{{ category.category_name }}">
+                                                    <img src="{% static 'images/newlogo1.png' %}" class="nav-cat-img" alt="{{ category.category_name }}">
                                                 {% endif %}
                                                 <span class="cat-text">{{ category.category_name }}</span>
                                             </a>
@@ -373,7 +373,7 @@
                                         {% if category.image %}
                                             <img src="{{ category.image.url }}" class="nav-cat-img" alt="{{ category.category_name }}" style="margin-{% if LANGUAGE_CODE == 'ar' %}left{% else %}right{% endif %}: 10px;">
                                         {% else %}
-                                            <img src="{% static 'images/maktub.jpeg' %}" class="nav-cat-img" alt="{{ category.category_name }}" style="margin-{% if LANGUAGE_CODE == 'ar' %}left{% else %}right{% endif %}: 10px;">
+                                            <img src="{% static 'images/newlogo1.png' %}" class="nav-cat-img" alt="{{ category.category_name }}" style="margin-{% if LANGUAGE_CODE == 'ar' %}left{% else %}right{% endif %}: 10px;">
                                         {% endif %}
                                         <span>{{ category.category_name }}</span>
                                     </a>

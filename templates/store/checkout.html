@@ -225,7 +225,7 @@
                             <tr>
                                 <td data-label="{% trans 'Product' %}">
                                     <figure class="itemside">
-                                        <div class="aside"><img src="{{ cart_item.product.images.url }}" class="img-sm"></div>
+                                        <div class="aside">{% if cart_item.product.images %}<img src="{{ cart_item.product.images.url }}" class="img-sm" alt="{{ cart_item.product.product_name }}">{% else %}<img src="{% static 'images/newlogo1.png' %}" class="img-sm" alt="{{ cart_item.product.product_name }}">{% endif %}</div>
                                         <figcaption class="info">
                                             <p class="title text-dark mb-0 font-weight-bold">{{ cart_item.product.product_name }}</p>
                                             <small class="text-muted">x {{ cart_item.quantity }}</small>

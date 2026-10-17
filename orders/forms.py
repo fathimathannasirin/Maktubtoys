@@ -25,7 +25,7 @@ class OrderForm(forms.ModelForm):
 
 class ReturnRequestForm(forms.Form):
     reason = forms.ChoiceField(choices=ReturnRequest.RETURN_REASON_CHOICES, required=True)
-    description = forms.CharField(required=True, widget=forms.Textarea(attrs={'rows': 4}))
+    description = forms.CharField(required=True, max_length=10000, widget=forms.Textarea(attrs={'rows': 4, 'maxlength': '10000'}))
     return_shipping_acknowledged = forms.BooleanField(required=True)
     policy_terms_accepted = forms.BooleanField(required=True)
         

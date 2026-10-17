@@ -6,7 +6,7 @@
 {% block meta_description %}{{ single_product.description|default:single_product.product_name|truncatechars:155 }}{% endblock %}
 {% block og_description %}{{ single_product.description|default:single_product.product_name|truncatechars:155 }}{% endblock %}
 {% block og_type %}product{% endblock %}
-{% block og_image %}{{ request.scheme }}://{{ request.get_host }}{{ single_product.images.url }}{% endblock %}
+{% block og_image %}{% if single_product.images %}{{ request.scheme }}://{{ request.get_host }}{{ single_product.images.url }}{% else %}{{ request.scheme }}://{{ request.get_host }}{% static 'images/newlogo.png' %}{% endif %}{% endblock %}
 {% block seo_h1 %}{{ single_product.product_name }}{% endblock %}
 
 {% block extra_structured_data %}
@@ -15,7 +15,7 @@
   "@context": "https://schema.org",
   "@type": "Product",
   "name": "{{ single_product.product_name|escapejs }}",
-  "image": "{{ request.scheme }}://{{ request.get_host }}{{ single_product.images.url }}",
+  "image": "{% if single_product.images %}{{ request.scheme }}://{{ request.get_host }}{{ single_product.images.url }}{% else %}{{ request.scheme }}://{{ request.get_host }}{% static 'images/newlogo.png' %}{% endif %}",
   "description": "{{ single_product.description|default:single_product.product_name|truncatechars:300|escapejs }}",
   "sku": "{{ single_product.product_code|default:single_product.id|escapejs }}",
   "brand": {
@@ -368,16 +368,27 @@
         <aside class="col-md-6 border-right-0 p-3">
             <article class="gallery-wrap"> 
                 <div class="img-big-wrap mainImage">
+                    {% if single_product.images %}
                     <img src="{{ single_product.images.url }}" id="mainImage" alt="{{ single_product.product_name }}">
+                    {% else %}
+                    <img src="{% static 'images/newlogo1.png' %}" id="mainImage" alt="{{ single_product.product_name }}">
+                    {% endif %}
                 </div> 
             </article> 
             
             <ul class="thumb">
                 <li>
+                    {% if single_product.images %}
                     <img src="{{ single_product.images.url }}" 
                          class="active-thumb"
                          alt="{% trans 'Product Image' %}" 
                          onclick="updateMainImage(this, '{{ single_product.images.url }}')">
+                    {% else %}
+                    <img src="{% static 'images/newlogo1.png' %}" 
+                         class="active-thumb"
+                         alt="{% trans 'Product Image' %}" 
+                         onclick="updateMainImage(this, '{% static 'images/newlogo1.png' %}')">
+                    {% endif %}
                 </li>
                 {% for i in product_gallery %}
                 <li>
@@ -646,7 +657,7 @@
                 <div class="go-mini-card">
                     <div class="img-wrap-go">
                         <a href="{{ product.get_url }}">
-                            <img src="{{ product.images.url }}" alt="{{ product.product_name }}">
+                            {% if product.images %}<img src="{{ product.images.url }}" alt="{{ product.product_name }}">{% else %}<img src="{% static 'images/newlogo1.png' %}" alt="{{ product.product_name }}">{% endif %}
                         </a>
                     </div>
                     <div class="product-info-container">
@@ -680,7 +691,7 @@
                 <div class="go-mini-card">
                     <div class="img-wrap-go">
                         <a href="{{ product.get_url }}">
-                            <img src="{{ product.images.url }}" alt="{{ product.product_name }}">
+                            {% if product.images %}<img src="{{ product.images.url }}" alt="{{ product.product_name }}">{% else %}<img src="{% static 'images/newlogo1.png' %}" alt="{{ product.product_name }}">{% endif %}
                         </a>
                     </div>
                     <div class="product-info-container">

@@ -18,13 +18,13 @@
     <meta property="og:url" content="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}">
     <meta property="og:title" content="{% block og_title %}{% trans "MAKTUB Toys | Premium Toys & Essentials in Qatar" %}{% endblock %}">
     <meta property="og:description" content="{% block og_description %}{% trans 'Bringing quality, innovation, and joy to homes across Qatar. Shop premium toys, lifestyle tech, and family essentials at MAKTUB Toys.' %}{% endblock %}">
-    <meta property="og:image" content="{% block og_image %}{{ request.scheme }}://{{ request.get_host }}{% static 'images/maktub.jpeg' %}{% endblock %}">
+    <meta property="og:image" content="{% block og_image %}{{ request.scheme }}://{{ request.get_host }}{% static 'images/newlogo.png' %}{% endblock %}">
     <meta property="og:locale" content="{% if LANGUAGE_CODE == 'ar' %}ar_QA{% else %}en_QA{% endif %}">
     <meta name="twitter:card" content="summary_large_image">
 
-    <link rel="icon" type="image/png" href="{% static 'images/maktub.png' %}">
-    <link rel="shortcut icon" type="image/png" href="{% static 'images/maktub.png' %}">
-    <link rel="apple-touch-icon" href="{% static 'images/maktub.png' %}">
+    <link rel="icon" type="image/png" href="{% static 'images/newlogo.png' %}">
+    <link rel="shortcut icon" type="image/png" href="{% static 'images/newlogo.png' %}">
+    <link rel="apple-touch-icon" href="{% static 'images/newlogo.png' %}">
 
     <script src="{% static 'js/jquery-2.0.0.min.js' %}" type="text/javascript"></script>
     <script src="{% static 'js/bootstrap.bundle.min.js' %}" type="text/javascript"></script>
@@ -196,7 +196,7 @@
       "@id": "https://maktubtoys.com/#organization",
       "name": "MAKTUB Toys",
       "url": "https://maktubtoys.com/",
-      "logo": "https://maktubtoys.com/static/images/maktub.jpeg"
+      "logo": "https://maktubtoys.com/static/images/newlogo.png"
     }
   ]
 }

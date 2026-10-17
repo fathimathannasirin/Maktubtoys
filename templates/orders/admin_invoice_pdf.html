@@ -10,7 +10,7 @@
         .invoice-box { max-width: 980px; margin: auto; padding: 28px; border: 1px solid #eceff3; }
         
         .header-table { width: 100%; margin-bottom: 18px; }
-        .logo img { max-height: 110px; }
+        .logo img { max-height: 110px; width: auto; }
         .invoice-title { font-size: 30px; color: #4b5563; text-transform: uppercase; font-weight: 300; letter-spacing: 0.04em; }
         
         .info-header { font-size: 10px; font-weight: bold; text-transform: uppercase; color: #888; border-bottom: 1px solid #eee; margin-bottom: 10px; letter-spacing: 0.08em; }
@@ -60,7 +60,7 @@
     <table class="header-table">
         <tr>
             <td>
-                <div class="logo"><img src="{% static 'images/maktub_h196.png' %}" alt="Logo"></div>
+                <div class="logo"><img src="{% static 'images/newlogo.png' %}" alt="MAKTUB Toys"></div>
                 <div class="detail-text mt-2">
                     <strong>{{ order.full_name }}</strong><br>
                     {% if order.phone %}{{ order.phone }}<br>{% endif %}

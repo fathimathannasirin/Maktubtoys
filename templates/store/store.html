@@ -431,7 +431,11 @@
                     <figure class="card-product-grid">
                         <div class="img-wrap"> 
                             <a href="{{ product.get_url }}">
+                                {% if product.images %}
                                 <img src="{{ product.images.url }}" alt="{{ product.product_name }}">
+                                {% else %}
+                                <img src="{% static 'images/newlogo1.png' %}" alt="{{ product.product_name }}">
+                                {% endif %}
                             </a>
                         </div>
                         <figcaption class="info-wrap">
