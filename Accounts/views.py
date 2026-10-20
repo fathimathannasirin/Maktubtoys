@@ -151,8 +151,10 @@ def login(request):
                     return redirect('home') # Fallback if no 'next' parameter exists
         else:
             messages.error(request, 'Invalid login credentials')
-            return redirect('login')           
-    return render(request, 'accounts/login.html')
+            return redirect('login')
+    response = render(request, 'accounts/login.html')
+    response['X-Robots-Tag'] = 'noindex, nofollow'
+    return response
 
 @login_required(login_url = 'login')
 def logout(request):

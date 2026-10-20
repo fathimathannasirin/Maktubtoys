@@ -230,7 +230,9 @@ def _cart_checkout_context(request):
 
 
 def cart(request):
-    return render(request, 'store/cart.html', _cart_checkout_context(request))
+    response = render(request, 'store/cart.html', _cart_checkout_context(request))
+    response['X-Robots-Tag'] = 'noindex, nofollow'
+    return response
 
 
 @login_required(login_url='login')

@@ -93,8 +93,15 @@ def robots_txt(request):
         "Allow: /\n"
         "Disallow: /securelogin/\n"
         "Disallow: /cart/\n"
-        "Disallow: /orders/\n\n"
-        "Sitemap: https://maktubtoys.com/sitemap.xml\n"
+        "Disallow: /orders/\n"
+        "Disallow: /accounts/login/\n"
+        "Disallow: /accounts/register/\n"
+        "Disallow: /accounts/dashboard/\n"
+        "Disallow: /accounts/verify-otp/\n"
+        "Disallow: /accounts/forgotPassword/\n"
+        "Disallow: /accounts/resetPassword/\n"
+        "Disallow: /social-auth/\n"
+        "\nSitemap: https://maktubtoys.com/sitemap.xml\n"
     )
     return HttpResponse(content, content_type="text/plain")
 

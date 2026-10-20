@@ -1829,6 +1829,15 @@ msgstr "جرّب تعديل البحث أو الفئة العمرية أو تص�
 msgid "Back to Store"
 msgstr "العودة إلى المتجر"
 
+msgid "Shopping Cart"
+msgstr "عربة التسوق"
+
+msgid "Sign in to your MAKTUB Toys account to track orders and checkout."
+msgstr "سجّل الدخول إلى حساب مكتوب تويز لتتبع الطلبات وإتمام الشراء."
+
+msgid "Review items in your MAKTUB Toys shopping cart."
+msgstr "راجع المنتجات في عربة تسوق مكتوب تويز."
+
 #~ msgid "If you think it's not you, please ignore this email."
 #~ msgstr "إذا كنت تعتقد أن الأمر لا يخصك، يرجى تجاهل هذا البريد الإلكتروني"
 

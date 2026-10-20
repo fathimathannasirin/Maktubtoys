@@ -1,6 +1,11 @@
 {% extends "base.html" %}
 {% load i18n %}{% load static %}
 
+{% block title %}{% trans "Login" %} | {% trans "MAKTUB Toys" %}{% endblock %}
+{% block og_title %}{% trans "Login" %} | {% trans "MAKTUB Toys" %}{% endblock %}
+{% block seo_h1 %}{% trans "Login" %}{% endblock %}
+{% block meta_description %}{% trans "Sign in to your MAKTUB Toys account to track orders and checkout." %}{% endblock %}
+{% block og_description %}{% trans "Sign in to your MAKTUB Toys account to track orders and checkout." %}{% endblock %}
 {% block meta_robots %}noindex, nofollow{% endblock %}
 
 {% block content %}

@@ -1,6 +1,11 @@
 {% extends "base.html" %}
 {% load i18n %}{% load l10n %}{% load static %}
 
+{% block title %}{% trans "Shopping Cart" %} | {% trans "MAKTUB Toys" %}{% endblock %}
+{% block og_title %}{% trans "Shopping Cart" %} | {% trans "MAKTUB Toys" %}{% endblock %}
+{% block seo_h1 %}{% trans "Shopping Cart" %}{% endblock %}
+{% block meta_description %}{% trans "Review items in your MAKTUB Toys shopping cart." %}{% endblock %}
+{% block og_description %}{% trans "Review items in your MAKTUB Toys shopping cart." %}{% endblock %}
 {% block meta_robots %}noindex, nofollow{% endblock %}
 
 {% block content %}
